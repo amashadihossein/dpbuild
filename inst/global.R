@@ -2,7 +2,7 @@
 library(conflicted)
 
 # DaaP core packages
-library(DaaPR)
+library(daapr)
 library(drake)
 
 # Daap build dependencies
