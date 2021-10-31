@@ -1,0 +1,56 @@
+---
+output: github_document
+params: 
+    dp_title: "Data Product"
+    config: "empty"
+    github_repo_url: "empty"
+    board_params_set: "empty"
+    creds_set_dried: "empty"
+title: "`r params$dp_title`"
+---
+
+To build and deploy
+
+### STEP 1: Activate the project
+
+Clone the project, set working directory to project top folder and activate
+
+```{r activate, eval=FALSE}
+dpbuild::dp_activate(project_path = ".")
+```
+
+### STEP 2: Set environment variables
+
+Set `GITHUB_PAT` as environment variable for `r params$github_repo_url`
+
+```{r set_env, eval=FALSE}
+Sys.setenv("GITHUB_PAT" = "<GIHTUB_PAT for the remote url>")
+```
+
+
+Set environment variables as needed to enable evaluation of 
+
+``r glue::glue("{params$creds_set_dried}")``
+
+and order to access the data board 
+
+```{r board, echo=FALSE}
+params$board_params_set %>% knitr::kable(.)
+```
+
+### STEP 3: Build
+
+This by convention involves sourcing the main script `dp_make.R`
+
+```{r build, eval=FALSE}
+source("./dp_make.R")
+```
+
+
+### STEP 4: Deploy
+
+Simple call to `dpdeploy`. By default expects you to be in the project directory
+
+```{r deploy, eval=FALSE}
+dpdeploy()
+```

@@ -1,0 +1,202 @@
+---
+title:  "Development Journal: `r params$dp_name`"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+params:
+  dp_name: "dp-xxxx-xxx"
+output:
+  html_document:
+    theme: paper
+    highlight: zenburn
+    toc: true
+    number_sections: true
+    toc_float: true
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval=FALSE, results = FALSE, message=FALSE)
+library(daapr)
+```
+
+<!-- **RMarkdown NOTE:** contents commented out won't show up in the knitted html and if helpful you can keep them in your journal -->
+<!-- **RMarkdown NOTE:** for this template all chunks are set not to evaluate with `eval = F`. It is recommended to keep this way and execute chunk-by-chunk manually to help with closer evaluation -->
+
+<!-- **Workflow NOTE:** This dev journal, while not a required step in building a data product, can help document steps in building each data product and assist with traceability and collaboration and such is recommended -->
+
+
+# Pre-requisite configuraion and setup
+
+<!-- **Workflow NOTE:** In this step we set up all the credentials and requirements for being able to connect to remote locations be it GitHub or the remote for dp deployment  -->
+
+## Validte project set up (optional)
+
+**Goal:** Ensure, we are in a properly set up `daap` project
+
+```{r check_dp_init, results= TRUE }
+dpbuild:::is_valid_dp_repository(path = ".")
+```
+
+## Remote data platform credentials
+
+**Goal:** provide remote data platform credentials as anticipated and set up by `cred_set_*` in `dp_init`.
+
+```{r remote_data_repo_cred_setup, eval= FALSE}
+Sys.setenv("AWS_KEY" = aws.signature::locate_credentials(profile = "my_aws_profile_name")$key)
+Sys.setenv("AWS_SECRET" = aws.signature::locate_credentials(profile = "my_aws_profile_name")$secret)
+#TODO: validating credentials for remote
+```
+
+## Remote package repo credentials (as needed)
+
+<!-- **Workflow NOTE**: GITHUB_PAT is your `Personal Access Token` to private GitHub repo where where package dependencies may need to be pulled from. This variable is recognized by both renv and remotes packages.To get your PAT for the repo go to GitHub > Settings > Developer Settings > Personal access tokens. This may not be necessary if the repo is not private  -->
+
+<!-- **Workflow NOTE**: pkg keyring is not required but it is helpful as a convenient and secure way of dealing with credentials. You can use other alternatives, as long as you avoid direct coding of credentials as `dp_push` could cause exposure-->
+
+**Goal:** provide access for packages from private GitHub repo
+
+```{r remote_pkg_repo_cred_setup, eval = FALSE}
+# System specific set up
+renv::install(packages = "keyring")
+
+if(!"GITHUB_PAT" %in% keyring::key_list()$service)
+  stop("Set up `GITHUB_PAT` using keyring::key_set_with_value(GITHUB_PAT = <YOUR GITHUB PAT>)")
+
+Sys.setenv(GITHUB_PAT = keyring::key_get(service = "GITHUB_PAT"))
+```
+
+
+## Data product configuration
+
+We get all configuration needed to interact with remote. 
+
+<!-- **Workflow NOTE:** `dpconf_get` relies on creds value be available as env variable otherwise while config file pulled would lack proper credentials needed to access remote! Set the env variable prior to calling `dpconfig_get`. Note, the name of this env variable should match `creds_set_dried` set when `dp_init was called` -->
+
+
+```{r dpconf_get}
+config <- dpbuild::dpconf_get(project_path = ".")
+```
+
+
+# Project objective
+
+This data product is intended for: 
+<!-- **Workflow NOTE:**: Enter User Story and or acceptance criteria: what are the primary 3-5 things this should enable -->
+
+## Input Data
+
+The following captures datasets from which this data product draws from
+
+<!-- **Workflow NOTE:** Include, name (e.g. trialx_cutY.zip), source (e.g. clin stat), date/time  -->
+
+# Staging the data
+
+**Goal:** Preparing the right content with the right name to be synced to the remote board. To this end, upload the input data, map folder structure (if any), check content collision (e.g. same files different names) and specify what needs to be synced by modifying the metadata collected through mapping. 
+
+## Uploading/mapping input data
+
+Data was added to the `input_files` folder and mapped
+
+```{r input_map}
+input_map <- dpbuild::dpinput_map(project_path = ".")
+```
+
+## Evaluating the `input_map`
+
+**Goal:** Get the right subset of all data synced to remote. To this end, using `dpbuild::dpinput_map` we check the content of the data uploaded into `input_file`, if needed, change names, remove dataset that need to be excluded from the sync.
+
+<!-- **Workflow NOTE**: describe what was modified in the metadata to affect what gets synced-->
+
+```{r input_map_eval, results= TRUE}
+renv::install("DT")
+# Reverse sync status by id as needed
+# input_map <- dpbuild::dpinput_syncflag_reset(input_map = input_map, input_id = c("dataset_id_to_be_reset1","dataset_id_to_rest2")
+# Optionally clean input_map prunning not-to-be-synced and simplify list names and associated metadata
+# input_map <- inputmap_clean(input_map = input_map)
+print(DT::datatable(input_map$input_manifest))
+```
+
+# Syncing staged data to remote
+
+**Goal:** sync staged data to remote
+
+```{r dpinput_sync}
+synced_map <- dpdeploy::dpinput_sync(conf = config, input_map = input_map)
+```
+
+
+# Converting `dp_input` ->  metadata
+
+**Goal:** Convert data synced to remote into yaml metadata
+
+## Defining the structure of `dp_input` (optional)
+
+**Goal:** Clean input data names and organize them into a structure that eases navigation: e.g. clin, translational, etc.
+
+Here I structured `input_d` as described below:
+<!-- **Workflow NOTE:** Enter how you structured the data or whether you kept it as default which is flat structure -->
+
+
+```{r dpinput_structure}
+clin <- list()
+clin$trtdur <- synced_map$trtdur
+clin$vits <- synced_map$vits
+data_def <- synced_map$spec
+input_d <- list(clin = clin, data_def = data_def)
+
+```
+
+## `dp_input` ->  metadata 
+Here I converted `dp_input` to its metadata representation
+
+```{r dpinput_write}
+dpbuild::dpinput_write(project_path = ".", input_d = input_d)
+
+```
+
+
+# Editing and running `dp_make.R`
+
+**Goal:** Implement the derivations of features needed per user story
+
+<!-- **Workflow NOTE:** Provide a high level summary of features added -->
+
+Here, for this first build, no feature was added. It only contains the input.  
+
+```{r dp_make}
+source("./dp_make.R")
+```
+
+## Visualizing the build (optional)
+
+Below dp_make steps and dependencies are visualized
+
+```{r dpmake_vis, results= TRUE}
+renv::install(packages = "visNetwork")
+drake::vis_drake_graph(daap_plan)
+
+```
+
+# Committing, pushing to GitHub for build
+
+**Goal:** Stage and commit the dp to signify its readiness for deploy upon push to GitHub. 
+
+<!-- **Workflow NOTE:** Do not run this step over and over with the same commit message!! To follow best practices, commit with unique message each time explaining what was done. To this end, first, evaluate the dp built and when ready use `dp_commit` to label dp ready for deploy. dp_commit marks dp_log with commit note signifying its readiness for deploy  -->
+
+<!-- **Workflow NOTE:** Save all changes to all files before commit -->
+
+Committed the dp with just input data.
+
+```{r dpcommit, eval= FALSE}
+dpbuild::dp_commit(project_path = ".", commit_description = "First dp build: only input data")
+```
+
+<!-- **Workflow NOTE:** This step requires a remote git repo (i.e. a repo on either GitHub). If a new project, you'll need to create this repo prior to completing `dp_push` -->
+
+Pushed dp to remote git repository 
+
+```{r dppush, eval = FALSE}
+dp_push(path = ".", remote_alias = "ds", remote_url = "https://github.com/teamAccount/me/dp_test1.git")
+```
+
+<!-- **RMarkdown NOTE:** When ready to render as html the following can execute the following -->
+<!-- rmarkdown::render(input = "./dp_journal.RMD", params = list(dp_name = gsub("_","-",glue::glue("{config$project_name}_{config$branch_name}")) )) -->

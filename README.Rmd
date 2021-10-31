@@ -1,0 +1,38 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# dpbuild
+
+<!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+<!-- badges: end -->
+
+The goal of `dpbuild` is to streamline the process of building a data product.
+
+## Installation
+
+For released version
+
+``` {r install, eval = F}
+remotes::install_git(url = "https://github.com/amashadihossein/dpbuild.git")
+```
+
+For dev version
+
+``` {r install_dev, eval = F}
+remotes::install_git(url = "https://github.com/amashadihossein/dpbuild.git",
+                     ref = "dev")
+```
+
