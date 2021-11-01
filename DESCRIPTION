@@ -30,13 +30,13 @@ Imports:
     yaml,
     gh,
     magrittr,
-    pins (== 0.4.4.9008),
+    pins (== 0.4.5.9001),
     cli,
     jsonlite,
     rmarkdown
 Remotes:
-    git::https://github.com/amashadihossein/pins.git@main,
-    git::https://github.com/amashadihossein/dpi.git@main
+    amashadihossein/pins,
+    amashadihossein/dpi
 BugReports: https://github.com/amashadihossein/dpbuild/issues
 Suggests: 
     httr
