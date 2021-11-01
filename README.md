@@ -17,12 +17,11 @@ product.
 For released version
 
 ``` r
-remotes::install_git(url = "https://github.com/amashadihossein/dpbuild.git")
+remotes::install_github("amashadihossein/dpbuild")
 ```
 
 For dev version
 
 ``` r
-remotes::install_git(url = "https://github.com/amashadihossein/dpbuild.git",
-                     ref = "dev")
+remotes::install_github("amashadihossein/dpbuild", ref = "dev")
 ```
