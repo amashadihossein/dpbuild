@@ -17,6 +17,8 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Codecov test coverage](https://codecov.io/gh/amashadihossein/dpbuild/branch/main/graph/badge.svg)](https://app.codecov.io/gh/amashadihossein/dpbuild?branch=main)
+[![R-CMD-check](https://github.com/amashadihossein/dpbuild/workflows/R-CMD-check/badge.svg)](https://github.com/amashadihossein/dpbuild/actions)
 <!-- badges: end -->
 
 The goal of `dpbuild` is to streamline the process of building a data product.

@@ -7,19 +7,24 @@
 #' @return TRUE
 #' @export
 
-dpinput_write <- function(project_path, input_d, verbose = F){
-
-  if(verbose)
+dpinput_write <- function(project_path, input_d, verbose = F) {
+  if (verbose) {
     print("Writing daap input yaml")
+  }
 
-  if(!is_valid_dp_repository(path = project_path))
-    stop(cli::format_error(glue::glue("Not a dp repsitory. Run ",
-                                      "`dp_repository_check(\"{project_path}\")`",
-                                      " for details")))
+  if (!is_valid_dp_repository(path = project_path)) {
+    stop(cli::format_error(glue::glue(
+      "Not a dp repsitory. Run ",
+      "`dp_repository_check(\"{project_path}\")`",
+      " for details"
+    )))
+  }
 
   dpinput_make(input_d = input_d) %>%
-    yaml::write_yaml(x = .,
-                     file =  glue::glue("{project_path}/.daap/daap_input.yaml"))
+    yaml::write_yaml(
+      x = .,
+      file = glue::glue("{project_path}/.daap/daap_input.yaml")
+    )
 
   return(TRUE)
 }
@@ -31,15 +36,15 @@ dpinput_write <- function(project_path, input_d, verbose = F){
 #'  a list
 #' @return TRUE
 #' @keywords internal
-dpinput_make <- function(input_d){
+dpinput_make <- function(input_d) {
 
-  # TODO: remove reliance on name metadata for identifying leaf. 
+  # TODO: remove reliance on name metadata for identifying leaf.
   # This may be fragile as metadata may not necessarily be the one we think
-  daap_input <- purrr::map(input_d, .f = function(x){
-    if(is.list(x)){
-      if(!"metadata" %in% names(x)){
+  daap_input <- purrr::map(input_d, .f = function(x) {
+    if (is.list(x)) {
+      if (!"metadata" %in% names(x)) {
         return(dpinput_make(input_d = x))
-      }else{
+      } else {
         return(as.list(x$metadata))
       }
     }
