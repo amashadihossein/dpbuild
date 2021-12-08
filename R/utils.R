@@ -55,6 +55,7 @@ dpname_make <- function(project_name, branch_name) {
     board = "daap_internal",
     full = F
   ) %>% dplyr::pull(.data$version)
+  #TODO
   pins::pin_remove(name = pin_name, board = "daap_internal")
 
   return(pin_version)
