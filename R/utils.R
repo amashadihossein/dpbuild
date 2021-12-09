@@ -50,15 +50,13 @@ dpname_make <- function(project_name, branch_name) {
 #    description = pin_description
 #  )
 
-  pin_version <- pins::pin_versions(
-    name = pin_name,
-    board = "daap_internal",
-    full = F
-  ) %>% dplyr::pull(.data$version)
-  #TODO
-  pins::pin_remove(name = pin_name, board = "daap_internal")
+pin_version <- pins::pin_versions(name = pin_name,
+                                  board = "daap_internal",
+                                  full = F) %>% dplyr::pull(.data$version)
 
-  return(pin_version)
+pins::pin_delete(name = pin_name, board = "daap_internal")
+
+return(pin_version)
 }
 
 
@@ -72,14 +70,18 @@ dpname_make <- function(project_name, branch_name) {
 readme_get <- function(d, general_note) {
   readme <- list()
   readme$general_note <- general_note
-  readme$input <- paste("Input data includes", paste(setdiff(names(d$input), "metadata"), collapse = ", "))
+  readme$input <-
+    paste("Input data includes", paste(setdiff(names(d$input), "metadata"), collapse = ", "))
 
-  readme$output <- paste("This contains the following:", paste(names(d$output), collapse = ", "))
+  readme$output <-
+    paste("This contains the following:", paste(names(d$output), collapse = ", "))
 
-  readme$exploratory <- paste("This contains the following:", paste(names(d$exploratory), collapse = ", "))
+  readme$exploratory <-
+    paste("This contains the following:", paste(names(d$exploratory), collapse = ", "))
 
 
-  readme$metadata <- paste("This contains the following:", paste(names(d$metadata), collapse = ", "))
+  readme$metadata <-
+    paste("This contains the following:", paste(names(d$metadata), collapse = ", "))
 
 
   readme <- readme[c("general_note", setdiff(names(d), "README"))]
@@ -112,17 +114,25 @@ tbsig_get <- function(d) {
   }
 
   supported_classes <- c(
-    "numeric", "integer", "character",
-    "factor", "Date", "logical", "POSIXlt",
+    "numeric",
+    "integer",
+    "character",
+    "factor",
+    "Date",
+    "logical",
+    "POSIXlt",
     "POSIXct"
   )
-  d1 <- as.data.frame(lapply(d, FUN = function(col_i) {
-    this_class <- class(col_i)
-    if (any(!this_class %in% supported_classes)) {
-      class(col_i) <- c(this_class, setdiff("character", this_class))
+  d1 <- as.data.frame(lapply(
+    d,
+    FUN = function(col_i) {
+      this_class <- class(col_i)
+      if (any(!this_class %in% supported_classes)) {
+        class(col_i) <- c(this_class, setdiff("character", this_class))
+      }
+      col_i
     }
-    col_i
-  }))
+  ))
 
   attributes(d1) <- attributes(d)
 
@@ -143,29 +153,40 @@ make_sha1_compatible <- function(l) {
   }
 
   supported_classes <- c(
-    "numeric", "integer", "character",
-    "factor", "Date", "logical", "POSIXlt",
+    "numeric",
+    "integer",
+    "character",
+    "factor",
+    "Date",
+    "logical",
+    "POSIXlt",
     "POSIXct"
   )
 
-  l1 <- lapply(l, FUN = function(node) {
-    if (any(class(node) == "data.frame")) {
-      d1 <- as.data.frame(lapply(node, FUN = function(col_i) {
-        this_class <- class(col_i)
-        if (any(!this_class %in% supported_classes)) {
-          class(col_i) <- c(this_class, setdiff("character", this_class))
-        }
-        col_i
-      }))
+  l1 <- lapply(
+    l,
+    FUN = function(node) {
+      if (any(class(node) == "data.frame")) {
+        d1 <- as.data.frame(lapply(
+          node,
+          FUN = function(col_i) {
+            this_class <- class(col_i)
+            if (any(!this_class %in% supported_classes)) {
+              class(col_i) <- c(this_class, setdiff("character", this_class))
+            }
+            col_i
+          }
+        ))
 
-      attributes(d1) <- attributes(node)
-      d1
-    } else if (any(class(node) == "list")) {
-      make_sha1_compatible(node)
-    } else {
-      node
+        attributes(d1) <- attributes(node)
+        d1
+      } else if (any(class(node) == "list")) {
+        make_sha1_compatible(node)
+      } else {
+        node
+      }
     }
-  })
+  )
 
   return(l1)
 }
@@ -220,7 +241,11 @@ dpinputnames_simplify <- function(x, make_unique = FALSE) {
   }
 
   if (any(dups <- duplicated(simplified_inputnames))) {
-    stop(paste("simplified names", paste0(which(dups), collapse = ", "), "are dupclicate which are not allowed"))
+    stop(paste(
+      "simplified names",
+      paste0(which(dups), collapse = ", "),
+      "are dupclicate which are not allowed"
+    ))
   }
 
   return(simplified_inputnames)
@@ -234,16 +259,22 @@ dpinputnames_simplify <- function(x, make_unique = FALSE) {
 #' @return input_map pruned and with cleaner names
 #' @export
 inputmap_clean <- function(input_map, force_cleanname = F) {
-  input_map$input_manifest <- input_map$input_manifest %>% dplyr::filter(to_be_synced)
-  input_map$input_obj <- input_map$input_obj[input_map$input_manifest$id]
+  input_map$input_manifest <-
+    input_map$input_manifest %>% dplyr::filter(to_be_synced)
+  input_map$input_obj <-
+    input_map$input_obj[input_map$input_manifest$id]
 
-  if (class(try(dpinputnames_simplify(input_map$input_manifest$id))) != "try-error" | force_cleanname) {
-    input_map$input_manifest <- input_map$input_manifest %>% dplyr::mutate(id = dpinputnames_simplify(id, make_unique = force_cleanname))
-    names(input_map$input_obj) <- dpinputnames_simplify(names(input_map$input_obj), make_unique = force_cleanname)
-    input_map$input_obj <- sapply(names(input_map$input_obj), function(name_i) {
-      input_map$input_obj[[name_i]]$metadata$id <- name_i
-      input_map$input_obj[[name_i]]
-    }, simplify = F, USE.NAMES = T)
+  if (class(try(dpinputnames_simplify(input_map$input_manifest$id))
+  ) != "try-error" | force_cleanname) {
+    input_map$input_manifest <-
+      input_map$input_manifest %>% dplyr::mutate(id = dpinputnames_simplify(id, make_unique = force_cleanname))
+    names(input_map$input_obj) <-
+      dpinputnames_simplify(names(input_map$input_obj), make_unique = force_cleanname)
+    input_map$input_obj <-
+      sapply(names(input_map$input_obj), function(name_i) {
+        input_map$input_obj[[name_i]]$metadata$id <- name_i
+        input_map$input_obj[[name_i]]
+      }, simplify = F, USE.NAMES = T)
   }
 
   return(input_map)
@@ -254,6 +285,7 @@ inputmap_clean <- function(input_map, force_cleanname = F) {
 #' @description  It completely deletes content of local cache. Use with care!
 #' @param path_cache path to pins cache. Default is `pins::board_cache_path()`
 #' @keywords internal
-purge_local_cache <- function(path_cache = pins::board_cache_path()) {
-  fs::dir_delete(fs::dir_ls(path_cache))
-}
+purge_local_cache <-
+  function(path_cache = pins::board_cache_path()) {
+    fs::dir_delete(fs::dir_ls(path_cache))
+  }
