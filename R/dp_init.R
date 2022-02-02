@@ -275,7 +275,7 @@ dp_git_init <- function(project_path, project_name, branch_name,
 
     writeLines(glue::glue_collapse({git_ignore},sep = "\n"),
                file.path(project_path, ".gitignore"))
-    git2r::add(repo = repo, path = glue::glue("{project_path}/.gitignore")
+    git2r::add(repo = repo, path = glue::glue("{project_path}/.gitignore"))
     
     add_readme(project_path = project_path,
                dp_title = glue::glue("Data Product {project_name}_{branch_name}"),
@@ -283,7 +283,7 @@ dp_git_init <- function(project_path, project_name, branch_name,
                board_params_set_dried = board_params_set_dried,
                creds_set_dried = creds_set_dried)
     
-    git2r::add(repo = repo, path = glue::glue("{project_path}/README.md")
+    git2r::add(repo = repo, path = glue::glue("{project_path}/README.md"))
     
     commit_1 <- git2r::commit(repo, message =  "project init")
 
