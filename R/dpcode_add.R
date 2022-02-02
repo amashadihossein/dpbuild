@@ -16,7 +16,8 @@ dpcode_add <- function(project_path){
   if(!fs::dir_exists(fs::path_tidy(glue::glue("{project_path}/R"))))
     fs::dir_create(fs::path_tidy(glue::glue("{project_path}/R")))
   
-  fs::file_copy(path = system.file("dp_journal.RMD", package = "dpbuild"),
+  flname_dpjournal <- dpbuild:::flname_xos_get(fl = "dp_journal.RMD")
+  fs::file_copy(path = system.file(flname_dpjournal, package = "dpbuild"),
                 new_path = project_path) 
   fs::file_copy(path = system.file("dp_make.R", package = "dpbuild"),
                 new_path = project_path)
@@ -26,7 +27,7 @@ dpcode_add <- function(project_path){
   git2r::add(repo = repo,path = 
                fs::path_tidy(glue::glue("{project_path}/dp_make.R")))
   git2r::add(repo = repo,path = 
-               fs::path_tidy(glue::glue("{project_path}/dp_journal.RMD")))
+               fs::path_tidy(glue::glue("{project_path}/{flname_dpjournal}")))
   repo <- git2r::commit(repo = repo, 
                         message = "Added template code to dp project")
   return(repo)
