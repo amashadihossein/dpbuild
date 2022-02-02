@@ -72,7 +72,6 @@ dp_init <- function(project_path = fs::path_wd(),
                                    ".Rhistory", ".DS_Store"),
                     ...){
  
-  browser()
   commit_description <- "dp init"
   wd0 <- fs::path_wd()
 
@@ -318,13 +317,15 @@ dp_git_init <- function(project_path, project_name, branch_name,
 #' @keywords internal
 add_readme <- function(project_path, dp_title, github_repo_url, 
                        board_params_set_dried, creds_set_dried){
-  fs::file_copy(path = system.file("README.RMD", package = "dpbuild"),
+  
+  flname <- flname_xos_get(fl = "README.RMD")
+  fs::file_copy(path = system.file(flname, package = "dpbuild"),
                 new_path = project_path) 
 
   board_params_set<- fn_hydrate(board_params_set_dried) 
   
   rendered <- try(rmarkdown::render(
-    input = glue::glue("{project_path}/README.RMD"),
+    input = glue::glue("{project_path}/{flname}"),
     params =  list(dp_title = dp_title, github_repo_url = github_repo_url, 
                    board_params_set = board_params_set,
                    creds_set_dried = creds_set_dried)))
