@@ -16,7 +16,7 @@ dpcode_add <- function(project_path){
   if(!fs::dir_exists(fs::path_tidy(glue::glue("{project_path}/R"))))
     fs::dir_create(fs::path_tidy(glue::glue("{project_path}/R")))
   
-  flname_dpjournal <- dpbuild:::flname_xos_get(fl = "dp_journal.RMD")
+  flname_dpjournal <- flname_xos_get(fl = "dp_journal.RMD")
   fs::file_copy(path = system.file(flname_dpjournal, package = "dpbuild"),
                 new_path = project_path) 
   fs::file_copy(path = system.file("dp_make.R", package = "dpbuild"),
