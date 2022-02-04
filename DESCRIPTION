@@ -1,6 +1,6 @@
 Package: dpbuild
 Title: A package to manage building of data products
-Version: 0.0.0.9100
+Version: 0.0.0.9101
 Authors@R: 
     person("Afshin", "Mashadi-Hossein", , "amashadihossein@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2337-2195"))
