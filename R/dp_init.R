@@ -283,45 +283,32 @@ dp_git_init <- function(project_path, project_name, branch_name,
 
   git_conf <- git2r::config(repo = repo)$global
 
-  if (length(git_conf$user.name) == 0) {
-    stop(cli::format_error(glue::glue(
-      "git username not configured. Set git ",
-      "username by git2r::config(global = T, ",
-      "user.name = \"<YOUR_USER_NAME>\")"
-    )))
-  }
+  
+  if(length(git_conf$user.name) == 0)
+    stop(cli::format_error(glue::glue("git username not configured. Set git ",
+                                      "username by git2r::config(global = T, ",
+                                      "user.name = \"<YOUR_USER_NAME>\")")))
 
-  if (length(git_conf$user.email) == 0) {
-    stop(cli::format_error(glue::glue(
-      "git user.email not configured. Set git ",
-      "user.email by git2r::config(global = T, ",
-      "user.email = \"<YOUR_EMAIL>\")"
-    )))
-  }
+  if(length(git_conf$user.email) == 0)
+    stop(cli::format_error(glue::glue("git user.email not configured. Set git ",
+                                      "user.email by git2r::config(global = T, ",
+                                      "user.email = \"<YOUR_EMAIL>\")")))
+  
+  if(repo_is_clean){
 
-  if (repo_is_clean) {
-    writeLines(
-      glue::glue_collapse(
-        {
-          git_ignore
-        },
-        sep = "\n"
-      ),
-      file.path(project_path, ".gitignore")
-    )
-    git2r::add(repo, ".gitignore")
-
-    add_readme(
-      project_path = project_path,
-      dp_title = glue::glue("Data Product {project_name}_{branch_name}"),
-      github_repo_url = github_repo_url,
-      board_params_set_dried = board_params_set_dried,
-      creds_set_dried = creds_set_dried
-    )
-
-    git2r::add(repo, "README.md")
-
-    commit_1 <- git2r::commit(repo, message = "project init")
+    writeLines(glue::glue_collapse({git_ignore},sep = "\n"),
+               file.path(project_path, ".gitignore"))
+    git2r::add(repo = repo, path = glue::glue("{project_path}/.gitignore"))
+    
+    add_readme(project_path = project_path,
+               dp_title = glue::glue("Data Product {project_name}_{branch_name}"),
+               github_repo_url = github_repo_url,
+               board_params_set_dried = board_params_set_dried,
+               creds_set_dried = creds_set_dried)
+    
+    git2r::add(repo = repo, path = glue::glue("{project_path}/README.md"))
+    
+    commit_1 <- git2r::commit(repo, message =  "project init")
 
     # Create a branch
     branch_1 <- git2r::branch_create(commit_1, name = branch_name)
@@ -354,28 +341,21 @@ dp_git_init <- function(project_path, project_name, branch_name,
 #' `dpi::creds_set_labkey`. See example
 #' @param github_repo_url github repo url
 #' @keywords internal
-add_readme <- function(project_path, dp_title, github_repo_url,
-                       board_params_set_dried, creds_set_dried) {
-  fs::file_copy(
-    path = system.file("README.RMD", package = "dpbuild"),
-    new_path = project_path
-  )
 
-  board_params_set <- fn_hydrate(board_params_set_dried)
+add_readme <- function(project_path, dp_title, github_repo_url, 
+                       board_params_set_dried, creds_set_dried){
+  
+  flname <- flname_xos_get(fl = "README.RMD")
+  fs::file_copy(path = system.file(flname, package = "dpbuild"),
+                new_path = project_path) 
 
   rendered <- try(rmarkdown::render(
-    input = glue::glue("{project_path}/README.RMD"),
-    params = list(
-      dp_title = dp_title, github_repo_url = github_repo_url,
-      board_params_set = board_params_set,
-      creds_set_dried = creds_set_dried
-    )
-  ))
-
-  if ("try-error" %in% class(rendered)) {
-    writeLines(
-      glue::glue("## {dp_title}"),
-      file.path(project_path, "README.md")
-    )
-  }
+    input = glue::glue("{project_path}/{flname}"),
+    params =  list(dp_title = dp_title, github_repo_url = github_repo_url, 
+                   board_params_set = board_params_set,
+                   creds_set_dried = creds_set_dried)))
+  
+  if("try-error" %in% class(rendered))
+    writeLines(glue::glue("## {dp_title}"),
+               file.path(project_path, "README.md"))
 }

@@ -285,7 +285,21 @@ inputmap_clean <- function(input_map, force_cleanname = F) {
 #' @description  It completely deletes content of local cache. Use with care!
 #' @param path_cache path to pins cache. Default is `pins::board_cache_path()`
 #' @keywords internal
-purge_local_cache <-
-  function(path_cache = pins::board_cache_path()) {
-    fs::dir_delete(fs::dir_ls(path_cache))
-  }
+
+purge_local_cache <- function(path_cache = pins::board_cache_path()){
+  fs::dir_delete(fs::dir_ls(path_cache))
+}
+
+#' @title Gets cross OS File Name
+#' @description  It drops extension that can be OS-specific
+#' @param fl just the file name e.g. README.RMD
+#' @param pakcage package name e.g. dpbuild
+#' @keywords internal
+flname_xos_get<- function(fl, package = "dpbuild"){
+  pkg_path <- system.file(package = package)
+  fl_name <- fs::path_ext_remove(fl)
+  fl_path <- Sys.glob(glue::glue("{pkg_path}/{fl_name}.*"))
+  flname <- basename(fl_path)
+  return(flname)
+}
+
