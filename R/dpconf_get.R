@@ -13,7 +13,9 @@ dpconf_get <- function(project_path) {
 
   dpconf$board_params <-
     fn_hydrate(glue::glue_collapse(dpconf$board_params_set_dried))
+
   dpconf$creds <- fn_hydrate(glue::glue_collapse(dpconf$creds_set_dried))
+
 
   dpconf$board_params_set_dried <- dpconf$creds_set_dried <- NULL
 
@@ -45,17 +47,18 @@ dpconf_read <- function(project_path) {
 }
 
 
-
 #' @title Write daap config
 #' @description Write in and returns daap config file
 #' @param project_path path to project folder
 #' @return a list dpconf
 #' @keywords internal
 dpconf_write <- function(project_path, dpconf) {
+
   yaml::write_yaml(
     x = dpconf,
     file = glue::glue("{project_path}/.daap/daap_config.yaml")
   )
+
   return(dpconf)
 }
 
@@ -70,12 +73,14 @@ dpconf_validate <- function(dpconf, project_path) {
   # specific to class of config
 
   if (nchar(Sys.getenv("GITHUB_PAT")) == 0) {
+
     stop(cli::format_error(glue::glue(
       "Could not get dpconf as it did not find",
       " GITHUB_PAT in the environment. Set it ",
       "by Sys.setenv(GITHUB_PAT = <your github",
       " personal access token>) and retry!"
     )))
+
   }
 
   repo <- git2r::repository(path = project_path)
@@ -86,6 +91,7 @@ dpconf_validate <- function(dpconf, project_path) {
       try(gh::gh_whoami(.api_url = repo_url, .token = Sys.getenv("GITHUB_PAT")))
 
     if ("try-error" %in% class(repo_resp)) {
+
       warning(cli::format_warning(glue::glue(
         "For the given repo and ",
         "GITHUB_PAT, failed to connect",
@@ -93,6 +99,7 @@ dpconf_validate <- function(dpconf, project_path) {
         "variable GITHUB_PAT and remote ",
         "repo url!"
       )))
+
     }
   }
 }

@@ -45,15 +45,18 @@ dpconf_update <- function(project_path = fs::path_wd(),
       return(cli::cli_alert_danger(text = glue::glue("{ck_i}:{ck[[ck_i]]}")))
     }, simplify = F)
 
+
     stop(cli::format_error(glue::glue(
       "Not a valid dp repository. Ensure this ",
       "function is run on a project initiated ",
       "via dp_init"
     )))
+
   }
 
   dpconf <- dpconf_read(project_path = project_path)
   repo <- git2r::repository(path = project_path)
+
 
   add_gitignore <- setdiff(git_ignore, readLines(file.path(
     project_path,
@@ -69,6 +72,7 @@ dpconf_update <- function(project_path = fs::path_wd(),
       ),
       file.path(project_path, ".gitignore")
     )
+
   }
 
   if (length(project_description) > 0) {
@@ -77,11 +81,13 @@ dpconf_update <- function(project_path = fs::path_wd(),
 
   if (length(branch_name) > 0) {
 
+
     # Create a branch
     branch_1 <- git2r::branch_create(
       commit = git2r::last_commit(repo = repo),
       name = branch_name
     )
+
 
     # change branch
     git2r::checkout(object = repo, branch = branch_name)
@@ -101,6 +107,7 @@ dpconf_update <- function(project_path = fs::path_wd(),
     dpconf$board_params_set_dried <- board_params_set_dried
   }
 
+
   if (length(creds_set_dried) > 0) {
     dpconf$creds_set_dried <- creds_set_dried
   }
@@ -108,8 +115,10 @@ dpconf_update <- function(project_path = fs::path_wd(),
   dpconf_write(project_path = project_path, dpconf = dpconf)
 
   add_these <- unlist(git2r::status(repo = repo))
+
   git2r::add(repo = repo, path = glue::glue("{project_path}/{add_these}"))
   git2r::commit(repo = repo, all = TRUE, message = commit_description)
+
 
   return(fs::path_dir(repo$path))
 }

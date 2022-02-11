@@ -285,7 +285,6 @@ inputmap_clean <- function(input_map, force_cleanname = F) {
 #' @description  It completely deletes content of local cache. Use with care!
 #' @param path_cache path to pins cache. Default is `pins::board_cache_path()`
 #' @keywords internal
-
 purge_local_cache <- function(path_cache = pins::board_cache_path()){
   fs::dir_delete(fs::dir_ls(path_cache))
 }

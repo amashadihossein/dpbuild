@@ -63,14 +63,13 @@ dpi::creds_set_labkey
 #' )
 #' }
 #' @export
-
 dp_init <- function(project_path = fs::path_wd(),
                     project_description,
                     branch_name,
                     branch_description,
                     readme_general_note = character(0),
                     board_params_set_dried,
-                    creds_set_dried,
+                    creds_set_dried = NULL,
                     github_repo_url,
                     git_ignore = c(
                       ".drake/", "input_files/", "output_files/",
@@ -83,7 +82,6 @@ dp_init <- function(project_path = fs::path_wd(),
   if (!fs::dir_exists(path = project_path)) {
     fs::dir_create(project_path)
   }
-
 
   if (length(fs::dir_ls(path = project_path)) != 0) {
     stop(cli::format_error(glue::glue(
@@ -106,7 +104,6 @@ dp_init <- function(project_path = fs::path_wd(),
     git_ignore = git_ignore
   )
   last_commit <- git2r::last_commit(repo = repo)
-
 
   if (!fs::dir_exists(path = glue::glue("{project_path}/.daap"))) {
     fs::dir_create(glue::glue("{project_path}/.daap"))
@@ -140,19 +137,19 @@ dp_init <- function(project_path = fs::path_wd(),
     new_path = fs::path_tidy(glue::glue("{project_path}/R"))
   )
   # add renv
-  renv::init(project = fs::path_tidy(project_path), restart = F)
+  renv::init(project = fs::path_tidy(project_path),
+             restart = F)
   setwd(wd0)
 
   # commit git
   repo <- git2r::repository(path = fs::path_tidy(project_path))
   add_these <- unlist(git2r::status(repo = repo))
+
   git2r::add(repo = repo, path = glue::glue("{project_path}/{add_these}"))
   git2r::commit(repo = repo, all = TRUE, message = commit_description)
-
-
+  
   return(fs::path_dir(repo$path))
 }
-
 
 
 #' @title Initialize daap configuration file
@@ -177,7 +174,6 @@ dp_init <- function(project_path = fs::path_wd(),
 #' @param ... any other metadata to be captured in the config file
 #' @return dpconf
 #' @keywords internal
-
 dpconf_init <- function(project_path,
                         project_name,
                         project_description = character(0),
@@ -190,7 +186,6 @@ dpconf_init <- function(project_path,
   if (!fs::dir_exists(path = glue::glue("{project_path}/.daap"))) {
     fs::dir_create(glue::glue("{project_path}/.daap"))
   }
-
 
   dpconf <- c(
     list(
@@ -260,6 +255,7 @@ fn_hydrate <- function(dried_fn) {
 #' ignored by git.
 #' @keywords internal
 
+
 dp_git_init <- function(project_path, project_name, branch_name,
                         github_repo_url,
                         board_params_set_dried,
@@ -276,6 +272,7 @@ dp_git_init <- function(project_path, project_name, branch_name,
   }
 
 
+
   repo <- git2r::init(path = project_path)
   git_status <- git2r::status(repo = repo, ignored = T)
   repo_is_clean <- all(sapply(git_status, length) == 0)
@@ -283,7 +280,6 @@ dp_git_init <- function(project_path, project_name, branch_name,
 
   git_conf <- git2r::config(repo = repo)$global
 
-  
   if(length(git_conf$user.name) == 0)
     stop(cli::format_error(glue::glue("git username not configured. Set git ",
                                       "username by git2r::config(global = T, ",
@@ -326,9 +322,17 @@ dp_git_init <- function(project_path, project_name, branch_name,
       "or use git directly for git initiation"
     )))
   }
+  
+  if (length(git_conf$user.name) == 0) {
+    stop(cli::format_error(
+      glue::glue(
+        "git username not configured. Set git ",
+        "username by git2r::config(global = T, ",
+        "user.name = \"<YOUR_USER_NAME>\")"
+      )
+    ))
+  }
 
-  return(repo)
-}
 
 #' @title Add readme to the project
 #' @param project_path Path to the project folder
@@ -358,4 +362,5 @@ add_readme <- function(project_path, dp_title, github_repo_url,
   if("try-error" %in% class(rendered))
     writeLines(glue::glue("## {dp_title}"),
                file.path(project_path, "README.md"))
+
 }

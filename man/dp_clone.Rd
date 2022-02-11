@@ -20,9 +20,11 @@ TRUE
 This command clones data product project from a remote repo
 }
 \examples{
- \dontrun{
+\dontrun{
 Sys.setenv("GITHUB_PAT" = keyring::key_get("GITHUB_PAT"))
-dp_clone(remote_url = "https://github.com/teamAccount/me/dp_test1.git",
-branch = us001)
+dp_clone(
+  remote_url = "https://github.com/teamAccount/me/dp_test1.git",
+  branch = us001
+)
 }
 }
