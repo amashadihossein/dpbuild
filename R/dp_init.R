@@ -63,7 +63,6 @@ dpi::creds_set_labkey
 #' )
 #' }
 #' @export
-
 dp_init <- function(project_path = fs::path_wd(),
                     project_description,
                     branch_name,
@@ -85,7 +84,6 @@ dp_init <- function(project_path = fs::path_wd(),
     fs::dir_create(project_path)
   }
 
-
   if (length(fs::dir_ls(path = project_path)) != 0) {
     stop(cli::format_error(
       glue::glue(
@@ -98,7 +96,6 @@ dp_init <- function(project_path = fs::path_wd(),
     ))
   }
 
-
   project_name <- basename(path = project_path)
   repo <- dp_git_init(
     project_path = project_path,
@@ -110,7 +107,6 @@ dp_init <- function(project_path = fs::path_wd(),
     git_ignore = git_ignore
   )
   last_commit <- git2r::last_commit(repo = repo)
-
 
   if (!fs::dir_exists(path = glue::glue("{project_path}/.daap"))) {
     fs::dir_create(glue::glue("{project_path}/.daap"))
@@ -163,7 +159,6 @@ dp_init <- function(project_path = fs::path_wd(),
 }
 
 
-
 #' @title Initialize daap configuration file
 #' @description Initializes daap configuration file
 #' @param project_path path to the project folder
@@ -186,7 +181,6 @@ dp_init <- function(project_path = fs::path_wd(),
 #' @param ... any other metadata to be captured in the config file
 #' @return dpconf
 #' @keywords internal
-
 dpconf_init <- function(project_path,
                         project_name,
                         project_description = character(0),
@@ -199,7 +193,6 @@ dpconf_init <- function(project_path,
   if (!fs::dir_exists(path = glue::glue("{project_path}/.daap"))) {
     fs::dir_create(glue::glue("{project_path}/.daap"))
   }
-
 
   dpconf <- c(
     list(
@@ -215,8 +208,8 @@ dpconf_init <- function(project_path,
     list(...)
   )
 
-  dpconf <-
-    dpconf_write(project_path = project_path, dpconf = dpconf)
+  dpconf <- dpconf_write(project_path = project_path,
+                         dpconf = dpconf)
 
   return(dpconf)
 }
@@ -246,7 +239,6 @@ fn_dry <- function(fn_called) {
 #' fn_hydrate(fn_dry(sum(log(1:10))))
 #' }
 #' @keywords internal
-
 fn_hydrate <- function(dried_fn) {
   return(eval(rlang::parse_expr(dried_fn)))
 }
@@ -269,7 +261,6 @@ fn_hydrate <- function(dried_fn) {
 #' @param git_ignore A character vector of the files and directories to be
 #' ignored by git.
 #' @keywords internal
-
 dp_git_init <- function(project_path,
                         project_name,
                         branch_name,
@@ -289,14 +280,12 @@ dp_git_init <- function(project_path,
     ))
   }
 
-
   repo <- git2r::init(path = project_path)
   git_status <- git2r::status(repo = repo, ignored = T)
   repo_is_clean <- all(sapply(git_status, length) == 0)
   git2r::remote_add(repo = repo, name = "origin", url = github_repo_url)
 
   git_conf <- git2r::config(repo = repo)$global
-
 
   if (length(git_conf$user.name) == 0) {
     stop(cli::format_error(
@@ -326,6 +315,7 @@ dp_git_init <- function(project_path,
     file.path(project_path, ".gitignore"))
     git2r::add(repo, ".gitignore")
 
+    # TODO
     add_readme(
       project_path = project_path,
       dp_title = glue::glue("Data Product {project_name}_{branch_name}"),
@@ -339,14 +329,14 @@ dp_git_init <- function(project_path,
     commit_1 <- git2r::commit(repo, message = "project init")
 
 
-      if (length(git_conf$user.name) == 0)
-        stop(cli::format_error(
-          glue::glue(
-            "git username not configured. Set git ",
-            "username by git2r::config(global = T, ",
-            "user.name = \"<YOUR_USER_NAME>\")"
-          )
-        ))
+    if (length(git_conf$user.name) == 0)
+      stop(cli::format_error(
+        glue::glue(
+          "git username not configured. Set git ",
+          "username by git2r::config(global = T, ",
+          "user.name = \"<YOUR_USER_NAME>\")"
+        )
+      ))
 
     if (length(git_conf$user.email) == 0)
       stop(cli::format_error(
@@ -366,13 +356,13 @@ dp_git_init <- function(project_path,
                  path = glue::glue("{project_path}/.gitignore"))
 
       #TODO
-      # add_readme(
-      #   project_path = project_path,
-      #   dp_title = glue::glue("Data Product {project_name}_{branch_name}"),
-      #   github_repo_url = github_repo_url,
-      #   board_params_set_dried = board_params_set_dried,
-      #   creds_set_dried = creds_set_dried
-      # )
+      add_readme(
+        project_path = project_path,
+        dp_title = glue::glue("Data Product {project_name}_{branch_name}"),
+        github_repo_url = github_repo_url,
+        board_params_set_dried = board_params_set_dried,
+        creds_set_dried = creds_set_dried
+      )
 
       git2r::add(repo = repo,
                  path = glue::glue("{project_path}/README.md"))
@@ -413,7 +403,7 @@ dp_git_init <- function(project_path,
   #' `dpi::creds_set_labkey`. See example
   #' @param github_repo_url github repo url
   #' @keywords internal
-
+  #' @export
   add_readme <- function(project_path,
                          dp_title,
                          github_repo_url,
@@ -424,7 +414,7 @@ dp_git_init <- function(project_path,
 
     board_params_set <- fn_hydrate(board_params_set_dried)
 
-      add_readme <-
+    add_readme <-
       function(project_path,
                dp_title,
                github_repo_url,
@@ -436,7 +426,6 @@ dp_git_init <- function(project_path,
 
 
         rendered <- try(rmarkdown::render(
-
           input = glue::glue("{project_path}/README.RMD"),
           params = list(
             dp_title = dp_title,
@@ -459,8 +448,10 @@ dp_git_init <- function(project_path,
           creds_set_dried = creds_set_dried
         )
 
-if("try-error" %in% class(rendered))
-  writeLines(glue::glue("## {dp_title}"),
-             file.path(project_path, "README.md"))
+        if ("try-error" %in% class(rendered))
+          writeLines(glue::glue("## {dp_title}"),
+                     file.path(project_path, "README.md"))
 
-      } }}
+      }
+  }
+}

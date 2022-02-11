@@ -10,7 +10,7 @@ dp_git_init(
   branch_name,
   github_repo_url,
   board_params_set_dried,
-  creds_set_dried,
+  creds_set_dried = NULL,
   git_ignore
 )
 }
@@ -23,7 +23,7 @@ the folder where the project is set}
 \item{branch_name}{An abbreviation to capture the specific reason for which
 data was processed. Example m3cut (as in month 3 data cut)}
 
-\item{github_repo_url}{the https url for the github repo}
+\item{github_repo_url}{github repo url}
 
 \item{board_params_set_dried}{Character representation of the function for
 setting board_params. Use \code{fn_dry()} in combination with
@@ -35,6 +35,8 @@ creds. Use \code{fn_dry()} in combination with \code{dpi::creds_set_aws} or
 
 \item{git_ignore}{A character vector of the files and directories to be
 ignored by git.}
+
+\item{dp_title}{readme title}
 }
 \description{
 Initializes the git repo according to the requirements of dp
