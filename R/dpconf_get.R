@@ -14,10 +14,11 @@ dpconf_get <- function(project_path) {
   dpconf$board_params <-
     fn_hydrate(glue::glue_collapse(dpconf$board_params_set_dried))
 
-  dpconf$creds <- fn_hydrate(glue::glue_collapse(dpconf$creds_set_dried))
+  #TODO
+  dpconf$creds <- dpconf$creds_set_dried #fn_hydrate(glue::glue_collapse(dpconf$creds_set_dried))
 
 
-  dpconf$board_params_set_dried <- dpconf$creds_set_dried <- NULL
+  #dpconf$board_params_set_dried <- dpconf$board_params_set_dried
 
   # if(!is.null(dpconf$githubpat_set_dried)){
   #   dpconf$githubpat <- fn_hydrate(glue::glue_collapse(dpconf$githubpat_set_dried))

@@ -103,7 +103,8 @@ dp_init <- function(project_path = fs::path_wd(),
     creds_set_dried = creds_set_dried,
     git_ignore = git_ignore
   )
-  last_commit <- git2r::last_commit(repo = repo)
+  #TODO
+  #last_commit <- git2r::last_commit(repo = repo)
 
   if (!fs::dir_exists(path = glue::glue("{project_path}/.daap"))) {
     fs::dir_create(glue::glue("{project_path}/.daap"))
@@ -147,7 +148,7 @@ dp_init <- function(project_path = fs::path_wd(),
 
   git2r::add(repo = repo, path = glue::glue("{project_path}/{add_these}"))
   git2r::commit(repo = repo, all = TRUE, message = commit_description)
-  
+
   return(fs::path_dir(repo$path))
 }
 
@@ -289,21 +290,21 @@ dp_git_init <- function(project_path, project_name, branch_name,
     stop(cli::format_error(glue::glue("git user.email not configured. Set git ",
                                       "user.email by git2r::config(global = T, ",
                                       "user.email = \"<YOUR_EMAIL>\")")))
-  
+
   if(repo_is_clean){
 
     writeLines(glue::glue_collapse({git_ignore},sep = "\n"),
                file.path(project_path, ".gitignore"))
     git2r::add(repo = repo, path = glue::glue("{project_path}/.gitignore"))
-    
+
     add_readme(project_path = project_path,
                dp_title = glue::glue("Data Product {project_name}_{branch_name}"),
                github_repo_url = github_repo_url,
                board_params_set_dried = board_params_set_dried,
                creds_set_dried = creds_set_dried)
-    
+
     git2r::add(repo = repo, path = glue::glue("{project_path}/README.md"))
-    
+
     commit_1 <- git2r::commit(repo, message =  "project init")
 
     # Create a branch
@@ -322,7 +323,7 @@ dp_git_init <- function(project_path, project_name, branch_name,
       "or use git directly for git initiation"
     )))
   }
-  
+
   if (length(git_conf$user.name) == 0) {
     stop(cli::format_error(
       glue::glue(
@@ -344,23 +345,23 @@ dp_git_init <- function(project_path, project_name, branch_name,
 #' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or
 #' `dpi::creds_set_labkey`. See example
 #' @param github_repo_url github repo url
-#' @keywords internal
-
-add_readme <- function(project_path, dp_title, github_repo_url, 
+#' @export
+add_readme <- function(project_path, dp_title, github_repo_url,
                        board_params_set_dried, creds_set_dried){
-  
+
   flname <- flname_xos_get(fl = "README.RMD")
   fs::file_copy(path = system.file(flname, package = "dpbuild"),
-                new_path = project_path) 
+                new_path = project_path)
 
   rendered <- try(rmarkdown::render(
     input = glue::glue("{project_path}/{flname}"),
-    params =  list(dp_title = dp_title, github_repo_url = github_repo_url, 
-                   board_params_set = board_params_set,
+    params =  list(dp_title = dp_title, github_repo_url = github_repo_url,
+                   board_params_set_dried = board_params_set_dried,
                    creds_set_dried = creds_set_dried)))
-  
+
   if("try-error" %in% class(rendered))
     writeLines(glue::glue("## {dp_title}"),
                file.path(project_path, "README.md"))
 
+}
 }

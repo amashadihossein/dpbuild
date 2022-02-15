@@ -34,7 +34,6 @@ dpname_make <- function(project_name, branch_name) {
 #' @return a character version
 #' @importFrom dplyr .data
 #' @keywords internal
-#'
 get_pin_version <- function(d, pin_name, pin_description) {
   pin_name <- as.character(pin_name)
   pin_description <- as.character(pin_description)
@@ -50,15 +49,14 @@ get_pin_version <- function(d, pin_name, pin_description) {
     description = pin_description
   )
 
-pin_version <- pins::pin_versions(name = pin_name,
-                                  board = "daap_internal",
-                                  full = F) %>% dplyr::pull(.data$version)
+  pin_version <- pins::pin_versions(name = pin_name,
+                                    board = "daap_internal",
+                                    full = F) %>% dplyr::pull(.data$version)
 
-pins::pin_delete(name = pin_name, board = "daap_internal")
+  pins::pin_delete(name = pin_name, board = "daap_internal")
 
-return(pin_version)
+  return(pin_version)
 }
-
 
 
 #' @title Get Readme to be appended to the data object
@@ -90,17 +88,6 @@ readme_get <- function(d, general_note) {
 
   return(readme)
 }
-
-
-# tbsig_get <- function(x){
-#   sha1.hms <<- sha1.difftime <<- function (x, digits = 14L, zapsmall = 7L, ..., algo = "sha1") {
-#
-#     digest:::sha1.character(x = x,
-#                             digits = digits, zapsmall = zapsmall, ..., algo = algo)
-#   }
-#   tbsig <- digest::sha1(x = x, environment = F)
-#   return(tbsig)
-# }
 
 
 #' @title Get sha1 signature for a table
@@ -264,8 +251,8 @@ inputmap_clean <- function(input_map, force_cleanname = F) {
   input_map$input_obj <-
     input_map$input_obj[input_map$input_manifest$id]
 
-  if (class(try(dpinputnames_simplify(input_map$input_manifest$id))
-  ) != "try-error" | force_cleanname) {
+  if (class(try(dpinputnames_simplify(input_map$input_manifest$id))) != "try-error" |
+      force_cleanname) {
     input_map$input_manifest <-
       input_map$input_manifest %>% dplyr::mutate(id = dpinputnames_simplify(id, make_unique = force_cleanname))
     names(input_map$input_obj) <-
@@ -285,20 +272,32 @@ inputmap_clean <- function(input_map, force_cleanname = F) {
 #' @description  It completely deletes content of local cache. Use with care!
 #' @param path_cache path to pins cache. Default is `pins::board_cache_path()`
 #' @keywords internal
-purge_local_cache <- function(path_cache = pins::board_cache_path()){
-  fs::dir_delete(fs::dir_ls(path_cache))
-}
+purge_local_cache <-
+  function(path_cache = pins::board_cache_path()) {
+    fs::dir_delete(fs::dir_ls(path_cache))
+  }
 
 #' @title Gets cross OS File Name
 #' @description  It drops extension that can be OS-specific
 #' @param fl just the file name e.g. README.RMD
 #' @param pakcage package name e.g. dpbuild
 #' @keywords internal
-flname_xos_get<- function(fl, package = "dpbuild"){
+flname_xos_get <- function(fl, package = "dpbuild") {
   pkg_path <- system.file(package = package)
   fl_name <- fs::path_ext_remove(fl)
   fl_path <- Sys.glob(glue::glue("{pkg_path}/{fl_name}.*"))
   flname <- basename(fl_path)
   return(flname)
 }
+
+
+# tbsig_get <- function(x){
+#   sha1.hms <<- sha1.difftime <<- function (x, digits = 14L, zapsmall = 7L, ..., algo = "sha1") {
+#
+#     digest:::sha1.character(x = x,
+#                             digits = digits, zapsmall = zapsmall, ..., algo = algo)
+#   }
+#   tbsig <- digest::sha1(x = x, environment = F)
+#   return(tbsig)
+# }
 
