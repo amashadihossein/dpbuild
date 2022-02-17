@@ -6,6 +6,10 @@ dpi::board_params_set_s3
 #' @export
 dpi::board_params_set_labkey
 
+#' @importFrom dpi board_params_set_local
+#' @export
+dpi::board_params_set_local
+
 #' @importFrom dpi creds_set_aws
 #' @export
 dpi::creds_set_aws
@@ -13,6 +17,10 @@ dpi::creds_set_aws
 #' @importFrom dpi creds_set_labkey
 #' @export
 dpi::creds_set_labkey
+
+#' @importFrom dpi creds_set_local
+#' @export
+dpi::creds_set_local
 
 #' @title Initialize data product project
 #' @description Initializes a data product project
