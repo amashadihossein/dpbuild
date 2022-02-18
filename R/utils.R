@@ -281,7 +281,8 @@ purge_local_cache <-
 #' @description  It drops extension that can be OS-specific
 #' @param fl just the file name e.g. README.RMD
 #' @param pakcage package name e.g. dpbuild
-#' @keywords internal
+######keywords internal
+#' @export
 flname_xos_get <- function(fl, package = "dpbuild") {
   pkg_path <- system.file(package = package)
   fl_name <- fs::path_ext_remove(fl)

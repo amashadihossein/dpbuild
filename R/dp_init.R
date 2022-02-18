@@ -70,6 +70,7 @@ dpi::creds_set_local
 #'   github_repo_url = "https://github.com/teamAccount/me/dp_test.git"
 #' )
 #' }
+#'
 #' @export
 dp_init <- function(project_path = fs::path_wd(),
                     project_description,
