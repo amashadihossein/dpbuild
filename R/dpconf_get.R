@@ -18,7 +18,7 @@ dpconf_get <- function(project_path) {
   dpconf$creds <- dpconf$creds_set_dried #fn_hydrate(glue::glue_collapse(dpconf$creds_set_dried))
 
 
-  #dpconf$board_params_set_dried <- dpconf$board_params_set_dried
+  dpconf$board_params_set_dried <- dpconf$board_params_set_dried
 
   # if(!is.null(dpconf$githubpat_set_dried)){
   #   dpconf$githubpat <- fn_hydrate(glue::glue_collapse(dpconf$githubpat_set_dried))

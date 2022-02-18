@@ -5,8 +5,10 @@
 \alias{reexports}
 \alias{board_params_set_s3}
 \alias{board_params_set_labkey}
+\alias{board_params_set_local}
 \alias{creds_set_aws}
 \alias{creds_set_labkey}
+\alias{creds_set_local}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -14,6 +16,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{dpi}{\code{\link[dpi]{board_params_set_labkey}}, \code{\link[dpi]{board_params_set_s3}}, \code{\link[dpi]{creds_set_aws}}, \code{\link[dpi]{creds_set_labkey}}}
+  \item{dpi}{\code{\link[dpi]{board_params_set_labkey}}, \code{\link[dpi]{board_params_set_local}}, \code{\link[dpi]{board_params_set_s3}}, \code{\link[dpi]{creds_set_aws}}, \code{\link[dpi]{creds_set_labkey}}, \code{\link[dpi]{creds_set_local}}}
 }}
 

@@ -280,7 +280,7 @@ purge_local_cache <-
 #' @title Gets cross OS File Name
 #' @description  It drops extension that can be OS-specific
 #' @param fl just the file name e.g. README.RMD
-#' @param pakcage package name e.g. dpbuild
+#' @param package package name e.g. dpbuild
 ######keywords internal
 #' @export
 flname_xos_get <- function(fl, package = "dpbuild") {
