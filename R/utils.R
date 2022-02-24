@@ -42,7 +42,7 @@ get_pin_version <- function(d, pin_name, pin_description) {
 
 
   pins::pin_remove(name = pin_name, board = "daap_internal")
-  pins::pin_write(
+  pins::pin(
     x = d,
     name = pin_name,
     board = "daap_internal",
