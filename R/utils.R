@@ -49,9 +49,11 @@ get_pin_version <- function(d, pin_name, pin_description) {
     description = pin_description
   )
 
-  pin_version <- pins::pin_versions(name = pin_name,
-                                    board = "daap_internal",
-                                    full = F) %>% dplyr::pull(.data$version)
+  pin_version <- pins::pin_versions(
+    name = pin_name,
+    board = "daap_internal",
+    full = F
+  ) %>% dplyr::pull(.data$version)
 
   pins::pin_remove(name = pin_name, board = "daap_internal")
 
@@ -252,7 +254,7 @@ inputmap_clean <- function(input_map, force_cleanname = F) {
     input_map$input_obj[input_map$input_manifest$id]
 
   if (class(try(dpinputnames_simplify(input_map$input_manifest$id))) != "try-error" |
-      force_cleanname) {
+    force_cleanname) {
     input_map$input_manifest <-
       input_map$input_manifest %>% dplyr::mutate(id = dpinputnames_simplify(id, make_unique = force_cleanname))
     names(input_map$input_obj) <-
@@ -281,7 +283,7 @@ purge_local_cache <-
 #' @description  It drops extension that can be OS-specific
 #' @param fl just the file name e.g. README.RMD
 #' @param package package name e.g. dpbuild
-######keywords internal
+###### keywords internal
 #' @export
 flname_xos_get <- function(fl, package = "dpbuild") {
   pkg_path <- system.file(package = package)
@@ -301,4 +303,3 @@ flname_xos_get <- function(fl, package = "dpbuild") {
 #   tbsig <- digest::sha1(x = x, environment = F)
 #   return(tbsig)
 # }
-

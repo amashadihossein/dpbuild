@@ -80,11 +80,13 @@ dp_init <- function(project_path = fs::path_wd(),
                     board_params_set_dried,
                     creds_set_dried = NULL,
                     github_repo_url,
-                    git_ignore = c(".drake/",
-                                   "input_files/",
-                                   "output_files/",
-                                   ".Rhistory",
-                                   ".DS_Store"),
+                    git_ignore = c(
+                      ".drake/",
+                      "input_files/",
+                      "output_files/",
+                      ".Rhistory",
+                      ".DS_Store"
+                    ),
                     ...) {
   commit_description <- "dp init"
   wd0 <- fs::path_wd()
@@ -116,8 +118,8 @@ dp_init <- function(project_path = fs::path_wd(),
     creds_set_dried = creds_set_dried,
     git_ignore = git_ignore
   )
-  #TODO
-  #last_commit <- git2r::last_commit(repo = repo)
+  # TODO
+  # last_commit <- git2r::last_commit(repo = repo)
 
   if (!fs::dir_exists(path = glue::glue("{project_path}/.daap"))) {
     fs::dir_create(glue::glue("{project_path}/.daap"))
@@ -152,19 +154,25 @@ dp_init <- function(project_path = fs::path_wd(),
     new_path = fs::path_tidy(glue::glue("{project_path}/R"))
   )
   # add renv
-  renv::init(project = fs::path_tidy(project_path),
-             restart = F)
+  renv::init(
+    project = fs::path_tidy(project_path),
+    restart = F
+  )
   setwd(wd0)
 
   # commit git
   repo <- git2r::repository(path = fs::path_tidy(project_path))
   add_these <- unlist(git2r::status(repo = repo))
 
-  git2r::add(repo = repo,
-             path = glue::glue("{project_path}/{add_these}"))
-  git2r::commit(repo = repo,
-                all = TRUE,
-                message = commit_description)
+  git2r::add(
+    repo = repo,
+    path = glue::glue("{project_path}/{add_these}")
+  )
+  git2r::commit(
+    repo = repo,
+    all = TRUE,
+    message = commit_description
+  )
 
   return(fs::path_dir(repo$path))
 }
@@ -274,12 +282,14 @@ add_readme <- function(project_path,
                        board_params_set_dried,
                        creds_set_dried) {
   flname <- flname_xos_get(fl = "README.RMD")
-  fs::file_copy(path = system.file(flname, package = "dpbuild"),
-                new_path = project_path)
+  fs::file_copy(
+    path = system.file(flname, package = "dpbuild"),
+    new_path = project_path
+  )
 
   rendered <- try(rmarkdown::render(
     input = glue::glue("{project_path}/{flname}"),
-    params =  list(
+    params = list(
       dp_title = dp_title,
       github_repo_url = github_repo_url,
       board_params_set_dried = board_params_set_dried,
@@ -287,10 +297,12 @@ add_readme <- function(project_path,
     )
   ))
 
-  if ("try-error" %in% class(rendered))
-    writeLines(glue::glue("## {dp_title}"),
-               file.path(project_path, "README.md"))
-
+  if ("try-error" %in% class(rendered)) {
+    writeLines(
+      glue::glue("## {dp_title}"),
+      file.path(project_path, "README.md")
+    )
+  }
 }
 
 
@@ -337,7 +349,7 @@ dp_git_init <- function(project_path,
 
   git_conf <- git2r::config(repo = repo)$global
 
-  if (length(git_conf$user.name) == 0)
+  if (length(git_conf$user.name) == 0) {
     stop(cli::format_error(
       glue::glue(
         "git username not configured. Set git ",
@@ -345,8 +357,9 @@ dp_git_init <- function(project_path,
         "user.name = \"<YOUR_USER_NAME>\")"
       )
     ))
+  }
 
-  if (length(git_conf$user.email) == 0)
+  if (length(git_conf$user.email) == 0) {
     stop(cli::format_error(
       glue::glue(
         "git user.email not configured. Set git ",
@@ -354,14 +367,22 @@ dp_git_init <- function(project_path,
         "user.email = \"<YOUR_EMAIL>\")"
       )
     ))
+  }
 
   if (repo_is_clean) {
-    writeLines(glue::glue_collapse({
-      git_ignore
-    }, sep = "\n"),
-    file.path(project_path, ".gitignore"))
-    git2r::add(repo = repo,
-               path = glue::glue("{project_path}/.gitignore"))
+    writeLines(
+      glue::glue_collapse(
+        {
+          git_ignore
+        },
+        sep = "\n"
+      ),
+      file.path(project_path, ".gitignore")
+    )
+    git2r::add(
+      repo = repo,
+      path = glue::glue("{project_path}/.gitignore")
+    )
 
     add_readme(
       project_path = project_path,
@@ -371,10 +392,12 @@ dp_git_init <- function(project_path,
       creds_set_dried = creds_set_dried
     )
 
-    git2r::add(repo = repo,
-               path = glue::glue("{project_path}/README.md"))
+    git2r::add(
+      repo = repo,
+      path = glue::glue("{project_path}/README.md")
+    )
 
-    commit_1 <- git2r::commit(repo, message =  "project init")
+    commit_1 <- git2r::commit(repo, message = "project init")
 
     # Create a branch
     branch_1 <- git2r::branch_create(commit_1, name = branch_name)

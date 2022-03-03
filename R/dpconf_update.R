@@ -51,7 +51,6 @@ dpconf_update <- function(project_path = fs::path_wd(),
       "function is run on a project initiated ",
       "via dp_init"
     )))
-
   }
 
   dpconf <- dpconf_read(project_path = project_path)
@@ -72,7 +71,6 @@ dpconf_update <- function(project_path = fs::path_wd(),
       ),
       file.path(project_path, ".gitignore")
     )
-
   }
 
   if (length(project_description) > 0) {

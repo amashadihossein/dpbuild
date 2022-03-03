@@ -64,7 +64,7 @@ make_pinlink <- function(synced_input_i) {
       args$config <- args$conf
     }
 
-    #TODO
+    # TODO
     # if (length(board_params) == 0 | length(creds) == 0) {
     #   if (!is.null(args$config)) {
     #     if (length(board_params) > 0 & length(creds) == 0) {
