@@ -215,10 +215,17 @@ dpinputnames_simplify <- function(x, make_unique = FALSE){
 #' @title Clean input_map
 #' @description  This function drops unsynced or not-to-be-synced and pos
 #' @param input_map synced mapped object as returned by `dpbuild::dpinput_map`
+#' @param remove_id a vector of input_data ids to remove. This is for convenient
+#' as setting the input_manifest field `to_be_synced` to FALSE can achieve the 
+#' same thing. The default value of `character(0)` limits removal to any row 
+#' with `to_be_synced == FALSE`
 #' @param force_cleanname if TRUE it ensures each element of a vector names end up being unique. If not, it won't clean names unless clean is also unique
 #' @return input_map pruned and with cleaner names
 #' @export
-inputmap_clean <- function(input_map, force_cleanname = F){
+inputmap_clean <- function(input_map, remove_id = character(0) ,force_cleanname = F){
+  
+  input_map$input_manifest <- input_map$input_manifest %>% 
+    dplyr::mutate(to_be_synced = replace(to_be_synced,id %in% remove_id, FALSE))
   
   input_map$input_manifest <- input_map$input_manifest %>% dplyr::filter(to_be_synced)
   input_map$input_obj <- input_map$input_obj[input_map$input_manifest$id]
