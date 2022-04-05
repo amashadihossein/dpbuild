@@ -231,8 +231,13 @@ inputmap_clean <- function(input_map, remove_id = character(0) ,force_cleanname 
   input_map$input_obj <- input_map$input_obj[input_map$input_manifest$id]
   
   if(class(try(dpinputnames_simplify(input_map$input_manifest$id))) != "try-error" | force_cleanname){
-    input_map$input_manifest <- input_map$input_manifest %>% dplyr::mutate(id = dpinputnames_simplify(id, make_unique = force_cleanname))
-    names(input_map$input_obj) <- dpinputnames_simplify(names(input_map$input_obj), make_unique = force_cleanname)
+    input_map$input_manifest <- input_map$input_manifest %>% 
+      dplyr::mutate(id = dpinputnames_simplify(id, make_unique = force_cleanname))
+    
+    names(input_map$input_obj) <- 
+      dpinputnames_simplify(names(input_map$input_obj), 
+                            make_unique = force_cleanname)
+    
     input_map$input_obj <- sapply(names(input_map$input_obj), function(name_i){
       input_map$input_obj[[name_i]]$metadata$id <- name_i
       input_map$input_obj[[name_i]]
