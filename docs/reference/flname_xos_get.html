@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>dp git initialization — dp_git_init • dpbuild</title>
+<title>Gets cross OS File Name — flname_xos_get • dpbuild</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="dp git initialization — dp_git_init" />
-<meta property="og:description" content="Initializes the git repo according to the requirements of dp" />
+<meta property="og:title" content="Gets cross OS File Name — flname_xos_get" />
+<meta property="og:description" content="It drops extension that can be OS-specific" />
 
 
 
@@ -108,62 +108,27 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>dp git initialization</h1>
-    <small class="dont-index">Source: <a href='https://github.com/amashadihossein/dpbuild/blob/master/R/dp_init.R'><code>R/dp_init.R</code></a></small>
-    <div class="hidden name"><code>dp_git_init.Rd</code></div>
+    <h1>Gets cross OS File Name</h1>
+    <small class="dont-index">Source: <a href='https://github.com/amashadihossein/dpbuild/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
+    <div class="hidden name"><code>flname_xos_get.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Initializes the git repo according to the requirements of dp</p>
+    <p>It drops extension that can be OS-specific</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dp_git_init</span><span class='op'>(</span>
-  <span class='va'>project_path</span>,
-  <span class='va'>project_name</span>,
-  <span class='va'>branch_name</span>,
-  <span class='va'>github_repo_url</span>,
-  <span class='va'>board_params_set_dried</span>,
-  <span class='va'>creds_set_dried</span>,
-  <span class='va'>git_ignore</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>flname_xos_get</span><span class='op'>(</span><span class='va'>fl</span>, package <span class='op'>=</span> <span class='st'>"dpbuild"</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>project_path</th>
-      <td><p>Path to the project folder</p></td>
+      <th>fl</th>
+      <td><p>just the file name e.g. README.RMD</p></td>
     </tr>
     <tr>
-      <th>project_name</th>
-      <td><p>The name of the project. This is typically the name of
-the folder where the project is set</p></td>
-    </tr>
-    <tr>
-      <th>branch_name</th>
-      <td><p>An abbreviation to capture the specific reason for which
-data was processed. Example m3cut (as in month 3 data cut)</p></td>
-    </tr>
-    <tr>
-      <th>github_repo_url</th>
-      <td><p>the https url for the github repo</p></td>
-    </tr>
-    <tr>
-      <th>board_params_set_dried</th>
-      <td><p>Character representation of the function for
-setting board_params. Use <code><a href='fn_dry.html'>fn_dry()</a></code> in combination with
-<code><a href='https://rdrr.io/pkg/dpi/man/board_params_set_s3.html'>dpi::board_params_set_s3</a></code> or <code><a href='https://rdrr.io/pkg/dpi/man/board_params_set_labkey.html'>dpi::board_params_set_labkey</a></code>. See example.</p></td>
-    </tr>
-    <tr>
-      <th>creds_set_dried</th>
-      <td><p>Character representation of the function for setting
-creds. Use <code><a href='fn_dry.html'>fn_dry()</a></code> in combination with <code><a href='https://rdrr.io/pkg/dpi/man/creds_set_aws.html'>dpi::creds_set_aws</a></code> or
-<code><a href='https://rdrr.io/pkg/dpi/man/creds_set_labkey.html'>dpi::creds_set_labkey</a></code>. See example</p></td>
-    </tr>
-    <tr>
-      <th>git_ignore</th>
-      <td><p>A character vector of the files and directories to be
-ignored by git.</p></td>
+      <th>pakcage</th>
+      <td><p>package name e.g. dpbuild</p></td>
     </tr>
     </table>
 

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dpbuild</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9101</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9102</span>
       </span>
     </div>
 
@@ -117,7 +117,7 @@
     <p>This function drops unsynced or not-to-be-synced and pos</p>
     </div>
 
-    <pre class="usage"><span class='fu'>inputmap_clean</span><span class='op'>(</span><span class='va'>input_map</span>, force_cleanname <span class='op'>=</span> <span class='cn'>F</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>inputmap_clean</span><span class='op'>(</span><span class='va'>input_map</span>, remove_id <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span><span class='op'>(</span><span class='fl'>0</span><span class='op'>)</span>, force_cleanname <span class='op'>=</span> <span class='cn'>F</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -125,6 +125,13 @@
     <tr>
       <th>input_map</th>
       <td><p>synced mapped object as returned by <code><a href='dpinput_map.html'>dpbuild::dpinput_map</a></code></p></td>
+    </tr>
+    <tr>
+      <th>remove_id</th>
+      <td><p>a vector of input_data ids to remove. This is for convenient
+as setting the input_manifest field <code>to_be_synced</code> to FALSE can achieve the
+same thing. The default value of <code><a href='https://rdrr.io/r/base/character.html'>character(0)</a></code> limits removal to any row
+with <code>to_be_synced == FALSE</code></p></td>
     </tr>
     <tr>
       <th>force_cleanname</th>

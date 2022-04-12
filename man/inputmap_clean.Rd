@@ -4,10 +4,15 @@
 \alias{inputmap_clean}
 \title{Clean input_map}
 \usage{
-inputmap_clean(input_map, force_cleanname = F)
+inputmap_clean(input_map, remove_id = character(0), force_cleanname = F)
 }
 \arguments{
 \item{input_map}{synced mapped object as returned by \code{dpbuild::dpinput_map}}
+
+\item{remove_id}{a vector of input_data ids to remove. This is for convenient
+as setting the input_manifest field \code{to_be_synced} to FALSE can achieve the
+same thing. The default value of \code{character(0)} limits removal to any row
+with \code{to_be_synced == FALSE}}
 
 \item{force_cleanname}{if TRUE it ensures each element of a vector names end up being unique. If not, it won't clean names unless clean is also unique}
 }
