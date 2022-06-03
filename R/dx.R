@@ -25,16 +25,16 @@ is_valid_dp_repository <- function(path,
 
   if(!"all" %in% checks){
     if(!"git" %in% checks)
-      dx <- dx %>% dplyr::select(-git_initialized)
+      dx <- dx[,setdiff(colnames(dx),"git_initialized"), drop = F]
     
     if(!"dp" %in% checks)
-      dx <- dx %>% dplyr::select(-dp_initilized)
+      dx <- dx[,setdiff(colnames(dx),"dp_initilized"), drop = F]
     
     if(!"renv" %in% checks)
-      dx <- dx %>% dplyr::select(-renv_initialized)
+      dx <- dx[,setdiff(colnames(dx),"renv_initialized"), drop = F]
     
     if(!"branch" %in% checks)
-      dx <- dx %>% dplyr::select(-branch_name_matches)
+      dx <- dx[,setdiff(colnames(dx),"branch_name_matches"), drop = F]
   }
    
   dp_repository <- all(sapply(dx,isTRUE))
