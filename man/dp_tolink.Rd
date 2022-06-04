@@ -14,8 +14,6 @@ dp_tolink(dp_name, dp_version)
 \description{
 Given the name and version of a data product, it returns a
 custom function for retrieving that data product
-\emph{NOTE}: dp_name and dp_version are to be string values not variables pointing
-to string values.
 }
 \examples{
  \dontrun{

@@ -1,8 +1,6 @@
 #' @title Converts a data product to a link
 #' @description Given the name and version of a data product, it returns a 
 #' custom function for retrieving that data product
-#' *NOTE*: dp_name and dp_version are to be string values not variables pointing 
-#' to string values.
 #' @param dp_name name of the data product
 #' @param dp_version version of the data product
 #' @examples  \dontrun{
@@ -15,8 +13,9 @@ dp_tolink <- function(dp_name, dp_version){
   # TODO: this function to be consolidated with dpinput_read so to provide the 
   # user a single interface for building the input object into the data product 
   # which could be table links or data products links or a combo
-  data_name <- dp_name
-  data_version <- dp_version
+  
+  force(dp_name)
+  force(dp_version)
   
   lnk <- function(board_params = NULL, creds = NULL, ...){
     args <- list(...)
@@ -52,8 +51,8 @@ dp_tolink <- function(dp_name, dp_version){
     }
     
     dpi::dp_connect(board_params = board_params, creds = creds)
-    dp <- dpi::dp_get(board_params = board_params, data_name = data_name,
-                      version = data_version)
+    dp <- dpi::dp_get(board_params = board_params, data_name = dp_name,
+                      version = dp_version)
     return(dp)
   }
   
