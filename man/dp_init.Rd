@@ -36,9 +36,11 @@ metadata to the data object}
 setting board_params. Use \code{fn_dry()} in combination with
 \code{dpi::board_params_set_s3} or \code{dpi::board_params_set_labkey}. See example.}
 
-\item{creds_set_dried}{Character representation of the function for setting
+\item{creds_set_dried}{when using \code{local_board}, it is ignored and need not
+be specified. Otherwise,character representation of the function for setting
 creds. Use \code{fn_dry()} in combination with \code{dpi::creds_set_aws} or
-\code{dpi::creds_set_labkey}. See example}
+\code{dpi::creds_set_labkey}. \emph{NOTE: never directly pass credentials in script!}
+\emph{Use \code{Sys.getenv}}. See example}
 
 \item{github_repo_url}{the https url for the github repo}
 

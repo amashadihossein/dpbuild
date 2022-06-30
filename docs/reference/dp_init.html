@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dpbuild</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9103</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9104</span>
       </span>
     </div>
 
@@ -165,9 +165,11 @@ setting board_params. Use <code><a href='fn_dry.html'>fn_dry()</a></code> in com
     </tr>
     <tr>
       <th>creds_set_dried</th>
-      <td><p>Character representation of the function for setting
+      <td><p>when using <code>local_board</code>, it is ignored and need not
+be specified. Otherwise,character representation of the function for setting
 creds. Use <code><a href='fn_dry.html'>fn_dry()</a></code> in combination with <code><a href='https://rdrr.io/pkg/dpi/man/creds_set_aws.html'>dpi::creds_set_aws</a></code> or
-<code><a href='https://rdrr.io/pkg/dpi/man/creds_set_labkey.html'>dpi::creds_set_labkey</a></code>. See example</p></td>
+<code><a href='https://rdrr.io/pkg/dpi/man/creds_set_labkey.html'>dpi::creds_set_labkey</a></code>. <em>NOTE: never directly pass credentials in script!</em>
+<em>Use <code>Sys.getenv</code></em>. See example</p></td>
     </tr>
     <tr>
       <th>github_repo_url</th>

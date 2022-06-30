@@ -28,9 +28,11 @@ dpi::creds_set_labkey
 #' @param board_params_set_dried Character representation of the function for 
 #' setting board_params. Use `fn_dry()` in combination with 
 #' `dpi::board_params_set_s3` or `dpi::board_params_set_labkey`. See example.
-#' @param creds_set_dried Character representation of the function for setting 
+#' @param creds_set_dried when using `local_board`, it is ignored and need not
+#' be specified. Otherwise,character representation of the function for setting 
 #' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or 
-#' `dpi::creds_set_labkey`. See example
+#' `dpi::creds_set_labkey`. *NOTE: never directly pass credentials in script!*
+#'  *Use `Sys.getenv`*. See example
 #' @param github_repo_url the https url for the github repo
 #' @param git_ignore a character vector of the files and directories to be 
 #' ignored by git.
@@ -86,7 +88,16 @@ dp_init <- function(project_path = fs::path_wd(),
                                       "{basename(project_path)} does not exist ",
                                       "or is empty!")))
 
-
+  #TODO: fold this into function for general check input params including 
+  # security warning in case of cred_set
+  board_type <- fn_hydrate(board_params_set_dried)$board_type
+  if(missing(creds_set_dried) & board_type == "local_board"){
+    creds_set_dried <- dpbuild::fn_dry(character(0))
+  }else{
+    stop(cli::format_error(glue::glue("board_params_set_dried which is ",
+                                      "expected for {board_type}")))
+  }
+  
   project_name <- basename(path = project_path)
   repo <- dp_git_init(project_path = project_path, project_name = project_name, 
                       branch_name = branch_name, 
@@ -172,7 +183,7 @@ dpconf_init <- function(project_path,
 
   if(!fs::dir_exists(path = glue::glue("{project_path}/.daap")))
     fs::dir_create(glue::glue("{project_path}/.daap"))
-
+  
 
   dpconf <- c(list(project_path = project_path,
                    project_name = project_name,
