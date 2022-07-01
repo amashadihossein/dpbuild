@@ -92,7 +92,7 @@ dp_init <- function(project_path = fs::path_wd(),
   # security warning in case of cred_set
   board_type <- fn_hydrate(board_params_set_dried)$board_type
   if(missing(creds_set_dried) & board_type == "local_board"){
-    creds_set_dried <- dpbuild::fn_dry(character(0))
+    creds_set_dried <- dpbuild::fn_dry(NULL)
   }else{
     stop(cli::format_error(glue::glue("board_params_set_dried which is ",
                                       "expected for {board_type}")))
