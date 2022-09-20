@@ -18,6 +18,10 @@
 #' 4- renv is to be restored: Ex. renv::restore()
 #'==============================================================================
 
+# Adding targets codes
+library(targets)
+source("R/functions.R")
+
 options(stringsAsFactors = F)
 R.utils::sourceDirectory("R")
 
@@ -27,34 +31,22 @@ conflict_prefer("filter", "dplyr")
 conflict_prefer("mutate", "dplyr")
 conflict_prefer("arrange", "dplyr")
 
-daap_plan <- drake_plan(
+tarchetypes::tar_plan(
+  list(
+    tar_target(
+      name = data_files_read,
+      command =  dpbuild::dpinput_read(),
+      cue = tar_cue(mode = "thorough", command = TRUE, depend = TRUE)
+    ),
 
-  # Initial Set up
-  data_files_read = target(
-    command =  dpbuild::dpinput_read(),
-    trigger = trigger(change = file_in("./.daap/daap_input.yaml"))),
+    tar_target(
+      name = data_object,
+      command =  dp_structure(data_files_read, config, output = list(), metadata = list())
+    ),
 
-  # Derive datatopic1
-  # datatopic1 = derive_datatopic1(clin = data_files_read, config = config),
-
-
-  # Structure data obj
-  data_object =
-    dp_structure(data_files_read, config, output = list(), metadata = list()),
-
-  # Structure output and add metadata
-  data_is_written =
-    dpbuild::dp_write(data_object = data_object, project_path = ".")
-
-  # Run data test
-  #' TODO: data_is_written_out ensures .RDS can be hashed. We may only need to
-  #'       hash data_obj itself rather than readRDS
-  # data_is_tested =
-  #   unit_test_data(d = data_obj,
-  #                  data_is_written_out = data_is_written_and_committed)
+    tar_target(
+      name = data_is_written,
+      command = dpbuild::dp_write(data_object = data_object, project_path = ".")
+      )
+    )
 )
-
-make(daap_plan, lock_envir = FALSE)
-
-# Add targets code
-
