@@ -19,7 +19,7 @@
 #'==============================================================================
 
 options(stringsAsFactors = F)
-R.utils::sourceDirectory("R")
+R.utils::sourceDirectory("R", modifiedOnly = F)
 
 config <- dpconf_get(project_path = "./")
 

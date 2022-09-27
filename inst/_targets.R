@@ -18,12 +18,10 @@
 #' 4- renv is to be restored: Ex. renv::restore()
 #'==============================================================================
 
-# Adding targets codes
-library(targets)
-source("R/functions.R")
+
 
 options(stringsAsFactors = F)
-R.utils::sourceDirectory("R")
+R.utils::sourceDirectory("R", modifiedOnly = F)
 
 config <- dpconf_get(project_path = "./")
 
@@ -41,7 +39,8 @@ tarchetypes::tar_plan(
 
     tar_target(
       name = data_object,
-      command =  dp_structure(data_files_read, config, output = list(), metadata = list())
+      command =  dp_structure(data_files_read, config, output = list(), 
+                              metadata = list())
     ),
 
     tar_target(

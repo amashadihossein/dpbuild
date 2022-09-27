@@ -20,6 +20,7 @@ dpcode_add <- function(project_path, use_targets=F){
   flname_dpjournal <- flname_xos_get(fl = "dp_journal.RMD")
   fs::file_copy(path = system.file(flname_dpjournal, package = "dpbuild"),
                 new_path = project_path)
+  
   if (!use_targets) {
     fs::file_copy(path = system.file("dp_make.R", package = "dpbuild"),
       new_path = project_path)
@@ -43,10 +44,9 @@ dpcode_add <- function(project_path, use_targets=F){
       new_path = glue::glue("{project_path}/global.R"))
   }
 
-  renv::init(bare = T)
-  #TODO: Look into which functions to use when adding a package
-  #renv::install()
-
+  # snapshot with pkgs in global
+  renv::snapshot(prompt = F) #TODO: look into  explicitly adding pkgs 
+  
   # commit
   repo <- git2r::repository(path = project_path)
   git2r::add(repo = repo,path =
