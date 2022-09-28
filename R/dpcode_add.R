@@ -26,10 +26,11 @@ dpcode_add <- function(project_path, use_targets=F){
       new_path = project_path)
 
     fs::file_copy(path = system.file("global_drake.R", package = "dpbuild"),
-      new_path = project_path)
-    #TODO: use file_delete if this does not work.
-    fs::file_move(path = glue::glue("{project_path}/global_drake.R"),
-      new_path = glue::glue("{project_path}/global.R"))
+      new_path = glue::glue("{project_path}/R"))
+    fs::file_delete(path =  glue::glue("{project_path}/R/global.R"))
+    fs::file_move(path = glue::glue("{project_path}/R/global_drake.R"),
+      new_path = glue::glue("{project_path}/R/global.R"))
+    renv::install(packages = "drake",prompt = F)
 
   } else {
     fs::file_copy(path = system.file("_targets.R", package = "dpbuild"),
@@ -38,12 +39,19 @@ dpcode_add <- function(project_path, use_targets=F){
       new_path = glue::glue("{project_path}/dp_make.R"))
 
     fs::file_copy(path = system.file("global_targets.R", package = "dpbuild"),
-      new_path = project_path)
-    #TODO: use file_delete if this does not work.
-    fs::file_move(path = glue::glue("{project_path}/global_targets.R"),
-      new_path = glue::glue("{project_path}/global.R"))
+      new_path = glue::glue("{project_path}/R"))
+    fs::file_delete(path =  glue::glue("{project_path}/R/global.R"))
+    fs::file_move(path = glue::glue("{project_path}/R/global_targets.R"),
+      new_path = glue::glue("{project_path}/R/global.R"))
+    renv::install(packages = "targets",prompt = F)
   }
 
+  # pkgs_dependencies <- renv::dependencies(path = project_path, 
+  #                                         root = project_path) %>%
+  #   dplyr::pull(Package)
+  
+  # renv::install(packages = pkgs_dependencies,prompt = F)
+  
   # snapshot with pkgs in global
   renv::snapshot(prompt = F) #TODO: look into  explicitly adding pkgs 
   

@@ -119,10 +119,11 @@ dp_init <- function(project_path = fs::path_wd(),
     fs::dir_create(fs::path_tidy(glue::glue("{project_path}/R")))
   
   fs::file_copy(path = system.file("global.R", package = "dpbuild"),
-                new_path = fs::path_tidy(glue::glue("{project_path}/R")))
+                new_path = fs::path_tidy(glue::glue("{project_path}/R")), 
+                overwrite = T)
   
   fs::file_copy(path = system.file(".renvignore", package = "dpbuild"),
-                new_path = project_path)
+                new_path = project_path, overwrite = T)
   # add renv
   renv::init(project = fs::path_tidy(project_path), restart = F)
   setwd(wd0)
@@ -323,7 +324,7 @@ add_readme <- function(project_path, dp_title, github_repo_url,
   
   flname <- flname_xos_get(fl = "README.RMD")
   fs::file_copy(path = system.file(flname, package = "dpbuild"),
-                new_path = project_path) 
+                new_path = project_path, overwrite = T) 
 
   board_params_set<- fn_hydrate(board_params_set_dried) 
   
