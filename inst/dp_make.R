@@ -34,13 +34,14 @@ daap_plan <- drake_plan(
     command =  dpbuild::dpinput_read(),
     trigger = trigger(change = file_in("./.daap/daap_input.yaml"))),
 
+
   # Derive datatopic1
   # datatopic1 = derive_datatopic1(clin = data_files_read, config = config),
 
-
   # Structure data obj
   data_object =
-    dp_structure(data_files_read, config, output = list(), metadata = list()),
+    dp_structure(data_files_read, config, output = list(), 
+                 metadata = list()),
 
   # Structure output and add metadata
   data_is_written =

@@ -172,7 +172,7 @@ Below dp_make steps and dependencies are visualized
 
 ```{r dpmake_vis, results= TRUE}
 renv::install(packages = "visNetwork")
-targets::tar_visnetwork()
+targets::tar_visnetwork(script = "./dp_make.R")
 ```
 
 # Committing, pushing to GitHub for build

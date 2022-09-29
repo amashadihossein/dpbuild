@@ -126,7 +126,8 @@
   <span class='va'>board_params_set_dried</span>,
   <span class='va'>creds_set_dried</span>,
   <span class='va'>github_repo_url</span>,
-  git_ignore <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>".drake/"</span>, <span class='st'>"input_files/"</span>, <span class='st'>"output_files/"</span>, <span class='st'>".Rhistory"</span>, <span class='st'>".DS_Store"</span><span class='op'>)</span>,
+  git_ignore <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>".drake/"</span>, <span class='st'>"input_files/"</span>, <span class='st'>"output_files/"</span>, <span class='st'>".Rhistory"</span>, <span class='st'>".DS_Store"</span>,
+    <span class='st'>"_targets/"</span><span class='op'>)</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -191,13 +192,13 @@ ignored by git.</p></td>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'> <span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='co'># Dry function call to setting board_params</span>
-<span class='va'>board_params_set_dried</span> <span class='op'>&lt;-</span> 
+<span class='va'>board_params_set_dried</span> <span class='op'>&lt;-</span>
 <span class='fu'><a href='fn_dry.html'>fn_dry</a></span><span class='op'>(</span><span class='fu'>dpi</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dpi/man/board_params_set_labkey.html'>board_params_set_labkey</a></span><span class='op'>(</span>board_alias <span class='op'>=</span> <span class='st'>"labkey"</span>,
  url <span class='op'>=</span> <span class='st'>'https:url_to_labkey/labkey'</span>,
  folder <span class='op'>=</span> <span class='st'>'project_folder/subfolder'</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Dry function call to setting credentials</span>
-<span class='va'>creds_set_dried</span> <span class='op'>&lt;-</span> 
+<span class='va'>creds_set_dried</span> <span class='op'>&lt;-</span>
 <span class='fu'><a href='fn_dry.html'>fn_dry</a></span><span class='op'>(</span><span class='fu'>dpi</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/dpi/man/creds_set_labkey.html'>creds_set_labkey</a></span><span class='op'>(</span>api_key <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.getenv.html'>Sys.getenv</a></span><span class='op'>(</span><span class='st'>"LABKEY_API_KEY"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Initialize dp repo</span>
