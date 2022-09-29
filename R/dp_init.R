@@ -16,37 +16,37 @@ dpi::creds_set_labkey
 
 #' @title Initialize data product project
 #' @description Initializes a data product project
-#' @param project_path path to the project folder. The folder name will be used 
+#' @param project_path path to the project folder. The folder name will be used
 #' as project name. If the path doesn't exist it will be created.
-#' @param project_description A high level description of the project. Example: 
+#' @param project_description A high level description of the project. Example:
 #' integrated, clinical and translational data from study x.
-#' @param branch_name An abbreviation to capture the specific reason for which 
+#' @param branch_name An abbreviation to capture the specific reason for which
 #' data was processed. Example m3cut (as in month 3 data cut)
 #' @param branch_description A high level description of the branch
-#' @param readme_general_note Optional general note which will be added as 
+#' @param readme_general_note Optional general note which will be added as
 #' metadata to the data object
-#' @param board_params_set_dried Character representation of the function for 
-#' setting board_params. Use `fn_dry()` in combination with 
+#' @param board_params_set_dried Character representation of the function for
+#' setting board_params. Use `fn_dry()` in combination with
 #' `dpi::board_params_set_s3` or `dpi::board_params_set_labkey`. See example.
-#' @param creds_set_dried Character representation of the function for setting 
-#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or 
+#' @param creds_set_dried Character representation of the function for setting
+#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or
 #' `dpi::creds_set_labkey`. See example
 #' @param github_repo_url the https url for the github repo
-#' @param git_ignore a character vector of the files and directories to be 
+#' @param git_ignore a character vector of the files and directories to be
 #' ignored by git.
 #' @param ... any other metadata to be captured in the config file
 #' @return project path
 #' @examples  \dontrun{
 #' # Dry function call to setting board_params
-#' board_params_set_dried <- 
+#' board_params_set_dried <-
 #' fn_dry(dpi::board_params_set_labkey(board_alias = "labkey",
 #'  url = 'https:url_to_labkey/labkey',
 #'  folder = 'project_folder/subfolder'))
-#' 
+#'
 #' # Dry function call to setting credentials
-#' creds_set_dried <- 
+#' creds_set_dried <-
 #' fn_dry(dpi::creds_set_labkey(api_key = Sys.getenv("LABKEY_API_KEY")))
-#' 
+#'
 #' # Initialize dp repo
 #' dp_repo <- dp_init(project_path = "dp_test",
 #'                 project_description = "Test data product",
@@ -69,9 +69,9 @@ dp_init <- function(project_path = fs::path_wd(),
                     creds_set_dried,
                     github_repo_url,
                     git_ignore = c(".drake/","input_files/","output_files/",
-                                   ".Rhistory", ".DS_Store"),
+                                   ".Rhistory", ".DS_Store", "_targets/"),
                     ...){
- 
+
   commit_description <- "dp init"
   wd0 <- fs::path_wd()
 
@@ -88,14 +88,14 @@ dp_init <- function(project_path = fs::path_wd(),
 
 
   project_name <- basename(path = project_path)
-  repo <- dp_git_init(project_path = project_path, project_name = project_name, 
-                      branch_name = branch_name, 
+  repo <- dp_git_init(project_path = project_path, project_name = project_name,
+                      branch_name = branch_name,
                       github_repo_url = github_repo_url,
                       board_params_set_dried = board_params_set_dried,
                       creds_set_dried = creds_set_dried,
                       git_ignore = git_ignore)
   last_commit <- git2r::last_commit(repo = repo)
-  
+
 
   if(!fs::dir_exists(path = glue::glue("{project_path}/.daap")))
     fs::dir_create(glue::glue("{project_path}/.daap"))
@@ -117,9 +117,13 @@ dp_init <- function(project_path = fs::path_wd(),
 
   if(!fs::dir_exists(fs::path_tidy(glue::glue("{project_path}/R"))))
     fs::dir_create(fs::path_tidy(glue::glue("{project_path}/R")))
-  
+
   fs::file_copy(path = system.file("global.R", package = "dpbuild"),
-                new_path = fs::path_tidy(glue::glue("{project_path}/R")))
+                new_path = fs::path_tidy(glue::glue("{project_path}/R")),
+                overwrite = T)
+
+  fs::file_copy(path = system.file(".renvignore", package = "dpbuild"),
+                new_path = project_path, overwrite = T)
   # add renv
   renv::init(project = fs::path_tidy(project_path), restart = F)
   setwd(wd0)
@@ -140,20 +144,20 @@ dp_init <- function(project_path = fs::path_wd(),
 #' @title Initialize daap configuration file
 #' @description Initializes daap configuration file
 #' @param project_path path to the project folder
-#' @param project_name the name of the project. This is typically the name of 
+#' @param project_name the name of the project. This is typically the name of
 #' the folder where the project is set
-#' @param project_description A high level description of the project. Example: 
+#' @param project_description A high level description of the project. Example:
 #' integrated, clinical and translational data from study x.
-#' @param branch_name An abbreviation to capture the specific reason for which 
+#' @param branch_name An abbreviation to capture the specific reason for which
 #' data was processed. Example m3cut (as in month 3 data cut)
 #' @param branch_description A high level description of the branch
-#' @param readme_general_note Optional general note which will be added as 
+#' @param readme_general_note Optional general note which will be added as
 #' metadata to the data object
-#' @param board_params_set_dried Character representation of the function for 
+#' @param board_params_set_dried Character representation of the function for
 #' setting board_params. Use `fn_dry()`
-#' in combination with `dpi::board_params_set_s3` or 
+#' in combination with `dpi::board_params_set_s3` or
 #' `dpi::board_params_set_labkey`. See example.
-#' @param creds_set_dried Character representation of the function for setting 
+#' @param creds_set_dried Character representation of the function for setting
 #' creds. Use `fn_dry()` in combination with
 #' `dpi::creds_set_aws` or `dpi::creds_set_labkey`. See example
 #' @param ... any other metadata to be captured in the config file
@@ -183,7 +187,7 @@ dpconf_init <- function(project_path,
                    board_params_set_dried = board_params_set_dried,
                    creds_set_dried = creds_set_dried),
               list(...))
-  
+
   dpconf <- dpconf_write(project_path = project_path, dpconf = dpconf)
 
   return(dpconf)
@@ -224,22 +228,22 @@ fn_hydrate <- function(dried_fn){
 #' @title dp git initialization
 #' @description Initializes the git repo according to the requirements of dp
 #' @param project_path Path to the project folder
-#' @param project_name The name of the project. This is typically the name of 
+#' @param project_name The name of the project. This is typically the name of
 #' the folder where the project is set
-#' @param branch_name An abbreviation to capture the specific reason for which 
+#' @param branch_name An abbreviation to capture the specific reason for which
 #' data was processed. Example m3cut (as in month 3 data cut)
-#' @param board_params_set_dried Character representation of the function for 
-#' setting board_params. Use `fn_dry()` in combination with 
+#' @param board_params_set_dried Character representation of the function for
+#' setting board_params. Use `fn_dry()` in combination with
 #' `dpi::board_params_set_s3` or `dpi::board_params_set_labkey`. See example.
-#' @param creds_set_dried Character representation of the function for setting 
-#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or 
+#' @param creds_set_dried Character representation of the function for setting
+#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or
 #' `dpi::creds_set_labkey`. See example
 #' @param github_repo_url the https url for the github repo
-#' @param git_ignore A character vector of the files and directories to be 
+#' @param git_ignore A character vector of the files and directories to be
 #' ignored by git.
 #' @keywords internal
 
-dp_git_init <- function(project_path, project_name, branch_name, 
+dp_git_init <- function(project_path, project_name, branch_name,
                         github_repo_url,
                         board_params_set_dried,
                         creds_set_dried,
@@ -257,9 +261,9 @@ dp_git_init <- function(project_path, project_name, branch_name,
   git_status <- git2r::status(repo = repo, ignored = T)
   repo_is_clean <- all(sapply(git_status,length)==0)
   git2r::remote_add(repo = repo, name = "origin", url = github_repo_url)
-  
+
   git_conf <- git2r::config(repo = repo)$global
-  
+
   if(length(git_conf$user.name) == 0)
     stop(cli::format_error(glue::glue("git username not configured. Set git ",
                                       "username by git2r::config(global = T, ",
@@ -269,21 +273,21 @@ dp_git_init <- function(project_path, project_name, branch_name,
     stop(cli::format_error(glue::glue("git user.email not configured. Set git ",
                                       "user.email by git2r::config(global = T, ",
                                       "user.email = \"<YOUR_EMAIL>\")")))
-  
+
   if(repo_is_clean){
 
     writeLines(glue::glue_collapse({git_ignore},sep = "\n"),
                file.path(project_path, ".gitignore"))
     git2r::add(repo = repo, path = glue::glue("{project_path}/.gitignore"))
-    
+
     add_readme(project_path = project_path,
                dp_title = glue::glue("Data Product {project_name}_{branch_name}"),
                github_repo_url = github_repo_url,
                board_params_set_dried = board_params_set_dried,
                creds_set_dried = creds_set_dried)
-    
+
     git2r::add(repo = repo, path = glue::glue("{project_path}/README.md"))
-    
+
     commit_1 <- git2r::commit(repo, message =  "project init")
 
     # Create a branch
@@ -307,29 +311,29 @@ dp_git_init <- function(project_path, project_name, branch_name,
 #' @title Add readme to the project
 #' @param project_path Path to the project folder
 #' @param dp_title readme title
-#' @param board_params_set_dried Character representation of the function for 
-#' setting board_params. Use `fn_dry()` in combination with 
+#' @param board_params_set_dried Character representation of the function for
+#' setting board_params. Use `fn_dry()` in combination with
 #' `dpi::board_params_set_s3` or `dpi::board_params_set_labkey`. See example.
-#' @param creds_set_dried Character representation of the function for setting 
-#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or 
+#' @param creds_set_dried Character representation of the function for setting
+#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or
 #' `dpi::creds_set_labkey`. See example
 #' @param github_repo_url github repo url
 #' @keywords internal
-add_readme <- function(project_path, dp_title, github_repo_url, 
+add_readme <- function(project_path, dp_title, github_repo_url,
                        board_params_set_dried, creds_set_dried){
-  
+
   flname <- flname_xos_get(fl = "README.RMD")
   fs::file_copy(path = system.file(flname, package = "dpbuild"),
-                new_path = project_path) 
+                new_path = project_path, overwrite = T)
 
-  board_params_set<- fn_hydrate(board_params_set_dried) 
-  
+  board_params_set<- fn_hydrate(board_params_set_dried)
+
   rendered <- try(rmarkdown::render(
     input = glue::glue("{project_path}/{flname}"),
-    params =  list(dp_title = dp_title, github_repo_url = github_repo_url, 
+    params =  list(dp_title = dp_title, github_repo_url = github_repo_url,
                    board_params_set = board_params_set,
                    creds_set_dried = creds_set_dried)))
-  
+
   if("try-error" %in% class(rendered))
     writeLines(glue::glue("## {dp_title}"),
                file.path(project_path, "README.md"))

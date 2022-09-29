@@ -3,6 +3,7 @@ library(conflicted)
 
 # DaaP core packages
 library(daapr)
+library(targets)
 
 # Daap build dependencies
 library(knitr)

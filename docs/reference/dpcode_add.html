@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">dpbuild</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9103</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9104</span>
       </span>
     </div>
 
@@ -117,7 +117,7 @@
     <p>Adds dp_assembler.R and dp_structure.R to the dp project repo</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dpcode_add</span><span class='op'>(</span><span class='va'>project_path</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>dpcode_add</span><span class='op'>(</span><span class='va'>project_path</span>, use_targets <span class='op'>=</span> <span class='cn'>F</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -125,6 +125,10 @@
     <tr>
       <th>project_path</th>
       <td><p>Path to the Project</p></td>
+    </tr>
+    <tr>
+      <th>use_targets</th>
+      <td><p>Boolean When true, it uses targets instead of drake</p></td>
     </tr>
     </table>
 

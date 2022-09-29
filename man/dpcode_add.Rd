@@ -4,10 +4,12 @@
 \alias{dpcode_add}
 \title{Adds script templates}
 \usage{
-dpcode_add(project_path)
+dpcode_add(project_path, use_targets = F)
 }
 \arguments{
 \item{project_path}{Path to the Project}
+
+\item{use_targets}{Boolean When true, it uses targets instead of drake}
 }
 \value{
 repo
