@@ -194,7 +194,7 @@ dpbuild::dp_commit(project_path = ".", commit_description = "First dp build: onl
 Pushed dp to remote git repository 
 
 ```{r dppush, eval = FALSE}
-dp_push(path = ".", remote_alias = "ds", remote_url = "https://github.com/teamAccount/me/dp_test1.git")
+dp_push(path = ".")
 ```
 
 <!-- **RMarkdown NOTE:** When ready to render as html the following can execute the following -->
