@@ -80,7 +80,7 @@ dpconf_validate <- function(dpconf, project_path){
   if(!is.null(repo_url)){ # TODO do something if repo url not found here?
     remote_alias <- git2r::remotes(repo = repo)
 
-    if(length(remote_alias) > 0){
+    if(length(remote_alias) > 1){
       stop("More than one remote alias found, delete one and try again")
     }
 
