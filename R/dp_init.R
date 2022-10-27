@@ -205,7 +205,10 @@ dpconf_init <- function(project_path,
 #' @export
 fn_dry <- function(fn_called){
   fn_as_call <- rlang::enexpr(fn_called)
-  dried_fn <- rlang::expr_deparse(fn_as_call)
+  dried_fn <- rlang::expr_deparse(fn_as_call, width = 300) # large width avoids line wrapping
+  if (length(dried_fn) > 1) {
+    warning("input expression is too long; line wrapping created")
+  }
   return(dried_fn)
 }
 
