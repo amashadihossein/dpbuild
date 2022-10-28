@@ -59,7 +59,6 @@ dpi::creds_set_labkey
 #'                 github_repo_url = "https://github.com/teamAccount/me/dp_test.git")
 #' }
 #' @export
-
 dp_init <- function(project_path = fs::path_wd(),
                     project_description,
                     branch_name,
@@ -68,8 +67,11 @@ dp_init <- function(project_path = fs::path_wd(),
                     board_params_set_dried,
                     creds_set_dried,
                     github_repo_url,
-                    git_ignore = c(".drake/","input_files/","output_files/",
-                                   ".Rhistory", ".DS_Store", "_targets/"),
+                    git_ignore = c(".drake/", "_targets/", "input_files/",
+                                   "output_files/", ".Rprofile", ".Renviron",
+                                   ".Rhistory", ".Rproj.user", ".Rproj.user/",
+                                   ".DS_Store", "*.csv", "*.tsv", "*.rds",
+                                   "*.sas7bdat"),
                     ...){
 
   commit_description <- "dp init"
@@ -245,7 +247,6 @@ fn_hydrate <- function(dried_fn){
 #' @param git_ignore A character vector of the files and directories to be
 #' ignored by git.
 #' @keywords internal
-
 dp_git_init <- function(project_path, project_name, branch_name,
                         github_repo_url,
                         board_params_set_dried,
