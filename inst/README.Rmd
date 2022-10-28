@@ -9,7 +9,7 @@ params:
 title: "`r params$dp_title`"
 ---
 
-To build and deploy
+To build and deploy this data product: 
 
 ### STEP 1: Activate the project
 
@@ -49,8 +49,8 @@ source("./dp_make.R")
 
 ### STEP 4: Deploy
 
-Simple call to `dpdeploy`. By default expects you to be in the project directory
+Simple call to `dp_deploy`. By default expects you to be in the project directory
 
 ```{r deploy, eval=FALSE}
-dpdeploy()
+dp_deploy()
 ```
