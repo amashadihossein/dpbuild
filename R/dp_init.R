@@ -77,6 +77,14 @@ dp_init <- function(project_path = fs::path_wd(),
   commit_description <- "dp init"
   wd0 <- fs::path_wd()
 
+  if(fs::dir_exists(project_path)){
+    stop(cli::format_error("{project_path} folder already exists in the current directory."))
+  }
+
+  if (is_valid_dp_repository(project_path)){
+    stop(cli::format_error("You are already inside a dp repository."))
+  }
+
   if(!fs::dir_exists(path = project_path))
     fs::dir_create(project_path)
 

@@ -12,25 +12,33 @@
 #' @export
 
 dp_clone <- function(remote_url, branch,  verbose = F){
-  
+
+  input_output_directories <- c("input_files", "output_files")
+
   if(nchar(Sys.getenv("GITHUB_PAT")) == 0)
-    stop(cli::format_error(glue::glue("Could not push as it did not find ", 
+    stop(cli::format_error(glue::glue("Could not push as it did not find ",
                                       "GITHUB_PAT in the environment. Set it ",
                                       "by Sys.setenv(GITHUB_PAT = <your github",
                                       " personal access token>) and retry!")))
   cred <- git2r::cred_token()
   project_path <- fs::path(fs::path_wd(),
                      fs::path_ext_remove(fs::path_file(remote_url)))
-  
+
   if(fs::dir_exists(project_path)){
     if(length(fs::dir_ls(project_path)) > 0)
       stop(cli::format_error("{project_path} is not an empty directory!"))
   }
-    
-  
+
+
   repo <- tryCatch({
     git2r::clone(url = remote_url, local_path = project_path, branch = branch,
                  credentials = cred, progress = verbose)
+
+    for (dir in input_output_directories){
+      if(!fs::dir_exists(dir)){
+        fs::dir_create(dir)
+      }
+    }
   },
   error = function(cond) {
     message("Encountered error in dp_clone")
@@ -41,6 +49,6 @@ dp_clone <- function(remote_url, branch,  verbose = F){
     message(cond)
   }
   )
-  
+
   return(TRUE)
 }
