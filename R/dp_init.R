@@ -91,15 +91,16 @@ dp_init <- function(project_path = fs::path_wd(),
     stop(cli::format_error(glue::glue("Do not supply the credentials directly as the function arguments.")))
   }
 
+  if(!fs::dir_exists(path = project_path))
+    fs::dir_create(project_path)
+
   if(length(fs::dir_ls(path = project_path))!=0)
+    fs::dir_delete(path = project_path)
     stop(cli::format_error(glue::glue("There is already a non-empty directory ",
                                       "{basename(project_path)} ! If starting a ",
                                       "new project run dp_init where ",
                                       "{basename(project_path)} does not exist ",
                                       "or is empty!")))
-
-  if(!fs::dir_exists(path = project_path))
-    fs::dir_create(project_path)
 
   project_name <- basename(path = project_path)
   repo <- dp_git_init(project_path = project_path, project_name = project_name,
