@@ -77,8 +77,11 @@ dp_init <- function(project_path = fs::path_wd(),
   commit_description <- "dp init"
   wd0 <- fs::path_wd()
 
-  if(!fs::dir_exists(path = project_path))
-    fs::dir_create(project_path)
+  if (!rlang::is_character(x = creds_set_dried)){
+    message("Encountered error in creds_set_dried in dp_init")
+    message("Make sure to use fn_dry in argument passed to creds_set_dried paramater.")
+    stop(cli::format_error(glue::glue("Do not supply the credentials directly as the function arguments.")))
+  }
 
   creds_set_dried_parsed <- rlang::parse_expr(creds_set_dried)
 
@@ -95,6 +98,8 @@ dp_init <- function(project_path = fs::path_wd(),
                                       "{basename(project_path)} does not exist ",
                                       "or is empty!")))
 
+  if(!fs::dir_exists(path = project_path))
+    fs::dir_create(project_path)
 
   project_name <- basename(path = project_path)
   repo <- dp_git_init(project_path = project_path, project_name = project_name,
@@ -142,7 +147,6 @@ dp_init <- function(project_path = fs::path_wd(),
   add_these <- unlist(git2r::status(repo = repo))
   git2r::add(repo = repo, path = glue::glue("{project_path}/{add_these}") )
   git2r::commit(repo = repo, all = TRUE, message = commit_description)
-
 
   return(fs::path_dir(repo$path))
 
@@ -212,19 +216,26 @@ dpconf_init <- function(project_path,
 #' fn_dry(sum(log(1:10)))
 #' }
 #' @export
-fn_dry <- function(fn_called){
+#'
+fn_dry <- function(fn_called) {
+
   fn_as_call <- rlang::enexpr(fn_called)
 
-  fn_as_call_main <- rlang::call_name(fn_as_call)
-  get_fn_args <- rlang::call_args(fn_as_call)
+  is_creds_set_method <- grepl(pattern = "creds_set_", x = fn_as_call, ignore.case = F)[1]
 
-  for(arg in get_fn_args){
-    if (!rlang::is_callable(arg)) {
-      stop(cli::format_error(glue::glue("Do not supply the credentials directly as the function arguments. Function arguments in {fn_as_call_main} need to be passed as function calls. For example, Sys.getenv()")))
+  if (is_creds_set_method) {
+    fn_as_call_main <- rlang::call_name(fn_as_call)
+    get_fn_args <- rlang::call_args(fn_as_call)
+
+    for (arg in get_fn_args) {
+      if (!rlang::is_callable(arg)) {
+        stop(cli::format_error(glue::glue("Do not supply the credentials directly as the function arguments. Function arguments in {fn_as_call_main} need to be passed as function calls. For example, Sys.getenv()")))
+      }
     }
+    dried_fn <- rlang::expr_deparse(fn_as_call, width = 300)
+  } else {
+    dried_fn <- rlang::expr_deparse(fn_as_call, width = 300)
   }
-
-  dried_fn <- rlang::expr_deparse(fn_as_call, width = 300) # large width avoids line wrapping
   if (length(dried_fn) > 1) {
     warning("input expression is too long; line wrapping created")
   }
