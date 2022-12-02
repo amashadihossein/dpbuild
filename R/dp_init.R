@@ -367,6 +367,16 @@ add_readme <- function(project_path, dp_title, github_repo_url,
 
   tryCatch({
     board_params_set<- fn_hydrate(board_params_set_dried)
+
+    rendered <- try(rmarkdown::render(
+      input = glue::glue("{project_path}/{flname}"),
+      params =  list(dp_title = dp_title, github_repo_url = github_repo_url,
+        board_params_set = board_params_set,
+        creds_set_dried = creds_set_dried)))
+
+    if("try-error" %in% class(rendered))
+      writeLines(glue::glue("## {dp_title}"),
+        file.path(project_path, "README.md"))
   },
     error = function(er) {
       message("Encountered error in board_params_set_dried parameter in dp_init")
@@ -375,16 +385,6 @@ add_readme <- function(project_path, dp_title, github_repo_url,
       message(er)
     }
   )
-
-  rendered <- try(rmarkdown::render(
-    input = glue::glue("{project_path}/{flname}"),
-    params =  list(dp_title = dp_title, github_repo_url = github_repo_url,
-                   board_params_set = board_params_set,
-                   creds_set_dried = creds_set_dried)))
-
-  if("try-error" %in% class(rendered))
-    writeLines(glue::glue("## {dp_title}"),
-               file.path(project_path, "README.md"))
 }
 
 
