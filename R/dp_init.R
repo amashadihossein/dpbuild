@@ -83,6 +83,11 @@ dp_init <- function(project_path = fs::path_wd(),
     stop(cli::format_error(glue::glue("Do not supply the credentials directly as the function arguments.")))
   }
 
+  if (!rlang::is_character(x = board_params_set_dried)){
+    message("Encountered error in board_params_set_dried in dp_init")
+    stop(cli::format_error(glue::glue("Make sure to use fn_dry in argument passed to board_params_set_dried paramater.")))
+  }
+
   creds_set_dried_parsed <- rlang::parse_expr(creds_set_dried)
 
   if (!class(creds_set_dried_parsed) == "call") {
@@ -96,7 +101,6 @@ dp_init <- function(project_path = fs::path_wd(),
   }
 
   if(length(fs::dir_ls(path = project_path))!=0){
-    fs::dir_delete(path = project_path)
     stop(cli::format_error(glue::glue("There is already a non-empty directory ",
       "{basename(project_path)} ! If starting a ",
       "new project run dp_init where ",
