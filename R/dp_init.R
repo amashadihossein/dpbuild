@@ -365,26 +365,17 @@ add_readme <- function(project_path, dp_title, github_repo_url,
   fs::file_copy(path = system.file(flname, package = "dpbuild"),
                 new_path = project_path, overwrite = T)
 
-  tryCatch({
-    board_params_set<- fn_hydrate(board_params_set_dried)
+  board_params_set<- fn_hydrate(board_params_set_dried)
 
-    rendered <- try(rmarkdown::render(
-      input = glue::glue("{project_path}/{flname}"),
-      params =  list(dp_title = dp_title, github_repo_url = github_repo_url,
-        board_params_set = board_params_set,
-        creds_set_dried = creds_set_dried)))
+  rendered <- try(rmarkdown::render(
+    input = glue::glue("{project_path}/{flname}"),
+    params =  list(dp_title = dp_title, github_repo_url = github_repo_url,
+                   board_params_set = board_params_set,
+                   creds_set_dried = creds_set_dried)))
 
-    if("try-error" %in% class(rendered))
-      writeLines(glue::glue("## {dp_title}"),
-        file.path(project_path, "README.md"))
-  },
-    error = function(er) {
-      message("Encountered error in board_params_set_dried parameter in dp_init")
-      message("Make sure to use fn_dry in argument passed to board_params_set_dried paramater.")
-      message(glue::glue("Do not supply the credentials directly as the function arguments."))
-      message(er)
-    }
-  )
+  if("try-error" %in% class(rendered))
+    writeLines(glue::glue("## {dp_title}"),
+               file.path(project_path, "README.md"))
 }
 
 
