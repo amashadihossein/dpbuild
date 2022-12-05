@@ -26,9 +26,9 @@ testthat::test_that("This would expect the error with creds_set_labkey in fn_dry
 testthat::test_that("This would expect the equality in fn_dry function",{
   testthat::expect_equal(
     fn_dry(
-      creds_set_labkey(api_key = Sys.getenv("api-key"))
+      creds_set_labkey(api_key = Sys.getenv("API_KEY"))
     ),
-    "creds_set_labkey(api_key = Sys.getenv(\"api-key\"))"
+    "creds_set_labkey(api_key = Sys.getenv(\"API_KEY\"))"
   )
 })
 
@@ -36,9 +36,9 @@ testthat::test_that("This would expect the equality in fn_dry function",{
 testthat::test_that("This would test if labkey api credentials from keyring pass in fn_dry function",{
   testthat::expect_equal(
     fn_dry(
-      creds_set_labkey(keyring::key_get(service = "api-key", keyring="remote"))
+      creds_set_labkey(keyring::key_get(service = "API_KEY", keyring="remote"))
     ),
-    "creds_set_labkey(keyring::key_get(service = \"api-key\", keyring = \"remote\"))"
+    "creds_set_labkey(keyring::key_get(service = \"API_KEY\", keyring = \"remote\"))"
   )
 })
 
