@@ -77,6 +77,25 @@ dp_init <- function(project_path = fs::path_wd(),
   commit_description <- "dp init"
   wd0 <- fs::path_wd()
 
+  if (!rlang::is_character(x = creds_set_dried)){
+    message("Encountered error in creds_set_dried in dp_init")
+    message("Make sure to use fn_dry in argument passed to creds_set_dried paramater.")
+    stop(cli::format_error(glue::glue("Do not supply the credentials directly as the function arguments.")))
+  }
+
+  if (!rlang::is_character(x = board_params_set_dried)){
+    message("Encountered error in board_params_set_dried in dp_init")
+    stop(cli::format_error(glue::glue("Make sure to use fn_dry in argument passed to board_params_set_dried paramater.")))
+  }
+
+  creds_set_dried_parsed <- rlang::parse_expr(creds_set_dried)
+
+  if (!class(creds_set_dried_parsed) == "call") {
+    message("Encountered error in creds_set_dried in dp_init")
+    message("Make sure to use fn_dry in argument passed to creds_set_dried paramater.")
+    stop(cli::format_error(glue::glue("Do not supply the credentials directly as the function arguments.")))
+  }
+
   if(!fs::dir_exists(path = project_path))
     fs::dir_create(project_path)
 
@@ -205,11 +224,27 @@ dpconf_init <- function(project_path,
 #' fn_dry(sum(log(1:10)))
 #' }
 #' @export
-fn_dry <- function(fn_called){
+fn_dry <- function(fn_called) {
+
   fn_as_call <- rlang::enexpr(fn_called)
-  dried_fn <- rlang::expr_deparse(fn_as_call, width = 300) # large width avoids line wrapping
+
+  is_creds_set_method <- grepl(pattern = "creds_set_", x = fn_as_call, ignore.case = F)[1]
+
+  if (is_creds_set_method) {
+    fn_as_call_main <- rlang::call_name(fn_as_call)
+    get_fn_args <- rlang::call_args(fn_as_call)
+
+    for (arg in get_fn_args) {
+      if (!rlang::is_callable(arg)) {
+        stop(cli::format_error(glue::glue("Do not supply the credentials directly as the function arguments. Function arguments in {fn_as_call_main} need to be passed as function calls. For example, Sys.getenv()")))
+      }
+    }
+    dried_fn <- rlang::expr_deparse(fn_as_call, width = 300)
+  } else {
+    dried_fn <- rlang::expr_deparse(fn_as_call, width = 300)
+  }
   if (length(dried_fn) > 1) {
-    warning("input expression is too long; line wrapping created")
+    warning("Input expression is too long; line wrapping created")
   }
   return(dried_fn)
 }
