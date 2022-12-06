@@ -77,24 +77,21 @@ dp_init <- function(project_path = fs::path_wd(),
   commit_description <- "dp init"
   wd0 <- fs::path_wd()
 
-  if (!rlang::is_character(x = creds_set_dried)){
-    message("Encountered error in creds_set_dried in dp_init")
-    message("Make sure to use fn_dry in argument passed to creds_set_dried paramater.")
-    stop(cli::format_error(glue::glue("Do not supply the credentials directly as the function arguments.")))
-  }
+  if (!rlang::is_character(x = creds_set_dried))
+    stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in dp_init. ",
+      "Make sure to use fn_dry in argument passed to creds_set_dried paramater. ",
+      "Do not supply the credentials directly as the function arguments.")))
 
-  if (!rlang::is_character(x = board_params_set_dried)){
-    message("Encountered error in board_params_set_dried in dp_init")
-    stop(cli::format_error(glue::glue("Make sure to use fn_dry in argument passed to board_params_set_dried paramater.")))
-  }
+  if (!rlang::is_character(x = board_params_set_dried))
+    stop(cli::format_error(glue::glue("Encountered error in board_params_set_dried in dp_init. ",
+      "Make sure to use fn_dry in argument passed to board_params_set_dried paramater.")))
 
   creds_set_dried_parsed <- rlang::parse_expr(creds_set_dried)
 
-  if (!class(creds_set_dried_parsed) == "call") {
-    message("Encountered error in creds_set_dried in dp_init")
-    message("Make sure to use fn_dry in argument passed to creds_set_dried paramater.")
-    stop(cli::format_error(glue::glue("Do not supply the credentials directly as the function arguments.")))
-  }
+  if (!class(creds_set_dried_parsed) == "call")
+    stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in dp_init ",
+      "Make sure to use fn_dry in argument passed to creds_set_dried paramater. ",
+      "Do not supply the credentials directly as the function arguments.")))
 
   if(!fs::dir_exists(path = project_path))
     fs::dir_create(project_path)
@@ -232,17 +229,26 @@ fn_dry <- function(fn_called) {
 
   if (is_creds_set_method) {
     fn_as_call_main <- rlang::call_name(fn_as_call)
+
     get_fn_args <- rlang::call_args(fn_as_call)
 
+    call_arg_starts_with_c <- grepl("^c\\(", get_fn_args)
+
+    if (any(call_arg_starts_with_c))
+      stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in dp_init. ",
+        "Make sure to use fn_dry in argument passed to creds_set_dried paramater. ",
+        "Do not supply the credentials directly as the function arguments.")))
+
     for (arg in get_fn_args) {
-      if (!rlang::is_callable(arg)) {
-        stop(cli::format_error(glue::glue("Do not supply the credentials directly as the function arguments. Function arguments in {fn_as_call_main} need to be passed as function calls. For example, Sys.getenv()")))
+      if (!rlang::is_callable(arg) | class(arg) %in% c("(","{")) {
+        stop(cli::format_error(glue::glue("Do not supply the credentials directly as the function arguments. ",
+          "Function arguments in {fn_as_call_main} need to be passed as function calls. ",
+          "For example, key = Sys.getenv('AWS_KEY')")))
       }
     }
-    dried_fn <- rlang::expr_deparse(fn_as_call, width = 300)
-  } else {
-    dried_fn <- rlang::expr_deparse(fn_as_call, width = 300)
   }
+  dried_fn <- rlang::expr_deparse(fn_as_call, width = 300)
+
   if (length(dried_fn) > 1) {
     warning("Input expression is too long; line wrapping created")
   }
