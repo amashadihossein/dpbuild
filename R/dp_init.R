@@ -224,26 +224,23 @@ dpconf_init <- function(project_path,
 fn_dry <- function(fn_called) {
 
   fn_as_call <- rlang::enexpr(fn_called)
-
   is_creds_set_method <- grepl(pattern = "creds_set_", x = fn_as_call, ignore.case = F)[1]
 
   if (is_creds_set_method) {
     fn_as_call_main <- rlang::call_name(fn_as_call)
-
     get_fn_args <- rlang::call_args(fn_as_call)
-
     call_arg_starts_with_c <- grepl("^c\\(", get_fn_args)
 
+    error_message <- glue::glue("Do not supply the credentials directly as the function arguments. ",
+      "Function arguments in {fn_as_call_main} need to be passed as function calls. ",
+      "For example, key = Sys.getenv('AWS_KEY')")
+
     if (any(call_arg_starts_with_c))
-      stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in dp_init. ",
-        "Make sure to use fn_dry in argument passed to creds_set_dried paramater. ",
-        "Do not supply the credentials directly as the function arguments.")))
+      stop(cli::format_error(error_message))
 
     for (arg in get_fn_args) {
       if (!rlang::is_callable(arg) | class(arg) %in% c("(","{")) {
-        stop(cli::format_error(glue::glue("Do not supply the credentials directly as the function arguments. ",
-          "Function arguments in {fn_as_call_main} need to be passed as function calls. ",
-          "For example, key = Sys.getenv('AWS_KEY')")))
+        stop(cli::format_error(error_message))
       }
     }
   }
