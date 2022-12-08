@@ -7,7 +7,8 @@
 is_valid_dp_repository(
   path,
   checks = c("all", "git", "dp", "renv", "branch"),
-  verbose = F
+  verbose = F,
+  check_all_checks = T
 )
 }
 \arguments{
@@ -17,6 +18,9 @@ is_valid_dp_repository(
 is all.}
 
 \item{verbose}{If TRUE, it will print which tests passed/failed}
+
+\item{check_all_checks}{checks if all or any values in c("all","git","dp","renv","branch")
+are to be checked}
 }
 \value{
 TRUE or FALSE

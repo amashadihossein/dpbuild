@@ -16,7 +16,7 @@ dp_clone <- function(remote_url, branch,  verbose = F){
   input_output_directories <- c("input_files", "output_files")
 
   if(nchar(Sys.getenv("GITHUB_PAT")) == 0)
-    stop(cli::format_error(glue::glue("Could not push as it did not find ",
+    stop(cli::format_error(glue::glue("Could not find ",
                                       "GITHUB_PAT in the environment. Set it ",
                                       "by Sys.setenv(GITHUB_PAT = <your github",
                                       " personal access token>) and retry!")))
