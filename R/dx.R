@@ -41,12 +41,12 @@ is_valid_dp_repository <- function(path,
 
   check_dx <- sapply(dx, isTRUE)
   if (check_any_checks){
-    dp_repository <- all(check_dx)
-  } else {
     dp_repository <- any(check_dx)
+  } else {
+    dp_repository <- all(check_dx)
   }
   if (dp_repository) {
-    eerror_message <- stringr::str_replace_all(paste0(names(check_dx)[check_dx == T], collapse = ", "),"_", " ")
+    error_message <- stringr::str_replace_all(paste0(names(check_dx)[check_dx == T], collapse = ", "),"_", " ")
     error_message_redacted <- stringr::str_replace_all(error_message,"initialized", "already initilized")
     cli::cli_alert_danger(glue::glue("Failed due to: {error_message_redacted} "))
   }
