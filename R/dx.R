@@ -20,7 +20,7 @@ is_valid_dp_repository <- function(path,
                       choices = c("all","git","dp","renv","branch"),
                       several.ok = T)
 
-  dx <- dpbuild:::dp_repository_check(path = path)
+  dx <- dp_repository_check(path = path)
 
   if(verbose)
     print(data.frame(dx))
