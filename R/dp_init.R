@@ -77,8 +77,8 @@ dp_init <- function(project_path = fs::path_wd(),
   commit_description <- "dp init"
   wd0 <- fs::path_wd()
 
-  if (is_valid_dp_repository(project_path, check_all_checks = T)){
-    stop(cli::format_error("dp_init failed."))
+  if (is_valid_dp_repository(project_path, check_any_checks = T)){
+    stop(cli::format_error("dp_init failed; cannot initialize dp within an existing repository"))
   }
 
   if(!fs::dir_exists(path = project_path)){

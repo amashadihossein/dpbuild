@@ -7,8 +7,7 @@
 #' @param path Path to be evaluated
 #' @param checks any combination of c("all","git","dp","renv","branch"). default
 #' is all.
-#' @param check_any_checks checks if any values in c("all","git","dp","renv","branch")
-#' are to be checked
+#' @param check_any_checks checks if any of the checks are TRUE, rather than all
 #' @param verbose If TRUE, it will print which tests passed/failed
 #' @return TRUE or FALSE
 #' @export
@@ -27,29 +26,30 @@ is_valid_dp_repository <- function(path,
 
   if(!"all" %in% checks){
     if(!"git" %in% checks)
-      dx <- dx[,setdiff(colnames(dx),"git_initialized"), drop = F]
+      dx <- dx[setdiff(names(dx),"git_initialized")]
 
     if(!"dp" %in% checks)
-      dx <- dx[,setdiff(colnames(dx),"dp_initialized"), drop = F]
+      dx <- dx[setdiff(names(dx),"dp_initialized")]
 
     if(!"renv" %in% checks)
-      dx <- dx[,setdiff(colnames(dx),"renv_initialized"), drop = F]
+      dx <- dx[setdiff(names(dx),"renv_initialized")]
 
     if(!"branch" %in% checks)
-      dx <- dx[,setdiff(colnames(dx),"branch_name_matches"), drop = F]
+      dx <- dx[setdiff(names(dx),"branch_name_matches")]
   }
 
   check_dx <- sapply(dx, isTRUE)
   if (check_any_checks){
-    dp_repository <- all(check_dx)
-  } else {
     dp_repository <- any(check_dx)
+    if (dp_repository) {
+      error_message <- stringr::str_replace_all(paste0(names(check_dx)[check_dx == T], collapse = ", "),"_", " ")
+      error_message_redacted <- stringr::str_replace_all(error_message,"initialized", "already initialized")
+      cli::cli_alert_danger(glue::glue("Failed due to: {error_message_redacted} "))
+    }
+  } else {
+    dp_repository <- all(check_dx)
   }
-  if (dp_repository) {
-    eerror_message <- stringr::str_replace_all(paste0(names(check_dx)[check_dx == T], collapse = ", "),"_", " ")
-    error_message_redacted <- stringr::str_replace_all(error_message,"initialized", "already initilized")
-    cli::cli_alert_danger(glue::glue("Failed due to: {error_message_redacted} "))
-  }
+
   return(dp_repository)
 }
 
@@ -62,8 +62,8 @@ is_valid_dp_repository <- function(path,
 dp_repository_check <- function(path){
   dx <- list()
   dx$git_initialized <- git2r::in_repository(path = path)
-  dx$dp_initialized <- fs::file_exists(glue::glue("{path}/.daap/daap_config.yaml"))
-  dx$renv_initialized <- fs::dir_exists(glue::glue("{path}/renv"))
+  dx$dp_initialized <- unname(fs::file_exists(glue::glue("{path}/.daap/daap_config.yaml")))
+  dx$renv_initialized <- unname(fs::dir_exists(glue::glue("{path}/renv")))
   dx$branch_name_matches <- NA
   dp_repository <- unname(dx$git_initialized & dx$dp_initialized & dx$renv_initialized)
   if(!dp_repository)
