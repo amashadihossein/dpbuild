@@ -61,7 +61,7 @@ is_dp_initiated <- function(path,
     choices = c("git","dp","renv"),
     several.ok = T)
 
-  dx <- dpbuild:::dp_repository_check(path = path)
+  dx <- dp_repository_check(path = path)
   dx[['branch_name_matches']] <- NULL
 
   if(verbose)
