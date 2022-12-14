@@ -7,52 +7,80 @@
 #' @param path Path to be evaluated
 #' @param checks any combination of c("all","git","dp","renv","branch"). default
 #' is all.
-#' @param check_any_checks checks if any of the checks are TRUE, rather than all
 #' @param verbose If TRUE, it will print which tests passed/failed
 #' @return TRUE or FALSE
 #' @export
 is_valid_dp_repository <- function(path,
-                                   checks = c("all","git","dp","renv","branch"),
-                                   verbose = F,
-                                   check_any_checks = F){
+  checks = c("all","git","dp","renv","branch"),
+  verbose = F){
   checks <- match.arg(arg = checks,
-                      choices = c("all","git","dp","renv","branch"),
-                      several.ok = T)
+    choices = c("all","git","dp","renv","branch"),
+    several.ok = T)
 
   dx <- dp_repository_check(path = path)
 
   if(verbose)
     print(data.frame(dx))
 
+
   if(!"all" %in% checks){
     if(!"git" %in% checks)
-      dx <- dx[setdiff(names(dx),"git_initialized")]
+      dx <- dx[,setdiff(colnames(dx),"git_initialized"), drop = F]
 
     if(!"dp" %in% checks)
-      dx <- dx[setdiff(names(dx),"dp_initialized")]
+      dx <- dx[,setdiff(colnames(dx),"dp_initilized"), drop = F]
 
     if(!"renv" %in% checks)
-      dx <- dx[setdiff(names(dx),"renv_initialized")]
+      dx <- dx[,setdiff(colnames(dx),"renv_initialized"), drop = F]
 
     if(!"branch" %in% checks)
-      dx <- dx[setdiff(names(dx),"branch_name_matches")]
+      dx <- dx[,setdiff(colnames(dx),"branch_name_matches"), drop = F]
   }
 
-  check_dx <- sapply(dx, isTRUE)
-  if (check_any_checks){
-    dp_repository <- any(check_dx)
-    if (dp_repository) {
-      error_message <- stringr::str_replace_all(paste0(names(check_dx)[check_dx == T], collapse = ", "),"_", " ")
-      error_message_redacted <- stringr::str_replace_all(error_message,"initialized", "already initialized")
-      cli::cli_alert_danger(glue::glue("Failed due to: {error_message_redacted} "))
-    }
-  } else {
-    dp_repository <- all(check_dx)
-  }
-
+  dp_repository <- all(sapply(dx,isTRUE))
   return(dp_repository)
 }
 
+#' @title Determine if dp repository initiated
+#' @description Looks at the path, runs `dp_repository_check` and returns TRUE
+#' if all TRUE
+#' @details Any diagnostic tests to check validity of dp repository are run
+#' regardless of choice of checks. Checks determines what subset is considered
+#' in return T/F. Regardless of the choice of checks, verbose = F
+#' @param path Path to be evaluated
+#' @param checks any combination of c("git","dp","renv"). default
+#' is any.
+#' @param verbose If TRUE, it will print which tests passed/failed
+#' @return TRUE or FALSE
+#' @keywords internal
+is_dp_initiated <- function(path,
+  checks = c("git","dp","renv"),
+  verbose = F){
+
+  checks <- match.arg(arg = checks,
+    choices = c("git","dp","renv"),
+    several.ok = T)
+
+  dx <- dpbuild:::dp_repository_check(path = path)
+  dx[['branch_name_matches']] <- NULL
+
+  if(verbose)
+    print(data.frame(dx))
+
+  if(!"git" %in% checks)
+    dx <- dx[setdiff(names(dx),"git_initialized")]
+
+  if(!"dp" %in% checks)
+    dx <- dx[setdiff(names(dx),"dp_initialized")]
+
+  if(!"renv" %in% checks)
+    dx <- dx[setdiff(names(dx),"renv_initialized")]
+
+  check_dx <- sapply(dx, isTRUE)
+  dp_initiated <- any(check_dx)
+
+  return(dp_initiated)
+}
 
 #' @title Check dp repository
 #' @description Runs a number of checks and returns a list of T/F per check
