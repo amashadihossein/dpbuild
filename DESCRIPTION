@@ -24,7 +24,6 @@ Imports:
     purrr,
     renv,
     rio,
-    readr,
     rlang,
     tibble,
     yaml,
