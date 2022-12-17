@@ -47,34 +47,13 @@ is_valid_dp_repository <- function(path,
 #' regardless of choice of checks. Checks determines what subset is considered
 #' in return T/F.
 #' @param path Path to be evaluated
-#' @param checks any combination of c("all","git","dp","renv","branch"). default
-#' is all.
 #' @param verbose If TRUE, it will print which tests passed/failed
 #' @return TRUE or FALSE
 #' @keywords internal
 is_dp_initiated <- function(path,
-  checks = c("all","git","dp","renv","branch"),
   verbose = F){
 
-  checks <- match.arg(arg = checks,
-                      choices = c("all","git","dp","renv","branch"),
-                      several.ok = T)
-
   dx <- dp_repository_check(path = path)
-
-  if(!"all" %in% checks){
-    if(!"git" %in% checks)
-      dx <- dx[setdiff(names(dx),"git_initialized")]
-
-    if(!"dp" %in% checks)
-      dx <- dx[setdiff(names(dx),"dp_initialized")]
-
-    if(!"renv" %in% checks)
-      dx <- dx[setdiff(names(dx),"renv_initialized")]
-
-    if(!"branch" %in% checks)
-      dx <- dx[setdiff(names(dx),"branch_name_matches")]
-  }
 
   if(verbose)
     print(data.frame(dx))

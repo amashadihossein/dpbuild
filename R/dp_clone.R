@@ -13,7 +13,7 @@
 
 dp_clone <- function(remote_url, branch,  verbose = F){
 
-  input_output_directories <- c("input_files", "output_files")
+  dirs_to_add <- c("input_files", "output_files")
 
   if(nchar(Sys.getenv("GITHUB_PAT")) == 0)
     stop(cli::format_error(glue::glue("Could not find ",
@@ -34,11 +34,7 @@ dp_clone <- function(remote_url, branch,  verbose = F){
     git2r::clone(url = remote_url, local_path = project_path, branch = branch,
                  credentials = cred, progress = verbose)
 
-    for (dir in input_output_directories){
-      if(!fs::dir_exists(dir)){
-        fs::dir_create(dir)
-      }
-    }
+    fs::dir_create(dirs_to_add[!fs::dir_exists(dirs_to_add)])
   },
   error = function(cond) {
     message("Encountered error in dp_clone")

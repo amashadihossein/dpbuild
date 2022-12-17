@@ -4,13 +4,10 @@
 \alias{is_dp_initiated}
 \title{Determine if dp repository initiated}
 \usage{
-is_dp_initiated(path, checks = c("git", "dp", "renv"), verbose = F)
+is_dp_initiated(path, verbose = F)
 }
 \arguments{
 \item{path}{Path to be evaluated}
-
-\item{checks}{any combination of c("git","dp","renv"). default
-is any.}
 
 \item{verbose}{If TRUE, it will print which tests passed/failed}
 }
@@ -19,11 +16,11 @@ TRUE or FALSE
 }
 \description{
 Looks at the path, runs \code{dp_repository_check} and returns TRUE
-if all TRUE
+if any TRUE
 }
 \details{
-Any diagnostic tests to check validity of dp repository are run
+All diagnostic tests to check validity of dp repository are run
 regardless of choice of checks. Checks determines what subset is considered
-in return T/F. Regardless of the choice of checks, verbose = F
+in return T/F.
 }
 \keyword{internal}

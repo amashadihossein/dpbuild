@@ -28,5 +28,5 @@ if all TRUE
 \details{
 All diagnostic tests to check validity of dp repository are run
 regardless of choice of checks. Checks determines what subset is considered
-in return T/F. Regardless of the choice of checks, verbose = T
+in return T/F.
 }
