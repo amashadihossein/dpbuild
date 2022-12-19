@@ -13,9 +13,9 @@ dpinput_map <- function(project_path){
     stop(cli::format_error(glue::glue("input_dir {input_dir} specified does ",
                                       "not exist. Check the path")))
 
-  if(length(fs::dir_ls(input_dir))==0)
-    stop(cli::format_error("Input_dir is empty"))
-
+  if(length(fs::dir_ls(input_dir))==0){
+    message("input_files directory is empty. It is OK to have an empty input_files directory if there is no need to update input data.")
+  }
 
   read_files <- dir_process(current_dir = input_dir)
   flattened_dirTree <- dirTree_flatten(read_files = read_files)
