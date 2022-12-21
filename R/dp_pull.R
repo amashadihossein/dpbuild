@@ -24,8 +24,12 @@ dp_pull <- function (project_path = ".")
       stop(cli::format_error("{project_path} is an empty directory!"))
   }
 
+  if(!fs::dir_exists(fs::path_norm(fs::path(project_path, "..")))){
+    stop(cli::format_error("The directory does not exist!"))
+  }
+
   if (!dpbuild::is_valid_dp_repository(project_path)){
-    stop(cli::format_error("dp_pull failed; make sure this is a valid git repository."))
+    stop(cli::format_error("dp_pull failed; make sure this is a valid dp git repository."))
   }
 
   repo <- tryCatch({
@@ -34,11 +38,10 @@ dp_pull <- function (project_path = ".")
     fs::dir_create(dirs_to_add[!fs::dir_exists(dirs_to_add)])
   },
     error = function(cond) {
-      message("Encountered error in dp_pull")
-      message("Make sure GITHUB_PAT is correct")
-      message(glue::glue("Make sure {project_path} directory exists"))
-      message("Networking constraints (e.g. vpn) may be blocking communication")
-      message(cond)
+      cli::cli_alert_danger("Encountered error in dp_pull")
+      cli::cli_alert_warning("Make sure GITHUB_PAT is correct")
+      cli::cli_alert_warning("Networking constraints (e.g. vpn) may be blocking communication")
+      cli::cli_alert_danger(cond)
     }
   )
   return(TRUE)
