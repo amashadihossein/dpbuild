@@ -39,4 +39,6 @@ Remotes:
     amashadihossein/dpi
 BugReports: https://github.com/amashadihossein/dpbuild/issues
 Suggests: 
-    httr
+    httr,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
