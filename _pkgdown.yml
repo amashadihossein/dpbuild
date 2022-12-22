@@ -1,0 +1,23 @@
+reference:
+- title: Data product core functions
+- contents:
+  - starts_with("dp_")
+- title: Config functions
+- contents:
+  - starts_with("dpconf_")
+- title: Input functions
+- contents:
+  - starts_with("dpinput_")
+  - inputmap_clean
+- title: Helper data product functions
+- contents:
+  - dpcode_add
+  - starts_with("dpname_")
+  - readme_get
+- title: Auxillary functions
+- contents:
+  - dppkg_modify
+  - fn_dry
+  - is_valid_dp_repository
+  - make_names_codefriendly
+  - tbsig_get

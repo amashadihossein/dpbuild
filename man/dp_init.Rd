@@ -13,7 +13,9 @@ dp_init(
   board_params_set_dried,
   creds_set_dried,
   github_repo_url,
-  git_ignore = c(".drake/", "input_files/", "output_files/", ".Rhistory", ".DS_Store"),
+  git_ignore = c(".drake/", "_targets/", "input_files/", "output_files/", ".Rprofile",
+    ".Renviron", ".Rhistory", ".Rproj.user", ".Rproj.user/", ".DS_Store", "*.csv",
+    "*.tsv", "*.rds", "*.sas7bdat"),
   ...
 )
 }
@@ -56,13 +58,13 @@ Initializes a data product project
 \examples{
  \dontrun{
 # Dry function call to setting board_params
-board_params_set_dried <- 
+board_params_set_dried <-
 fn_dry(dpi::board_params_set_labkey(board_alias = "labkey",
  url = 'https:url_to_labkey/labkey',
  folder = 'project_folder/subfolder'))
 
 # Dry function call to setting credentials
-creds_set_dried <- 
+creds_set_dried <-
 fn_dry(dpi::creds_set_labkey(api_key = Sys.getenv("LABKEY_API_KEY")))
 
 # Initialize dp repo
