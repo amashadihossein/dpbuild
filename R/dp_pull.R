@@ -1,14 +1,12 @@
 #' @title Pull data product from a remote repo
-#' @description This command pulls the data product from the remote
-#' @param project_path path to the dp_project
+#' @description This command pulls the data product from a remote repo
+#' @param project_path Path to the project folder, default "."
 #' @return TRUE
 #' @examples  \dontrun{
 #' Sys.setenv("GITHUB_PAT" = keyring::key_get("GITHUB_PAT"))
-#' dp_pull(project_path = ".")
-#' }
+#' dp_pull()
 #' @export
-
-dp_pull <- function (project_path = ".")
+dp_pull <- function(project_path = fs::path_wd())
 {
   dirs_to_add <- c("input_files", "output_files")
 
@@ -19,15 +17,6 @@ dp_pull <- function (project_path = ".")
       " personal access token>) and retry!")))
   cred <- git2r::cred_token()
 
-  if(fs::dir_exists(project_path)){
-    if(length(fs::dir_ls(project_path)) <= 0)
-      stop(cli::format_error("{project_path} is an empty directory!"))
-  }
-
-  if(!fs::dir_exists(fs::path_norm(fs::path(project_path, "..")))){
-    stop(cli::format_error("The directory does not exist!"))
-  }
-
   if (!dpbuild::is_valid_dp_repository(project_path)){
     stop(cli::format_error("dp_pull failed; make sure this is a valid dp git repository."))
   }
@@ -35,7 +24,7 @@ dp_pull <- function (project_path = ".")
   repo <- tryCatch({
     git2r::pull(repo = project_path, credentials = cred)
 
-    fs::dir_create(dirs_to_add[!fs::dir_exists(dirs_to_add)])
+    fs::dir_create(dirs_to_add[!fs::dir_exists(fs::path(project_path, dirs_to_add))])
   },
     error = function(cond) {
       cli::cli_alert_danger("Encountered error in dp_pull")
