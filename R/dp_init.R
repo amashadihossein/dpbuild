@@ -85,8 +85,8 @@ dp_init <- function(project_path = fs::path_wd(),
   if (!rlang::is_character(x = board_params_set_dried)) 
     stop(cli::format_error(glue::glue("Encountered error in 
                                       board_params_set_dried in dp_init. Make 
-                                      sure to use fn_dry in argument passed to 
-                                      board_params_set_dried paramater.")))
+                                      sure to use fn_dry for assigning value to 
+                                      board_params_set_dried.")))
   
   board_type <- dpbuild:::fn_hydrate(board_params_set_dried)$board_type
   if (board_type == "local_board") {
@@ -102,18 +102,16 @@ dp_init <- function(project_path = fs::path_wd(),
   
   if (!rlang::is_character(x = creds_set_dried)) 
     stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in 
-                                      dp_init. Make sure to use fn_dry in 
-                                      argument passed to creds_set_dried 
-                                      paramater. Do not supply the credentials 
-                                      directly as the function arguments.")))
+                                      dp_init. Make sure to use fn_dry for 
+                                      assigning value to creds_set_dried. Do not
+                                      supply the credentials directly as the 
+                                      function arguments.")))
   
   creds_set_dried_parsed <- rlang::parse_expr(creds_set_dried)
   if (!class(creds_set_dried_parsed) == "call" & board_type != "local_board") 
     stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in 
-                                      dp_init. Make sure to use fn_dry in 
-                                      argument passed to creds_set_dried 
-                                      paramater. Do not supply the credentials 
-                                      directly as the function arguments.")))
+                                      dp_init. Make sure you are passing a
+                                      callable expression to fn_dry")))
   
   project_name <- basename(path = project_path)
   repo <- dp_git_init(project_path = project_path, project_name = project_name,
