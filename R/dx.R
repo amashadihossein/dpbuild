@@ -40,28 +40,6 @@ is_valid_dp_repository <- function(path,
   return(dp_repository)
 }
 
-#' @title Determine if dp repository initiated
-#' @description Looks at the path, runs `dp_repository_check` and returns TRUE
-#' if any TRUE
-#' @details All diagnostic tests to check validity of dp repository are run
-#' regardless of choice of checks. Checks determines what subset is considered
-#' in return T/F.
-#' @param path Path to be evaluated
-#' @param verbose If TRUE, it will print which tests passed/failed
-#' @return TRUE or FALSE
-#' @keywords internal
-is_dp_initiated <- function(path,
-  verbose = F){
-
-  dx <- dp_repository_check(path = path)
-
-  if(verbose)
-    print(data.frame(dx))
-
-  dp_initiated <- any(sapply(dx, isTRUE))
-  return(dp_initiated)
-}
-
 #' @title Check dp repository
 #' @description Runs a number of checks and returns a list of T/F per check
 #' @param path Path to be evaluated

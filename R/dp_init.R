@@ -77,7 +77,9 @@ dp_init <- function(project_path = fs::path_wd(),
   commit_description <- "dp init"
   wd0 <- fs::path_wd()
 
-  if (is_dp_initiated(path = fs::path_norm(fs::path(project_path, "..")), checks = c("git", "renv", "dp"))){
+  is_dp_initiated <- any(sapply(dp_repository_check(fs::path_norm(fs::path(project_path, ".."))),isTRUE))
+
+  if (is_dp_initiated){
     stop(cli::format_error("dp_init failed; cannot initialize dp within an existing repository"))
   }
 
@@ -139,12 +141,9 @@ dp_init <- function(project_path = fs::path_wd(),
   git2r::add(repo = repo, path = glue::glue("{project_path}/{add_these}") )
   git2r::commit(repo = repo, all = TRUE, message = commit_description)
 
-
   return(fs::path_dir(repo$path))
 
 }
-
-
 
 #' @title Initialize daap configuration file
 #' @description Initializes daap configuration file
