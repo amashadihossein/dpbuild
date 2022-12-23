@@ -15,7 +15,7 @@ dp_init(
   github_repo_url,
   git_ignore = c(".drake/", "_targets/", "input_files/", "output_files/", ".Rprofile",
     ".Renviron", ".Rhistory", ".Rproj.user", ".Rproj.user/", ".DS_Store", "*.csv",
-    "*.tsv", "*.rds", "*.sas7bdat"),
+    "*.tsv", "*.rds", "*.txt", "*.parquet", "*.sas7bdat"),
   ...
 )
 }
