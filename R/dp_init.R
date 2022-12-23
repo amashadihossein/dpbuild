@@ -88,7 +88,7 @@ dp_init <- function(project_path = fs::path_wd(),
                                       sure to use fn_dry for assigning value to 
                                       board_params_set_dried.")))
   
-  board_type <- dpbuild:::fn_hydrate(board_params_set_dried)$board_type
+  board_type <- fn_hydrate(board_params_set_dried)$board_type
   if (board_type == "local_board") {
     if(!missing(creds_set_dried))
       warning(cli::format_warning("cred_set_dried is ignored with local_board"))
