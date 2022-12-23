@@ -79,42 +79,41 @@ dp_init <- function(project_path = fs::path_wd(),
   commit_description <- "dp init"
   wd0 <- fs::path_wd()
 
-  if (!rlang::is_character(x = creds_set_dried))
-    stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in dp_init. ",
-      "Make sure to use fn_dry in argument passed to creds_set_dried paramater. ",
-      "Do not supply the credentials directly as the function arguments.")))
-
-  if (!rlang::is_character(x = board_params_set_dried))
-    stop(cli::format_error(glue::glue("Encountered error in board_params_set_dried in dp_init. ",
-      "Make sure to use fn_dry in argument passed to board_params_set_dried paramater.")))
-
-  creds_set_dried_parsed <- rlang::parse_expr(creds_set_dried)
-
-  if (!class(creds_set_dried_parsed) == "call")
-    stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in dp_init ",
-      "Make sure to use fn_dry in argument passed to creds_set_dried paramater. ",
-      "Do not supply the credentials directly as the function arguments.")))
-
-  if(!fs::dir_exists(path = project_path))
-    fs::dir_create(project_path)
-
-
-  if(length(fs::dir_ls(path = project_path))!=0)
-    stop(cli::format_error(glue::glue("There is already a non-empty directory ",
-                                      "{basename(project_path)} ! If starting a ",
-                                      "new project run dp_init where ",
-                                      "{basename(project_path)} does not exist ",
-                                      "or is empty!")))
-
-  #TODO: fold this into function for general check input params including 
-  # security warning in case of cred_set
-  board_type <- fn_hydrate(board_params_set_dried)$board_type
-  if(missing(creds_set_dried) & board_type == "local_board"){
-    creds_set_dried <- dpbuild::fn_dry(NULL)
-  }else{
-    stop(cli::format_error(glue::glue("board_params_set_dried which is ",
-                                      "expected for {board_type}")))
+  # Validate data repo params
+  # TODO: to be moved upstream as part of creds and board param validation
+  #-----------------------------------------------------------------------
+  if (!rlang::is_character(x = board_params_set_dried)) 
+    stop(cli::format_error(glue::glue("Encountered error in 
+                                      board_params_set_dried in dp_init. Make 
+                                      sure to use fn_dry in argument passed to 
+                                      board_params_set_dried paramater.")))
+  
+  board_type <- dpbuild:::fn_hydrate(board_params_set_dried)$board_type
+  if (board_type == "local_board") {
+    if(!missing(creds_set_dried))
+      warning(cli::format_warning("cred_set_dried is ignored with local_board"))
+    creds_set_dried <- "NA"
   }
+  else{ 
+    if(missing(creds_set_dried))
+      stop(cli::format_error(glue::glue("board_params_set_dried which is ", 
+                                        "expected for {board_type}")))
+  }
+  
+  if (!rlang::is_character(x = creds_set_dried)) 
+    stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in 
+                                      dp_init. Make sure to use fn_dry in 
+                                      argument passed to creds_set_dried 
+                                      paramater. Do not supply the credentials 
+                                      directly as the function arguments.")))
+  
+  creds_set_dried_parsed <- rlang::parse_expr(creds_set_dried)
+  if (!class(creds_set_dried_parsed) == "call" & board_type != "local_board") 
+    stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in 
+                                      dp_init. Make sure to use fn_dry in 
+                                      argument passed to creds_set_dried 
+                                      paramater. Do not supply the credentials 
+                                      directly as the function arguments.")))
   
   project_name <- basename(path = project_path)
   repo <- dp_git_init(project_path = project_path, project_name = project_name,
