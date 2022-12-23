@@ -102,7 +102,7 @@ readme_get <- function(d, general_note){
 #' @return tbsig a character string
 #' @export
 tbsig_get <- function(d){
-  if(class(d) != "data.frame")
+  if(!inherits(d, "data.frame"))
     stop("tbsig is only for data.frames. Ensure d is a data.frame")
 
   supported_classes <- c("numeric","integer","character",
@@ -216,34 +216,34 @@ dpinputnames_simplify <- function(x, make_unique = FALSE){
 #' @description  This function drops unsynced or not-to-be-synced and pos
 #' @param input_map synced mapped object as returned by `dpbuild::dpinput_map`
 #' @param remove_id a vector of input_data ids to remove. This is for convenient
-#' as setting the input_manifest field `to_be_synced` to FALSE can achieve the 
-#' same thing. The default value of `character(0)` limits removal to any row 
+#' as setting the input_manifest field `to_be_synced` to FALSE can achieve the
+#' same thing. The default value of `character(0)` limits removal to any row
 #' with `to_be_synced == FALSE`
 #' @param force_cleanname if TRUE it ensures each element of a vector names end up being unique. If not, it won't clean names unless clean is also unique
 #' @return input_map pruned and with cleaner names
 #' @export
 inputmap_clean <- function(input_map, remove_id = character(0) ,force_cleanname = F){
-  
-  input_map$input_manifest <- input_map$input_manifest %>% 
-    dplyr::mutate(to_be_synced = replace(to_be_synced,id %in% remove_id, FALSE))
-  
-  input_map$input_manifest <- input_map$input_manifest %>% dplyr::filter(to_be_synced)
+
+  input_map$input_manifest <- input_map$input_manifest %>%
+    dplyr::mutate(to_be_synced = replace(.data$to_be_synced, .data$id %in% remove_id, FALSE))
+
+  input_map$input_manifest <- input_map$input_manifest %>% dplyr::filter(.data$to_be_synced)
   input_map$input_obj <- input_map$input_obj[input_map$input_manifest$id]
-  
+
   if(class(try(dpinputnames_simplify(input_map$input_manifest$id))) != "try-error" | force_cleanname){
-    input_map$input_manifest <- input_map$input_manifest %>% 
-      dplyr::mutate(id = dpinputnames_simplify(id, make_unique = force_cleanname))
-    
-    names(input_map$input_obj) <- 
-      dpinputnames_simplify(names(input_map$input_obj), 
+    input_map$input_manifest <- input_map$input_manifest %>%
+      dplyr::mutate(id = dpinputnames_simplify(.data$id, make_unique = force_cleanname))
+
+    names(input_map$input_obj) <-
+      dpinputnames_simplify(names(input_map$input_obj),
                             make_unique = force_cleanname)
-    
+
     input_map$input_obj <- sapply(names(input_map$input_obj), function(name_i){
       input_map$input_obj[[name_i]]$metadata$id <- name_i
       input_map$input_obj[[name_i]]
     },simplify = F,USE.NAMES = T)
   }
-  
+
   return(input_map)
 }
 
