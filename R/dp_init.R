@@ -113,6 +113,9 @@ dp_init <- function(project_path = fs::path_wd(),
                                       dp_init. Make sure you are passing a
                                       callable expression to fn_dry")))
   
+  if(!fs::dir_exists(path = project_path))
+    fs::dir_create(project_path)
+  
   project_name <- basename(path = project_path)
   repo <- dp_git_init(project_path = project_path, project_name = project_name,
                       branch_name = branch_name,
