@@ -72,8 +72,8 @@ dp_init <- function(project_path = fs::path_wd(),
                     git_ignore = c(".drake/", "_targets/", "input_files/",
                                    "output_files/", ".Rprofile", ".Renviron",
                                    ".Rhistory", ".Rproj.user", ".Rproj.user/",
-                                   ".DS_Store", "*.csv", "*.tsv", "*.rds",
-                                   "*.sas7bdat"),
+                                   ".DS_Store", "*.csv", "*.tsv", "*.rds", 
+                                   "*.txt", "*.parquet","*.sas7bdat"),
                     ...){
 
   commit_description <- "dp init"
