@@ -64,33 +64,28 @@ make_pinlink <- function(synced_input_i){
     if(!is.null(args$conf) & is.null(args$config))
       args$config <- args$conf
     
-    
-    if(length(board_params) == 0 | length(creds) == 0){
-      if(!is.null(args$config)){
-        
-        if(length(board_params) > 0 & length(creds) == 0)
-          warning(cli::format_warning(glue::glue("creds is empty! board_params is", 
-                                                 " ignored. will attemp to use",
-                                                 " config")))
-        if(length(board_params) == 0 & length(creds) > 0)
-          warning(cli::format_warning(glue::glue("board_params is empty! creds is", 
-                                                 " ignored. will attemp to use",
-                                                 " config")))
-        
-        board_params <- args$config$board_params
-        creds <- args$config$creds
-        if(length(board_params) == 0 | length(creds) == 0)
-          stop(cli::format_error(glue::glue("Provide either a parameter-set",
-                                            " board_params and creds or a", 
-                                            " valid config parameter named config"
-          )))
-      }else{
-        stop(cli::format_error(glue::glue("Provide either a parameter-set",
-                                          " board_params and creds or a", 
-                                          " valid config parameter named config"))
-        )
-      }
+    if(!is.null(args$config)){
+      if(length(board_params) != 0 | length(creds) != 0)
+        warning(cli::format_warning(glue::glue("supplied config overwrites any",
+                                               " board_params or creds provided"
+                                               )))
+      board_params <- args$config$board_params
+      creds <- args$config$creds
     }
+    
+    if(length(board_params) == 0)
+      stop(cli::format_error(glue::glue("Provide either a parameter-set",
+                                        " board_params and creds or a valid ", 
+                                        "config named config")))
+    is_local_board <- isTRUE(board_params$board_type == "local_board")
+    if(is_local_board)
+      creds <- NULL
+    
+    if(length(creds) == 0 & !is_local_board)
+      stop(cli::format_error(glue::glue("Provide either a parameter-set",
+                                        " board_params and creds or a valid ", 
+                                        "config named config")))
+    
     
     board_params$board_alias <- paste0(board_params$board_alias,"_dpinput")
     dpi::dp_connect(board_params = board_params, creds = creds, 

@@ -28,9 +28,11 @@ dpi::creds_set_labkey
 #' @param board_params_set_dried Character representation of the function for
 #' setting board_params. Use `fn_dry()` in combination with
 #' `dpi::board_params_set_s3` or `dpi::board_params_set_labkey`. See example.
-#' @param creds_set_dried Character representation of the function for setting
-#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or
-#' `dpi::creds_set_labkey`. See example
+#' @param creds_set_dried when using `local_board`, it is ignored and need not
+#' be specified. Otherwise,character representation of the function for setting 
+#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or 
+#' `dpi::creds_set_labkey`. *NOTE: never directly pass credentials in script!*
+#'  *Use `Sys.getenv`*. See example
 #' @param github_repo_url the https url for the github repo
 #' @param git_ignore a character vector of the files and directories to be
 #' ignored by git.
@@ -70,41 +72,50 @@ dp_init <- function(project_path = fs::path_wd(),
                     git_ignore = c(".drake/", "_targets/", "input_files/",
                                    "output_files/", ".Rprofile", ".Renviron",
                                    ".Rhistory", ".Rproj.user", ".Rproj.user/",
-                                   ".DS_Store", "*.csv", "*.tsv", "*.rds",
-                                   "*.sas7bdat"),
+                                   ".DS_Store", "*.csv", "*.tsv", "*.rds", 
+                                   "*.txt", "*.parquet","*.sas7bdat"),
                     ...){
 
   commit_description <- "dp init"
   wd0 <- fs::path_wd()
 
-  if (!rlang::is_character(x = creds_set_dried))
-    stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in dp_init. ",
-      "Make sure to use fn_dry in argument passed to creds_set_dried paramater. ",
-      "Do not supply the credentials directly as the function arguments.")))
-
-  if (!rlang::is_character(x = board_params_set_dried))
-    stop(cli::format_error(glue::glue("Encountered error in board_params_set_dried in dp_init. ",
-      "Make sure to use fn_dry in argument passed to board_params_set_dried paramater.")))
-
+  # Validate data repo params
+  # TODO: to be moved upstream as part of creds and board param validation
+  #-----------------------------------------------------------------------
+  if (!rlang::is_character(x = board_params_set_dried)) 
+    stop(cli::format_error(glue::glue("Encountered error in 
+                                      board_params_set_dried in dp_init. Make 
+                                      sure to use fn_dry for assigning value to 
+                                      board_params_set_dried.")))
+  
+  board_type <- fn_hydrate(board_params_set_dried)$board_type
+  if (board_type == "local_board") {
+    if(!missing(creds_set_dried))
+      warning(cli::format_warning("cred_set_dried is ignored with local_board"))
+    creds_set_dried <- "NA"
+  }
+  else{ 
+    if(missing(creds_set_dried))
+      stop(cli::format_error(glue::glue("board_params_set_dried which is ", 
+                                        "expected for {board_type}")))
+  }
+  
+  if (!rlang::is_character(x = creds_set_dried)) 
+    stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in 
+                                      dp_init. Make sure to use fn_dry for 
+                                      assigning value to creds_set_dried. Do not
+                                      supply the credentials directly as the 
+                                      function arguments.")))
+  
   creds_set_dried_parsed <- rlang::parse_expr(creds_set_dried)
-
-  if (!class(creds_set_dried_parsed) == "call")
-    stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in dp_init ",
-      "Make sure to use fn_dry in argument passed to creds_set_dried paramater. ",
-      "Do not supply the credentials directly as the function arguments.")))
-
+  if (!class(creds_set_dried_parsed) == "call" & board_type != "local_board") 
+    stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in 
+                                      dp_init. Make sure you are passing a
+                                      callable expression to fn_dry")))
+  
   if(!fs::dir_exists(path = project_path))
     fs::dir_create(project_path)
-
-
-  if(length(fs::dir_ls(path = project_path))!=0)
-    stop(cli::format_error(glue::glue("There is already a non-empty directory ",
-                                      "{basename(project_path)} ! If starting a ",
-                                      "new project run dp_init where ",
-                                      "{basename(project_path)} does not exist ",
-                                      "or is empty!")))
-
-
+  
   project_name <- basename(path = project_path)
   repo <- dp_git_init(project_path = project_path, project_name = project_name,
                       branch_name = branch_name,
@@ -194,7 +205,7 @@ dpconf_init <- function(project_path,
 
   if(!fs::dir_exists(path = glue::glue("{project_path}/.daap")))
     fs::dir_create(glue::glue("{project_path}/.daap"))
-
+  
 
   dpconf <- c(list(project_path = project_path,
                    project_name = project_name,
