@@ -7,6 +7,7 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![R-CMD-check](https://github.com/amashadihossein/dpbuild/workflows/R-CMD-check/badge.svg)](https://github.com/amashadihossein/dpbuild/actions)
 <!-- badges: end -->
 
 The goal of `dpbuild` is to streamline the process of building a data
@@ -28,6 +29,6 @@ remotes::install_github("amashadihossein/dpbuild", ref = "dev")
 
 ## Related documentation
 
--   `daapr`: <https://amashadihossein.github.io/daapr/>
--   `dpdeploy`: <https://amashadihossein.github.io/dpdeploy/>
--   `dpi`: <https://amashadihossein.github.io/dpi/>
+- `daapr`: <https://amashadihossein.github.io/daapr/>
+- `dpdeploy`: <https://amashadihossein.github.io/dpdeploy/>
+- `dpi`: <https://amashadihossein.github.io/dpi/>
