@@ -78,7 +78,7 @@ dp_init <- function(project_path = fs::path_wd(),
   
   commit_description <- "dp init"
   wd0 <- fs::path_wd()
-  
+
   # Validate data repo params
   # TODO: to be moved upstream as part of creds and board param validation
   #-----------------------------------------------------------------------
@@ -113,6 +113,7 @@ dp_init <- function(project_path = fs::path_wd(),
                                       dp_init. Make sure you are passing a
                                       callable expression to fn_dry")))
   
+<<<<<<< HEAD
   # set up local dprepo
   #--------------------
   if(fs::dir_exists(dirname(project_path))){
@@ -124,6 +125,8 @@ dp_init <- function(project_path = fs::path_wd(),
     }
   }
 
+=======
+>>>>>>> dev
   if(!fs::dir_exists(path = project_path))
     fs::dir_create(project_path)
   
@@ -217,7 +220,11 @@ dpconf_init <- function(project_path,
   if(!fs::dir_exists(path = glue::glue("{project_path}/.daap")))
     fs::dir_create(glue::glue("{project_path}/.daap"))
   
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> dev
   dpconf <- c(list(project_path = project_path,
                    project_name = project_name,
                    project_description = project_description,
