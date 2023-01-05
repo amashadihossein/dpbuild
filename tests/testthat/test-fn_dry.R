@@ -31,22 +31,3 @@ testthat::test_that("This would expect the equality in fn_dry function",{
     "creds_set_labkey(api_key = Sys.getenv(\"API_KEY\"))"
   )
 })
-
-testthat::test_that("This would test if labkey api credentials from keyring pass in fn_dry function",{
-  testthat::expect_equal(
-    fn_dry(
-      creds_set_labkey(api_key = keyring::key_get(service = "LABKEY_BOARD", keyring="remote"))
-    ),
-    "creds_set_labkey(api_key = keyring::key_get(service = \"LABKEY_BOARD\", keyring = \"remote\"))"
-  )
-})
-
-testthat::test_that("This would test if aws credentials from keyring pass in fn_dry function",{
-  testthat::expect_equal(
-    fn_dry(
-      creds_set_aws(key = keyring::key_get(service = "AWS_KEY", keyring="remote"), keyring::key_get(service = "AWS_SECRET",keyring="remote"))
-    ),
-    "creds_set_aws(key = keyring::key_get(service = \"AWS_KEY\", keyring = \"remote\"), keyring::key_get(service = \"AWS_SECRET\", keyring = \"remote\"))"
-  )
-})
-

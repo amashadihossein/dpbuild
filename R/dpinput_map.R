@@ -27,16 +27,16 @@ dpinput_map <- function(project_path){
   if(length(input_map0)>0){
 
     input_manifest0 <- input_map0$input_manifest %>%
-      dplyr::mutate(id0 = glue::glue("{path}/{substr(file_sha1,start=1,stop = 7)}")) %>%
-      dplyr::mutate(restaged_items = id0 %in% names(input_obj))
+      dplyr::mutate(id0 = glue::glue("{.data$path}/{substr(file_sha1,start=1,stop = 7)}")) %>%
+      dplyr::mutate(restaged_items = .data$id0 %in% names(input_obj))
 
-    if(nrow(restaged <- input_manifest0 %>% dplyr::filter(restaged_items)) > 0){
+    if(nrow(restaged <- input_manifest0 %>% dplyr::filter(.data$restaged_items)) > 0){
       input_obj[restaged$id0] <- NULL
       input_obj <-  c(input_obj, input_map0$input_obj[restaged$id])
     }
 
 
-    if(nrow(newlystaged <- input_manifest0 %>% dplyr::filter(!restaged_items)) > 0)
+    if(nrow(newlystaged <- input_manifest0 %>% dplyr::filter(!.data$restaged_items)) > 0)
       input_obj <- c(input_obj, input_map0$input_obj[newlystaged$id])
   }
 
@@ -45,32 +45,32 @@ dpinput_map <- function(project_path){
     purrr::map(~ purrr::pluck(.x,"metadata")) %>% dplyr::bind_rows()
 
   input_manifest_failed <- input_manifest %>%
-    dplyr::filter(file_read_fail) %>%
+    dplyr::filter(.data$file_read_fail) %>%
     dplyr::mutate(to_be_synced = F) %>%
     dplyr::distinct()
 
 
   input_manifest_read <- input_manifest %>%
-    dplyr::filter(!file_read_fail)
+    dplyr::filter(!.data$file_read_fail)
 
   input_manifest_read <- input_manifest_read %>%
-    dplyr::group_by(data_sha1) %>%
+    dplyr::group_by(.data$data_sha1) %>%
     dplyr::count() %>%
     dplyr::left_join(input_manifest_read,.) %>%
     dplyr::ungroup() %>%
-    dplyr::arrange(data_sha1, desc(synced)) %>%
-    dplyr::mutate(to_be_synced = !duplicated(data_sha1)) %>%
-    dplyr::rename(n_dupe_datasha1 = n) %>%
-    dplyr::group_by(data_sha1 ) %>%
-    dplyr::mutate(n_name_per_datasha1 = dplyr::n_distinct(name)) %>%
+    dplyr::arrange(.data$data_sha1, dplyr::desc(.data$synced)) %>%
+    dplyr::mutate(to_be_synced = !duplicated(.data$data_sha1)) %>%
+    dplyr::rename(n_dupe_datasha1 = .data$n) %>%
+    dplyr::group_by(.data$data_sha1) %>%
+    dplyr::mutate(n_name_per_datasha1 = dplyr::n_distinct(.data$name)) %>%
     dplyr::ungroup() %>%
-    dplyr::group_by(name) %>%
-    dplyr::mutate(n_datasha1_per_name = dplyr::n_distinct(data_sha1 )) %>%
-    dplyr::select(id, path, name, file_name, file_sha1, data_sha1,
-                  file_read_fail, n_dupe_datasha1, n_name_per_datasha1,
-                  n_datasha1_per_name, description, pin_version, synced,
-                  to_be_synced) %>%
-    dplyr::mutate(synced = tidyr::replace_na(synced,F)) %>%
+    dplyr::group_by(.data$name) %>%
+    dplyr::mutate(n_datasha1_per_name = dplyr::n_distinct(.data$data_sha1)) %>%
+    dplyr::select(.data$id, .data$path, .data$name, .data$file_name, .data$file_sha1,
+                  .data$data_sha1, .data$file_read_fail, .data$n_dupe_datasha1,
+                  .data$n_name_per_datasha1, .data$n_datasha1_per_name, .data$description,
+                  .data$pin_version, .data$synced, .data$to_be_synced) %>%
+    dplyr::mutate(synced = tidyr::replace_na(.data$synced,F)) %>%
     dplyr::ungroup()
 
 
@@ -89,13 +89,13 @@ dpinput_map <- function(project_path){
 #' @keywords internal
 dir_ls_tidy <- function(current_dir){
   ls_tidy <- tibble::tibble(path = fs::dir_ls(current_dir)) %>%
-    dplyr::mutate(ext = fs::path_ext(path)) %>%
-    dplyr::mutate(is_file = fs::is_file(path)) %>%
-    dplyr::mutate(is_dir = fs::is_dir(path)) %>%
+    dplyr::mutate(ext = fs::path_ext(.data$path)) %>%
+    dplyr::mutate(is_file = fs::is_file(.data$path)) %>%
+    dplyr::mutate(is_dir = fs::is_dir(.data$path)) %>%
     dplyr::mutate(content_type = dplyr::case_when(is_file & ext !="zip" ~ "file",
                                                   is_file & ext == "zip" ~ "zip",
                                                   is_dir ~ "dir")) %>%
-    dplyr::select(path, ext, content_type)
+    dplyr::select(.data$path, .data$ext, .data$content_type)
 
   return(ls_tidy)
 }
@@ -109,8 +109,6 @@ dir_ls_tidy <- function(current_dir){
 #' it prevents repeating the capture of folder structure already captured
 #' @return read_files a list of read contents
 #' @keywords internal
-
-
 dir_process <- function(current_dir, junk_path = character(0)){
   # TODO: build additional flexibility beyond rio::import for reading files.
   # Can custom function be passed?
@@ -123,8 +121,8 @@ dir_process <- function(current_dir, junk_path = character(0)){
   if("file" %in% ls_tidy$content_type){
 
     tmp <- ls_tidy %>%
-      dplyr::filter(content_type == "file") %>%
-      dplyr::select(path) %>%
+      dplyr::filter(.data$content_type == "file") %>%
+      dplyr::select(.data$path) %>%
       purrr::pmap(.l = ., .f = function(path){
 
 
@@ -154,8 +152,8 @@ dir_process <- function(current_dir, junk_path = character(0)){
 
   if("zip" %in% ls_tidy$content_type){
     tmp <- ls_tidy %>%
-      dplyr::filter(content_type == "zip") %>%
-      dplyr::select(path) %>%
+      dplyr::filter(.data$content_type == "zip") %>%
+      dplyr::select(.data$path) %>%
       purrr::pmap(.l = ., .f = function(path) dir_process_zip(zip_dir = path))
 
     if(length(junk_path) > 0)
@@ -167,8 +165,8 @@ dir_process <- function(current_dir, junk_path = character(0)){
 
   if("dir" %in% ls_tidy$content_type){
     tmp <- ls_tidy %>%
-      dplyr::filter(content_type == "dir") %>%
-      dplyr::select(path) %>%
+      dplyr::filter(.data$content_type == "dir") %>%
+      dplyr::select(.data$path) %>%
       purrr::pmap(.l = ., .f = function(path) dir_process(current_dir = path,
                                                           junk_path = path))
 
@@ -249,14 +247,15 @@ dirTree_build <- function(flattened_dirTree){
         attributes(tmp$data)[c("class","data_sha1","file_sha1","file_read_fail")] %>%
         dplyr::bind_cols() %>%
         dplyr::mutate(file_name = basename(pathname)) %>%
-        dplyr::mutate(name = tools::file_path_sans_ext(file_name)) %>%
-        dplyr::mutate(name = make_names_codefriendly(name)) %>%
+        dplyr::mutate(name = tools::file_path_sans_ext(.data$file_name)) %>%
+        dplyr::mutate(name = make_names_codefriendly(.data$name)) %>%
         dplyr::mutate(path = pathname) %>%
         dplyr::mutate(id = glue::glue("{path}/{substr(file_sha1,start=1,stop = 7)}")) %>%
-        dplyr::mutate(id = as.character(id)) %>%
+        dplyr::mutate(id = as.character(.data$id)) %>%
         dplyr::mutate(description = NA, pin_version = NA, synced = NA) %>%
-        dplyr::select(id, name, path, file_name, file_sha1, data_sha1,
-                      file_read_fail, class, description, pin_version, synced)
+        dplyr::select(.data$id, .data$name, .data$path, .data$file_name,
+                      .data$file_sha1, .data$data_sha1, .data$file_read_fail,
+                      .data$class, .data$description, .data$pin_version, .data$synced)
 
       attr(tmp$data, "data_sha1") <- NULL
       attr(tmp$data, "file_sha1") <- NULL
@@ -278,8 +277,7 @@ dirTree_build <- function(flattened_dirTree){
 #' `input_mapt$input_manifest$id`
 #' @return modified `input_map`
 #' @export
-
-dpinput_syncflag_reset<- function (input_map, input_id){
+dpinput_syncflag_reset<- function(input_map, input_id){
 
   if(any(duplicated(input_map$input_manifest$id)))
     warning("input_map$input_manifest$id has duplicates!")
