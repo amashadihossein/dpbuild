@@ -5,6 +5,7 @@
 #' @examples  \dontrun{
 #' Sys.setenv("GITHUB_PAT" = keyring::key_get("GITHUB_PAT"))
 #' dp_pull()
+#' }
 #' @export
 dp_pull <- function(project_path = fs::path_wd())
 {
