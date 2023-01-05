@@ -4,20 +4,14 @@
 \alias{dp_pull}
 \title{Pull data product from a remote repo}
 \usage{
-dp_pull(project_path = ".")
+dp_pull(project_path = fs::path_wd())
 }
 \arguments{
-\item{project_path}{path to the dp_project}
+\item{project_path}{Path to the project folder, default "."}
 }
 \value{
 TRUE
 }
 \description{
-This command pulls the data product from the remote
-}
-\examples{
- \dontrun{
-Sys.setenv("GITHUB_PAT" = keyring::key_get("GITHUB_PAT"))
-dp_pull(project_path = ".")
-}
+This command pulls the data product from a remote repo
 }

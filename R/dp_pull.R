@@ -15,6 +15,7 @@ dp_pull <- function(project_path = fs::path_wd())
       "GITHUB_PAT in the environment. Set it ",
       "by Sys.setenv(GITHUB_PAT = <your github",
       " personal access token>) and retry!")))
+
   cred <- git2r::cred_token()
 
   if (!dpbuild::is_valid_dp_repository(project_path)){
