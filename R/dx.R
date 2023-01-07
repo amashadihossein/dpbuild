@@ -11,32 +11,39 @@
 #' @return TRUE or FALSE
 #' @export
 is_valid_dp_repository <- function(path,
-  checks = c("all","git","dp","renv","branch"),
-  verbose = F){
-  checks <- match.arg(arg = checks,
-    choices = c("all","git","dp","renv","branch"),
-    several.ok = T)
+                                   checks = c("all", "git", "dp", "renv", "branch"),
+                                   verbose = F) {
+  checks <- match.arg(
+    arg = checks,
+    choices = c("all", "git", "dp", "renv", "branch"),
+    several.ok = T
+  )
 
   dx <- dp_repository_check(path = path)
 
-  if(!"all" %in% checks){
-    if(!"git" %in% checks)
-      dx <- dx[setdiff(names(dx),"git_initialized")]
+  if (!"all" %in% checks) {
+    if (!"git" %in% checks) {
+      dx <- dx[setdiff(names(dx), "git_initialized")]
+    }
 
-    if(!"dp" %in% checks)
-      dx <- dx[setdiff(names(dx),"dp_initialized")]
+    if (!"dp" %in% checks) {
+      dx <- dx[setdiff(names(dx), "dp_initialized")]
+    }
 
-    if(!"renv" %in% checks)
-      dx <- dx[setdiff(names(dx),"renv_initialized")]
+    if (!"renv" %in% checks) {
+      dx <- dx[setdiff(names(dx), "renv_initialized")]
+    }
 
-    if(!"branch" %in% checks)
-      dx <- dx[setdiff(names(dx),"branch_name_matches")]
+    if (!"branch" %in% checks) {
+      dx <- dx[setdiff(names(dx), "branch_name_matches")]
+    }
   }
 
-  if(verbose)
+  if (verbose) {
     print(data.frame(dx))
+  }
 
-  dp_repository <- all(sapply(dx,isTRUE))
+  dp_repository <- all(sapply(dx, isTRUE))
   return(dp_repository)
 }
 
@@ -45,15 +52,16 @@ is_valid_dp_repository <- function(path,
 #' @param path Path to be evaluated
 #' @return list of T/F per check
 #' @keywords internal
-dp_repository_check <- function(path){
+dp_repository_check <- function(path) {
   dx <- list()
   dx$git_initialized <- git2r::in_repository(path = path)
   dx$dp_initialized <- unname(fs::file_exists(glue::glue("{path}/.daap/daap_config.yaml")))
   dx$renv_initialized <- unname(fs::dir_exists(glue::glue("{path}/renv")))
   dx$branch_name_matches <- NA
   dp_repository <- unname(dx$git_initialized & dx$dp_initialized & dx$renv_initialized)
-  if(!dp_repository)
+  if (!dp_repository) {
     return(dx)
+  }
 
   repo <- git2r::repository(path = path)
   branch_name <- git2r::repository_head(repo = repo)$name

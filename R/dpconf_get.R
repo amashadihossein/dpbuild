@@ -8,8 +8,7 @@
 #' @return a list dpconf
 #' @export
 
-dpconf_get <- function(project_path){
-
+dpconf_get <- function(project_path) {
   dpconf <- dpconf_read(project_path = project_path)
 
   dpconf$board_params <-
@@ -27,7 +26,7 @@ dpconf_get <- function(project_path){
 
   class(dpconf) <- c(dpconf$board_params$board_type, class(dpconf))
 
-  #TODO validate dpconf
+  # TODO validate dpconf
   dpconf_validate(dpconf = dpconf, project_path = project_path)
 
   return(dpconf)
@@ -39,7 +38,7 @@ dpconf_get <- function(project_path){
 #' @param project_path path to project folder
 #' @return a list of raw dpconf where any function call remains dry
 #' @keywords internal
-dpconf_read <- function(project_path){
+dpconf_read <- function(project_path) {
   dpconf <-
     yaml::read_yaml(file = glue::glue("{project_path}/.daap/daap_config.yaml"))
   return(dpconf)
@@ -52,9 +51,11 @@ dpconf_read <- function(project_path){
 #' @param project_path path to project folder
 #' @return a list dpconf
 #' @keywords internal
-dpconf_write <- function(project_path, dpconf){
-  yaml::write_yaml(x = dpconf ,
-                   file = glue::glue("{project_path}/.daap/daap_config.yaml"))
+dpconf_write <- function(project_path, dpconf) {
+  yaml::write_yaml(
+    x = dpconf,
+    file = glue::glue("{project_path}/.daap/daap_config.yaml")
+  )
   return(dpconf)
 }
 
@@ -64,35 +65,40 @@ dpconf_write <- function(project_path, dpconf){
 #' @param dpconf a dp config
 #' @param project_path path to project
 #' @keywords internal
-dpconf_validate <- function(dpconf, project_path){
-  #TODO: add additional validation for repo test as well as data remote test
+dpconf_validate <- function(dpconf, project_path) {
+  # TODO: add additional validation for repo test as well as data remote test
   # specific to class of config
 
-  if(nchar(Sys.getenv("GITHUB_PAT")) == 0)
-    stop(cli::format_error(glue::glue("Could not get dpconf as it did not find",
-                                      " GITHUB_PAT in the environment. Set it ",
-                                      "by Sys.setenv(GITHUB_PAT = <your github",
-                                      " personal access token>) and retry!")))
+  if (nchar(Sys.getenv("GITHUB_PAT")) == 0) {
+    stop(cli::format_error(glue::glue(
+      "Could not get dpconf as it did not find",
+      " GITHUB_PAT in the environment. Set it ",
+      "by Sys.setenv(GITHUB_PAT = <your github",
+      " personal access token>) and retry!"
+    )))
+  }
 
   repo <- git2r::repository(path = project_path)
   repo_url <- git2r::remote_url(repo = repo)
 
-  if(!is.null(repo_url)){ # TODO do something if repo url not found here?
+  if (!is.null(repo_url)) { # TODO do something if repo url not found here?
     remote_alias <- git2r::remotes(repo = repo)
 
-    if(length(remote_alias) > 1){
+    if (length(remote_alias) > 1) {
       stop("More than one remote alias found, delete one and try again")
     }
 
     repo_resp <-
       try(gh::gh_whoami(.api_url = repo_url, .token = Sys.getenv("GITHUB_PAT")))
 
-    if("try-error" %in% class(repo_resp))
-      warning(cli::format_warning(glue::glue("For the given repo and ",
-                                             "GITHUB_PAT, failed to connect",
-                                             " to the GITHUB API. Check env ",
-                                             "variable GITHUB_PAT and remote ",
-                                             "repo url!")))
+    if ("try-error" %in% class(repo_resp)) {
+      warning(cli::format_warning(glue::glue(
+        "For the given repo and ",
+        "GITHUB_PAT, failed to connect",
+        " to the GITHUB API. Check env ",
+        "variable GITHUB_PAT and remote ",
+        "repo url!"
+      )))
     }
-
+  }
 }
