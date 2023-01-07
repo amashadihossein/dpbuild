@@ -1,5 +1,5 @@
 #' @title Adds script templates
-#' @description Adds dp_assembler.R and dp_structure.R to the dp project repo
+#' @description Adds dp_make.R and dp_journal.RMD to the dp project repo
 #' @param project_path Path to the Project
 #' @param use_targets Boolean When true, it uses targets instead of drake
 #' @return repo
