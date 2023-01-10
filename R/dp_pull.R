@@ -9,8 +9,6 @@
 #' @export
 dp_pull <- function(project_path = fs::path_wd())
 {
-  dirs_to_add <- c("input_files", "output_files")
-
   if(nchar(Sys.getenv("GITHUB_PAT")) == 0)
     stop(cli::format_error(glue::glue("Could not find ",
       "GITHUB_PAT in the environment. Set it ",
@@ -25,8 +23,6 @@ dp_pull <- function(project_path = fs::path_wd())
 
   repo <- tryCatch({
     git2r::pull(repo = project_path, credentials = cred)
-
-    fs::dir_create(dirs_to_add[!fs::dir_exists(fs::path(project_path, dirs_to_add))])
   },
     error = function(cond) {
       cli::cli_alert_danger("Encountered error in dp_pull")
