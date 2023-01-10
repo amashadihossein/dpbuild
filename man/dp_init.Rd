@@ -15,7 +15,7 @@ dp_init(
   github_repo_url,
   git_ignore = c(".drake/", "_targets/", "input_files/", "output_files/", ".Rprofile",
     ".Renviron", ".Rhistory", ".Rproj.user", ".Rproj.user/", ".DS_Store", "*.csv",
-    "*.tsv", "*.rds", "*.sas7bdat"),
+    "*.tsv", "*.rds", "*.txt", "*.parquet", "*.sas7bdat"),
   ...
 )
 }
@@ -38,9 +38,11 @@ metadata to the data object}
 setting board_params. Use \code{fn_dry()} in combination with
 \code{dpi::board_params_set_s3} or \code{dpi::board_params_set_labkey}. See example.}
 
-\item{creds_set_dried}{Character representation of the function for setting
+\item{creds_set_dried}{when using \code{local_board}, it is ignored and need not
+be specified. Otherwise,character representation of the function for setting
 creds. Use \code{fn_dry()} in combination with \code{dpi::creds_set_aws} or
-\code{dpi::creds_set_labkey}. See example}
+\code{dpi::creds_set_labkey}. \emph{NOTE: never directly pass credentials in script!}
+\emph{Use \code{Sys.getenv}}. See example}
 
 \item{github_repo_url}{the https url for the github repo}
 
@@ -56,26 +58,30 @@ project path
 Initializes a data product project
 }
 \examples{
- \dontrun{
+\dontrun{
 # Dry function call to setting board_params
 board_params_set_dried <-
-fn_dry(dpi::board_params_set_labkey(board_alias = "labkey",
- url = 'https:url_to_labkey/labkey',
- folder = 'project_folder/subfolder'))
+  fn_dry(dpi::board_params_set_labkey(
+    board_alias = "labkey",
+    url = "https:url_to_labkey/labkey",
+    folder = "project_folder/subfolder"
+  ))
 
 # Dry function call to setting credentials
 creds_set_dried <-
-fn_dry(dpi::creds_set_labkey(api_key = Sys.getenv("LABKEY_API_KEY")))
+  fn_dry(dpi::creds_set_labkey(api_key = Sys.getenv("LABKEY_API_KEY")))
 
 # Initialize dp repo
-dp_repo <- dp_init(project_path = "dp_test",
-                project_description = "Test data product",
-                branch_name = "us001",
-                branch_description = "User story 1",
-                commit_description = "First dp commit",
-                readme_general_note = "This data object is generated for testing purposes",
-                board_params_set_dried = board_params_set_dried,
-                creds_set_dried = creds_set_dried,
-                github_repo_url = "https://github.com/teamAccount/me/dp_test.git")
+dp_repo <- dp_init(
+  project_path = "dp_test",
+  project_description = "Test data product",
+  branch_name = "us001",
+  branch_description = "User story 1",
+  commit_description = "First dp commit",
+  readme_general_note = "This data object is generated for testing purposes",
+  board_params_set_dried = board_params_set_dried,
+  creds_set_dried = creds_set_dried,
+  github_repo_url = "https://github.com/teamAccount/me/dp_test.git"
+)
 }
 }

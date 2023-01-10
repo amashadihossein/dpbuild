@@ -53,9 +53,11 @@ function to update all DaaPR packages on renv.lock > Delete \code{renv} folder >
 run \code{renv::restore()} > Follow subsequent steps.
 }
 \examples{
- \dontrun{
-dppkg_modify(project_path = ".", pkg_name = "dpdeploy", 
-pkg_version = "0.0.0.9008", 
-pkg_sha = "3e9544b7ea42f683647df5a4e21238ae7194b580", verbose = T)
+\dontrun{
+dppkg_modify(
+  project_path = ".", pkg_name = "dpdeploy",
+  pkg_version = "0.0.0.9008",
+  pkg_sha = "3e9544b7ea42f683647df5a4e21238ae7194b580", verbose = T
+)
 }
 }

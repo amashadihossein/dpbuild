@@ -15,5 +15,5 @@ dpcode_add(project_path, use_targets = F)
 repo
 }
 \description{
-Adds dp_assembler.R and dp_structure.R to the dp project repo
+Adds dp_make.R and dp_journal.RMD to the dp project repo
 }

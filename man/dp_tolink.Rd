@@ -16,7 +16,7 @@ Given the name and version of a data product, it returns a
 custom function for retrieving that data product
 }
 \examples{
- \dontrun{
-dp_cars_lnk <- dp_tolink(dp_name = "dp-cars-us001",dp_version = "4dc379a")
+\dontrun{
+dp_cars_lnk <- dp_tolink(dp_name = "dp-cars-us001", dp_version = "4dc379a")
 }
 }

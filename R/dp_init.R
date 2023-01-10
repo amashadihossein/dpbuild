@@ -28,35 +28,41 @@ dpi::creds_set_labkey
 #' @param board_params_set_dried Character representation of the function for
 #' setting board_params. Use `fn_dry()` in combination with
 #' `dpi::board_params_set_s3` or `dpi::board_params_set_labkey`. See example.
-#' @param creds_set_dried Character representation of the function for setting
+#' @param creds_set_dried when using `local_board`, it is ignored and need not
+#' be specified. Otherwise,character representation of the function for setting
 #' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or
-#' `dpi::creds_set_labkey`. See example
+#' `dpi::creds_set_labkey`. *NOTE: never directly pass credentials in script!*
+#'  *Use `Sys.getenv`*. See example
 #' @param github_repo_url the https url for the github repo
 #' @param git_ignore a character vector of the files and directories to be
 #' ignored by git.
 #' @param ... any other metadata to be captured in the config file
 #' @return project path
-#' @examples  \dontrun{
+#' @examples \dontrun{
 #' # Dry function call to setting board_params
 #' board_params_set_dried <-
-#' fn_dry(dpi::board_params_set_labkey(board_alias = "labkey",
-#'  url = 'https:url_to_labkey/labkey',
-#'  folder = 'project_folder/subfolder'))
+#'   fn_dry(dpi::board_params_set_labkey(
+#'     board_alias = "labkey",
+#'     url = "https:url_to_labkey/labkey",
+#'     folder = "project_folder/subfolder"
+#'   ))
 #'
 #' # Dry function call to setting credentials
 #' creds_set_dried <-
-#' fn_dry(dpi::creds_set_labkey(api_key = Sys.getenv("LABKEY_API_KEY")))
+#'   fn_dry(dpi::creds_set_labkey(api_key = Sys.getenv("LABKEY_API_KEY")))
 #'
 #' # Initialize dp repo
-#' dp_repo <- dp_init(project_path = "dp_test",
-#'                 project_description = "Test data product",
-#'                 branch_name = "us001",
-#'                 branch_description = "User story 1",
-#'                 commit_description = "First dp commit",
-#'                 readme_general_note = "This data object is generated for testing purposes",
-#'                 board_params_set_dried = board_params_set_dried,
-#'                 creds_set_dried = creds_set_dried,
-#'                 github_repo_url = "https://github.com/teamAccount/me/dp_test.git")
+#' dp_repo <- dp_init(
+#'   project_path = "dp_test",
+#'   project_description = "Test data product",
+#'   branch_name = "us001",
+#'   branch_description = "User story 1",
+#'   commit_description = "First dp commit",
+#'   readme_general_note = "This data object is generated for testing purposes",
+#'   board_params_set_dried = board_params_set_dried,
+#'   creds_set_dried = creds_set_dried,
+#'   github_repo_url = "https://github.com/teamAccount/me/dp_test.git"
+#' )
 #' }
 #' @export
 dp_init <- function(project_path = fs::path_wd(),
@@ -67,81 +73,124 @@ dp_init <- function(project_path = fs::path_wd(),
                     board_params_set_dried,
                     creds_set_dried,
                     github_repo_url,
-                    git_ignore = c(".drake/", "_targets/", "input_files/",
-                                   "output_files/", ".Rprofile", ".Renviron",
-                                   ".Rhistory", ".Rproj.user", ".Rproj.user/",
-                                   ".DS_Store", "*.csv", "*.tsv", "*.rds",
-                                   "*.sas7bdat"),
-                    ...){
-
+                    git_ignore = c(
+                      ".drake/", "_targets/", "input_files/",
+                      "output_files/", ".Rprofile", ".Renviron",
+                      ".Rhistory", ".Rproj.user", ".Rproj.user/",
+                      ".DS_Store", "*.csv", "*.tsv", "*.rds",
+                      "*.txt", "*.parquet", "*.sas7bdat"
+                    ),
+                    ...) {
   commit_description <- "dp init"
   wd0 <- fs::path_wd()
 
-  if (!rlang::is_character(x = creds_set_dried))
-    stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in dp_init. ",
-      "Make sure to use fn_dry in argument passed to creds_set_dried paramater. ",
-      "Do not supply the credentials directly as the function arguments.")))
+  # Validate data repo params
+  # TODO: to be moved upstream as part of creds and board param validation
+  #-----------------------------------------------------------------------
+  if (!rlang::is_character(x = board_params_set_dried)) {
+    stop(cli::format_error(glue::glue("Encountered error in
+                                      board_params_set_dried in dp_init. Make
+                                      sure to use fn_dry for assigning value to
+                                      board_params_set_dried.")))
+  }
 
-  if (!rlang::is_character(x = board_params_set_dried))
-    stop(cli::format_error(glue::glue("Encountered error in board_params_set_dried in dp_init. ",
-      "Make sure to use fn_dry in argument passed to board_params_set_dried paramater.")))
+  board_type <- fn_hydrate(board_params_set_dried)$board_type
+  if (board_type == "local_board") {
+    if (!missing(creds_set_dried)) {
+      warning(cli::format_warning("cred_set_dried is ignored with local_board"))
+    }
+    creds_set_dried <- "NA"
+  } else {
+    if (missing(creds_set_dried)) {
+      stop(cli::format_error(glue::glue(
+        "board_params_set_dried which is ",
+        "expected for {board_type}"
+      )))
+    }
+  }
+
+  if (!rlang::is_character(x = creds_set_dried)) {
+    stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in
+                                      dp_init. Make sure to use fn_dry for
+                                      assigning value to creds_set_dried. Do not
+                                      supply the credentials directly as the
+                                      function arguments.")))
+  }
 
   creds_set_dried_parsed <- rlang::parse_expr(creds_set_dried)
+  if (!class(creds_set_dried_parsed) == "call" & board_type != "local_board") {
+    stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in
+                                      dp_init. Make sure you are passing a
+                                      callable expression to fn_dry")))
+  }
 
-  if (!class(creds_set_dried_parsed) == "call")
-    stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in dp_init ",
-      "Make sure to use fn_dry in argument passed to creds_set_dried paramater. ",
-      "Do not supply the credentials directly as the function arguments.")))
+  # set up local dprepo
+  #--------------------
+  if (fs::dir_exists(dirname(project_path))) {
+    is_in_dprepo <- any(sapply(
+      dp_repository_check(dirname(project_path)),
+      isTRUE
+    ))
+    if (is_in_dprepo) {
+      stop(cli::format_error("dp_init failed; cannot initialize a dp repository
+                             within an existing dp repository"))
+    }
+  }
 
-  if(!fs::dir_exists(path = project_path))
+
+  if (!fs::dir_exists(path = project_path)) {
     fs::dir_create(project_path)
-
-
-  if(length(fs::dir_ls(path = project_path))!=0)
-    stop(cli::format_error(glue::glue("There is already a non-empty directory ",
-                                      "{basename(project_path)} ! If starting a ",
-                                      "new project run dp_init where ",
-                                      "{basename(project_path)} does not exist ",
-                                      "or is empty!")))
-
+  }
 
   project_name <- basename(path = project_path)
-  repo <- dp_git_init(project_path = project_path, project_name = project_name,
-                      branch_name = branch_name,
-                      github_repo_url = github_repo_url,
-                      board_params_set_dried = board_params_set_dried,
-                      creds_set_dried = creds_set_dried,
-                      git_ignore = git_ignore)
+  repo <- dp_git_init(
+    project_path = project_path, project_name = project_name,
+    branch_name = branch_name,
+    github_repo_url = github_repo_url,
+    board_params_set_dried = board_params_set_dried,
+    creds_set_dried = creds_set_dried,
+    git_ignore = git_ignore
+  )
   last_commit <- git2r::last_commit(repo = repo)
 
 
-  if(!fs::dir_exists(path = glue::glue("{project_path}/.daap")))
+  if (!fs::dir_exists(path = glue::glue("{project_path}/.daap"))) {
     fs::dir_create(glue::glue("{project_path}/.daap"))
+  }
 
-  if(!fs::dir_exists(path = glue::glue("{project_path}/input_files")))
+  if (!fs::dir_exists(path = glue::glue("{project_path}/input_files"))) {
     fs::dir_create(glue::glue("{project_path}/input_files"))
+  }
 
-  if(!fs::dir_exists(path = glue::glue("{project_path}/output_files")))
+  if (!fs::dir_exists(path = glue::glue("{project_path}/output_files"))) {
     fs::dir_create(glue::glue("{project_path}/output_files"))
+  }
 
-  dpconf <- dpconf_init(project_path = project_path,
-                        project_name = project_name,
-                        project_description = project_description,
-                        branch_name = branch_name,
-                        branch_description = branch_description,
-                        readme_general_note = readme_general_note,
-                        board_params_set_dried = board_params_set_dried,
-                        creds_set_dried = creds_set_dried, ...)
+  dpconf <- dpconf_init(
+    project_path = project_path,
+    project_name = project_name,
+    project_description = project_description,
+    branch_name = branch_name,
+    branch_description = branch_description,
+    readme_general_note = readme_general_note,
+    board_params_set_dried = board_params_set_dried,
+    creds_set_dried = creds_set_dried, ...
+  )
 
-  if(!fs::dir_exists(fs::path_tidy(glue::glue("{project_path}/R"))))
+  if (!fs::dir_exists(fs::path_tidy(glue::glue("{project_path}/R")))) {
     fs::dir_create(fs::path_tidy(glue::glue("{project_path}/R")))
+  }
 
-  fs::file_copy(path = system.file("global.R", package = "dpbuild"),
-                new_path = fs::path_tidy(glue::glue("{project_path}/R")),
-                overwrite = T)
+  fs::file_copy(
+    path = system.file("global.R", package = "dpbuild"),
+    new_path = fs::path_tidy(glue::glue("{project_path}/R")),
+    overwrite = T
+  )
 
-  fs::file_copy(path = system.file(".renvignore", package = "dpbuild"),
-                new_path = project_path, overwrite = T)
+  fs::file_copy(
+    path = system.file(".renvignore", package = "dpbuild"),
+    new_path = project_path, overwrite = T
+  )
   # add renv
   renv::init(project = fs::path_tidy(project_path), restart = F)
   setwd(wd0)
@@ -149,12 +198,11 @@ dp_init <- function(project_path = fs::path_wd(),
   # commit git
   repo <- git2r::repository(path = fs::path_tidy(project_path))
   add_these <- unlist(git2r::status(repo = repo))
-  git2r::add(repo = repo, path = glue::glue("{project_path}/{add_these}") )
+  git2r::add(repo = repo, path = glue::glue("{project_path}/{add_these}"))
   git2r::commit(repo = repo, all = TRUE, message = commit_description)
 
 
   return(fs::path_dir(repo$path))
-
 }
 
 
@@ -190,26 +238,28 @@ dpconf_init <- function(project_path,
                         readme_general_note = character(0),
                         board_params_set_dried,
                         creds_set_dried,
-                        ...){
-
-  if(!fs::dir_exists(path = glue::glue("{project_path}/.daap")))
+                        ...) {
+  if (!fs::dir_exists(path = glue::glue("{project_path}/.daap"))) {
     fs::dir_create(glue::glue("{project_path}/.daap"))
+  }
 
-
-  dpconf <- c(list(project_path = project_path,
-                   project_name = project_name,
-                   project_description = project_description,
-                   branch_name = branch_name,
-                   branch_description = branch_description,
-                   readme_general_note = readme_general_note,
-                   board_params_set_dried = board_params_set_dried,
-                   creds_set_dried = creds_set_dried),
-              list(...))
+  dpconf <- c(
+    list(
+      project_path = project_path,
+      project_name = project_name,
+      project_description = project_description,
+      branch_name = branch_name,
+      branch_description = branch_description,
+      readme_general_note = readme_general_note,
+      board_params_set_dried = board_params_set_dried,
+      creds_set_dried = creds_set_dried
+    ),
+    list(...)
+  )
 
   dpconf <- dpconf_write(project_path = project_path, dpconf = dpconf)
 
   return(dpconf)
-
 }
 
 
@@ -222,7 +272,6 @@ dpconf_init <- function(project_path,
 #' }
 #' @export
 fn_dry <- function(fn_called) {
-
   fn_as_call <- rlang::enexpr(fn_called)
   is_creds_set_method <- grepl(pattern = "creds_set_", x = fn_as_call, ignore.case = F)[1]
 
@@ -231,15 +280,18 @@ fn_dry <- function(fn_called) {
     get_fn_args <- rlang::call_args(fn_as_call)
     call_arg_starts_with_c <- grepl("^c\\(", get_fn_args)
 
-    error_message <- glue::glue("Do not supply the credentials directly as the function arguments. ",
+    error_message <- glue::glue(
+      "Do not supply the credentials directly as the function arguments. ",
       "Function arguments in {fn_as_call_main} need to be passed as function calls. ",
-      "For example, key = Sys.getenv('AWS_KEY')")
+      "For example, key = Sys.getenv('AWS_KEY')"
+    )
 
-    if (any(call_arg_starts_with_c))
+    if (any(call_arg_starts_with_c)) {
       stop(cli::format_error(error_message))
+    }
 
     for (arg in get_fn_args) {
-      if (!rlang::is_callable(arg) | class(arg) %in% c("(","{")) {
+      if (!rlang::is_callable(arg) | class(arg) %in% c("(", "{")) {
         stop(cli::format_error(error_message))
       }
     }
@@ -263,7 +315,7 @@ fn_dry <- function(fn_called) {
 #' }
 #' @keywords internal
 
-fn_hydrate <- function(dried_fn){
+fn_hydrate <- function(dried_fn) {
   return(eval(rlang::parse_expr(dried_fn)))
 }
 
@@ -289,48 +341,64 @@ dp_git_init <- function(project_path, project_name, branch_name,
                         github_repo_url,
                         board_params_set_dried,
                         creds_set_dried,
-                        git_ignore){
-
-  if(length(fs::dir_ls(path = project_path))!=0)
-    stop(cli::format_error(glue::glue("There is already a non-empty directory ",
-                                      "{basename(project_path)} ! If starting a ",
-                                      "new project run dp_init where ",
-                                      "{basename(project_path)} does not exist ",
-                                      "or is empty!")))
+                        git_ignore) {
+  if (length(fs::dir_ls(path = project_path)) != 0) {
+    stop(cli::format_error(glue::glue(
+      "There is already a non-empty directory ",
+      "{basename(project_path)} ! If starting a ",
+      "new project run dp_init where ",
+      "{basename(project_path)} does not exist ",
+      "or is empty!"
+    )))
+  }
 
 
   repo <- git2r::init(path = project_path)
   git_status <- git2r::status(repo = repo, ignored = T)
-  repo_is_clean <- all(sapply(git_status,length)==0)
+  repo_is_clean <- all(sapply(git_status, length) == 0)
   git2r::remote_add(repo = repo, name = "origin", url = github_repo_url)
 
   git_conf <- git2r::config(repo = repo)$global
 
-  if(length(git_conf$user.name) == 0)
-    stop(cli::format_error(glue::glue("git username not configured. Set git ",
-                                      "username by git2r::config(global = T, ",
-                                      "user.name = \"<YOUR_USER_NAME>\")")))
+  if (length(git_conf$user.name) == 0) {
+    stop(cli::format_error(glue::glue(
+      "git username not configured. Set git ",
+      "username by git2r::config(global = T, ",
+      "user.name = \"<YOUR_USER_NAME>\")"
+    )))
+  }
 
-  if(length(git_conf$user.email) == 0)
-    stop(cli::format_error(glue::glue("git user.email not configured. Set git ",
-                                      "user.email by git2r::config(global = T, ",
-                                      "user.email = \"<YOUR_EMAIL>\")")))
+  if (length(git_conf$user.email) == 0) {
+    stop(cli::format_error(glue::glue(
+      "git user.email not configured. Set git ",
+      "user.email by git2r::config(global = T, ",
+      "user.email = \"<YOUR_EMAIL>\")"
+    )))
+  }
 
-  if(repo_is_clean){
-
-    writeLines(glue::glue_collapse({git_ignore},sep = "\n"),
-               file.path(project_path, ".gitignore"))
+  if (repo_is_clean) {
+    writeLines(
+      glue::glue_collapse(
+        {
+          git_ignore
+        },
+        sep = "\n"
+      ),
+      file.path(project_path, ".gitignore")
+    )
     git2r::add(repo = repo, path = glue::glue("{project_path}/.gitignore"))
 
-    add_readme(project_path = project_path,
-               dp_title = glue::glue("Data Product {project_name}_{branch_name}"),
-               github_repo_url = github_repo_url,
-               board_params_set_dried = board_params_set_dried,
-               creds_set_dried = creds_set_dried)
+    add_readme(
+      project_path = project_path,
+      dp_title = glue::glue("Data Product {project_name}_{branch_name}"),
+      github_repo_url = github_repo_url,
+      board_params_set_dried = board_params_set_dried,
+      creds_set_dried = creds_set_dried
+    )
 
     git2r::add(repo = repo, path = glue::glue("{project_path}/README.md"))
 
-    commit_1 <- git2r::commit(repo, message =  "project init")
+    commit_1 <- git2r::commit(repo, message = "project init")
 
     # Create a branch
     branch_1 <- git2r::branch_create(commit_1, name = branch_name)
@@ -341,10 +409,12 @@ dp_git_init <- function(project_path, project_name, branch_name,
     # dpconf$branch_name <- git2r::repository_head(repo = repo)$name
 
     # last_commit <- git2r::last_commit(repo = repo)
-  }else{
-    stop(cli::format_error(glue::glue("Repo is not clean. dp_git is to be used ",
-                                      "with a clean repo. Either clean the repo ",
-                                      "or use git directly for git initiation")))
+  } else {
+    stop(cli::format_error(glue::glue(
+      "Repo is not clean. dp_git is to be used ",
+      "with a clean repo. Either clean the repo ",
+      "or use git directly for git initiation"
+    )))
   }
 
   return(repo)
@@ -362,23 +432,28 @@ dp_git_init <- function(project_path, project_name, branch_name,
 #' @param github_repo_url github repo url
 #' @keywords internal
 add_readme <- function(project_path, dp_title, github_repo_url,
-                       board_params_set_dried, creds_set_dried){
-
+                       board_params_set_dried, creds_set_dried) {
   flname <- flname_xos_get(fl = "README.RMD")
-  fs::file_copy(path = system.file(flname, package = "dpbuild"),
-                new_path = project_path, overwrite = T)
+  fs::file_copy(
+    path = system.file(flname, package = "dpbuild"),
+    new_path = project_path, overwrite = T
+  )
 
-  board_params_set<- fn_hydrate(board_params_set_dried)
+  board_params_set <- fn_hydrate(board_params_set_dried)
 
   rendered <- try(rmarkdown::render(
     input = glue::glue("{project_path}/{flname}"),
-    params =  list(dp_title = dp_title, github_repo_url = github_repo_url,
-                   board_params_set = board_params_set,
-                   creds_set_dried = creds_set_dried)))
+    params = list(
+      dp_title = dp_title, github_repo_url = github_repo_url,
+      board_params_set = board_params_set,
+      creds_set_dried = creds_set_dried
+    )
+  ))
 
-  if("try-error" %in% class(rendered))
-    writeLines(glue::glue("## {dp_title}"),
-               file.path(project_path, "README.md"))
+  if ("try-error" %in% class(rendered)) {
+    writeLines(
+      glue::glue("## {dp_title}"),
+      file.path(project_path, "README.md")
+    )
+  }
 }
-
-
