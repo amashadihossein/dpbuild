@@ -24,7 +24,7 @@ This is primarily intended to make \code{dppkg_modify} easier to work
 with
 }
 \examples{
- \dontrun{
+\dontrun{
 get_rspm_pkgmeta(pkg_name = "dpi")
 }
 }

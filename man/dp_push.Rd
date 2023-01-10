@@ -26,7 +26,7 @@ TRUE
 This command pushes the data product to the remote
 }
 \examples{
- \dontrun{
+\dontrun{
 dp_push(project_path = ".")
 }
 }
