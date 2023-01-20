@@ -1,4 +1,4 @@
-#'==============================================================================
+#' =============================================================================
 #' This is the main task manager assembling data by calling tasks as functions
 #' within R sub-directory
 #'
@@ -16,7 +16,7 @@
 #'                               username = "myusername",
 #'                               keyring = "mykeyringname"))
 #' 4- renv is to be restored: Ex. renv::restore()
-#'==============================================================================
+#' =============================================================================
 
 options(stringsAsFactors = F)
 R.utils::sourceDirectory("R", modifiedOnly = F)
@@ -31,17 +31,19 @@ daap_plan <- drake_plan(
 
   # Initial Set up
   data_files_read = target(
-    command =  dpbuild::dpinput_read(),
-    trigger = trigger(change = file_in("./.daap/daap_input.yaml"))),
-
+    command = dpbuild::dpinput_read(),
+    trigger = trigger(change = file.info("./.daap/daap_input.yaml")$mtime)
+  ),
 
   # Derive datatopic1
   # datatopic1 = derive_datatopic1(clin = data_files_read, config = config),
 
   # Structure data obj
   data_object =
-    dp_structure(data_files_read, config, output = list(), 
-                 metadata = list()),
+    dp_structure(data_files_read, config,
+      output = list(),
+      metadata = list()
+    ),
 
   # Structure output and add metadata
   data_is_written =
@@ -56,6 +58,3 @@ daap_plan <- drake_plan(
 )
 
 make(daap_plan, lock_envir = FALSE)
-
-# Add targets code
-
