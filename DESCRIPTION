@@ -1,6 +1,6 @@
 Package: dpbuild
 Title: A package to manage building of data products
-Version: 0.0.0.9105
+Version: 0.0.0.9106
 Authors@R: 
     person(given = "Afshin",
            family = "Mashadi-Hossein",
