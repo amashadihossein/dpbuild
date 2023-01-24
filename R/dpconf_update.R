@@ -106,6 +106,23 @@ dpconf_update <- function(project_path = fs::path_wd(),
 
   dpconf_write(project_path = project_path, dpconf = dpconf)
 
+  repo <- tryCatch({
+    add_readme(
+      project_path = project_path,
+      dp_title = glue::glue("Data Product {project_name}_{branch_name}"),
+      github_repo_url = github_repo_url,
+      board_params_set_dried = board_params_set_dried,
+      creds_set_dried = creds_set_dried
+    )
+  },
+    error = function(cond) {
+      cli::cli_alert_danger("Encountered error in dpconf_update.
+                             Make sure parameters are correctly passed.
+                             For example, board params need to be dried.")
+      cli::cli_alert_danger(cond)
+    }
+  )
+
   add_these <- unlist(git2r::status(repo = repo))
   git2r::add(repo = repo, path = glue::glue("{project_path}/{add_these}"))
   git2r::commit(repo = repo, all = TRUE, message = commit_description)
