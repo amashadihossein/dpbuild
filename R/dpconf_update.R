@@ -107,6 +107,7 @@ dpconf_update <- function(project_path = fs::path_wd(),
   dpconf_write(project_path = project_path, dpconf = dpconf)
 
   tryCatch({
+    project_name <- basename(path = project_path)
     add_readme(
       project_path = project_path,
       dp_title = glue::glue("Data Product {project_name}_{branch_name}"),
