@@ -106,19 +106,26 @@ dpconf_update <- function(project_path = fs::path_wd(),
 
   dpconf_write(project_path = project_path, dpconf = dpconf)
 
-  tryCatch({
-    project_name <- basename(path = project_path)
-    add_readme(
-      project_path = project_path,
-      dp_title = glue::glue("Data Product {project_name}_{branch_name}"),
-      github_repo_url = github_repo_url,
-      board_params_set_dried = board_params_set_dried,
-      creds_set_dried = creds_set_dried
-    )
-  },
+  tryCatch(
+    {
+      flname <- flname_xos_get(fl = "README.RMD")
+      conf_read <- dpconf_read(project_path = project_path)
+      dp_title <- glue::glue("Data Product {conf_read$project_name}_{conf_read$branch_name}")
+      github_repo_url <- git2r::remote_url()
+      board_params_set <- fn_hydrate(conf_read$board_params_set_dried)
+      creds_set_dried <- conf_read$creds_set_dried
+
+      rmarkdown::render(
+        input = glue::glue("{project_path}/{flname}"),
+        params = list(
+          dp_title = dp_title, github_repo_url = github_repo_url,
+          board_params_set = board_params_set,
+          creds_set_dried = creds_set_dried
+        )
+      )
+    },
     error = function(cond) {
-      cli::cli_alert_danger("Encountered error in dpconf_update.
-                             Make sure parameters are correctly passed.
+      cli::cli_alert_danger("Make sure parameters are correctly passed.
                              For example, board params need to be dried.")
       cli::cli_alert_danger(cond)
     }
