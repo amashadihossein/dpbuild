@@ -1,6 +1,6 @@
 Package: dpbuild
 Title: A package to manage building of data products
-Version: 0.0.0.9105
+Version: 0.0.0.9106
 Authors@R: 
     person(given = "Afshin",
            family = "Mashadi-Hossein",
@@ -12,7 +12,7 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Imports: 
     digest,
     dpi,

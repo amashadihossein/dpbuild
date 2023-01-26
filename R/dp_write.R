@@ -79,7 +79,7 @@ dplognote_get <- function(data_object, project_path) {
     "{project_path}/",
     "output_files/RDS_format/data_object.RDS"
   )
-  attrs <- purrr::list_modify(attributes(data_object), names = NULL)
+  attrs <- purrr::list_modify(attributes(data_object), names = purrr::zap())
   rds_file_sha1 <- digest::digest(object = dataobj_path, algo = "sha1", file = T)
   rds_obj_sha1 <- digest::sha1(
     x = make_sha1_compatible(data_object),
