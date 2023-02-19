@@ -103,8 +103,8 @@ dp_init <- function(project_path = fs::path_wd(),
   } else {
     if (missing(creds_set_dried)) {
       stop(cli::format_error(glue::glue(
-        "board_params_set_dried which is ",
-        "expected for {board_type}"
+        "Missing creds_set_dried value, which is ",
+        "required for {board_type}"
       )))
     }
   }
