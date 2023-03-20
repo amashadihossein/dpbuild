@@ -401,10 +401,19 @@ dp_git_init <- function(project_path, project_name, branch_name,
     commit_1 <- git2r::commit(repo, message = "project init")
 
     # Create a branch
-    branch_1 <- git2r::branch_create(commit_1, name = branch_name)
+    all_branch_names <- names(git2r::branches(repo = repo))
 
-    # change branch
-    git2r::checkout(object = repo, branch = branch_name)
+    if (!branch_name %in% all_branch_names) {
+      branch_1 <- git2r::branch_create(commit_1, name = branch_name)
+
+      # change branch
+      git2r::checkout(object = repo, branch = branch_name)
+    } else {
+      stop(cli::format_error(glue::glue(
+        "A reference with that name already exists. ",
+        "Please change the existing branch or default branch name."
+        )))
+    }
 
     # dpconf$branch_name <- git2r::repository_head(repo = repo)$name
 
