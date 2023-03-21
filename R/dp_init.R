@@ -409,10 +409,8 @@ dp_git_init <- function(project_path, project_name, branch_name,
       # change branch
       git2r::checkout(object = repo, branch = branch_name)
     } else {
-      stop(cli::format_error(glue::glue(
-        "A reference with that name already exists. ",
-        "Please change the existing branch or default branch name."
-        )))
+      # change branch
+      git2r::checkout(object = repo, branch = branch_name)
     }
 
     # dpconf$branch_name <- git2r::repository_head(repo = repo)$name
