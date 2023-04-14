@@ -118,7 +118,7 @@ dp_init <- function(project_path = fs::path_wd(),
   }
 
   creds_set_dried_parsed <- rlang::parse_expr(creds_set_dried)
-  if (!class(creds_set_dried_parsed) == "call" & board_type != "local_board") {
+  if (!inherits(creds_set_dried_parsed, "call") & board_type != "local_board") {
     stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in
                                       dp_init. Make sure you are passing a
                                       callable expression to fn_dry")))

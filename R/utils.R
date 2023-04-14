@@ -242,7 +242,7 @@ inputmap_clean <- function(input_map, remove_id = character(0), force_cleanname 
   input_map$input_manifest <- input_map$input_manifest %>% dplyr::filter(.data$to_be_synced)
   input_map$input_obj <- input_map$input_obj[input_map$input_manifest$id]
 
-  if (class(try(dpinputnames_simplify(input_map$input_manifest$id))) != "try-error" | force_cleanname) {
+  if (!inherits(try(dpinputnames_simplify(input_map$input_manifest$id)), "try-error") | force_cleanname) {
     input_map$input_manifest <- input_map$input_manifest %>%
       dplyr::mutate(id = dpinputnames_simplify(.data$id, make_unique = force_cleanname))
 
