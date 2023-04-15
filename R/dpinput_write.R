@@ -1,12 +1,11 @@
-#' @title write data product input manifest
-#' @description Converts structured input into a yaml manifest
-#' @param input_d a list with synced_input elements structured as desired within
-#'  a list
+#' @title Write data product input manifest
+#' @description Converts structured input into a yaml manifest and writes to `.daap/daap_input.yaml`
+#' @param input_d a list generated from `dpinput_sync` with synced_input elements
+#' structured as desired
 #' @param project_path Project path
 #' @param verbose T/F
 #' @return TRUE
 #' @export
-
 dpinput_write <- function(project_path, input_d, verbose = F) {
   if (verbose) {
     print("Writing daap input yaml")

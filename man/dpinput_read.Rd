@@ -10,7 +10,7 @@ dpinput_read(
 )
 }
 \arguments{
-\item{daap_input_yaml}{daap_input yaml file imported}
+\item{daap_input_yaml}{daap_input yaml file imported (default "./.daap/daap_input.yaml")}
 
 \item{add_metadata}{T/F when TRUE dpinput format will include metadata}
 }
@@ -19,5 +19,6 @@ daap_input as a structured list of anonymous functions each when
 called retrieves the specific data
 }
 \description{
-Reads yaml DaaP input manifest and returns a structured pinlink
+Reads yaml dpinput manifest and returns
+a structured pinlink
 }

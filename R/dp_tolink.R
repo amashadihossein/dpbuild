@@ -1,5 +1,5 @@
 #' @title Converts a data product to a link
-#' @description Given the name and version of a data product, it returns a
+#' @description Given the name and version of a data product, this will return a
 #' custom function for retrieving that data product
 #' @param dp_name name of the data product
 #' @param dp_version version of the data product
@@ -7,7 +7,6 @@
 #' dp_cars_lnk <- dp_tolink(dp_name = "dp-cars-us001", dp_version = "4dc379a")
 #' }
 #' @export
-
 dp_tolink <- function(dp_name, dp_version) {
   # TODO: this function to be consolidated with dpinput_read so to provide the
   # user a single interface for building the input object into the data product

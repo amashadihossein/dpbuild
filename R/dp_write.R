@@ -1,7 +1,7 @@
 #' @title Write data product
-#' @description This function writes the data product and logs it
-#' @param data_object data_object
-#' @param project_path path to the project
+#' @description This function writes the data product and logs it in `.daap/daap_log.yaml`
+#' @param data_object data_object generated from `dp_structure`
+#' @param project_path path to the project (default is current directory)
 #' @return TRUE
 #' @export
 dp_write <- function(data_object, project_path = ".") {

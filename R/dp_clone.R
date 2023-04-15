@@ -12,7 +12,6 @@
 #' )
 #' }
 #' @export
-
 dp_clone <- function(remote_url, branch, verbose = F) {
   dirs_to_add <- c("input_files", "output_files")
 

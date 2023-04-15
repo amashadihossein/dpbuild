@@ -1,8 +1,9 @@
-#' This function assembles data object
-#' @param data_files_read this is the output of read_data_files
-#' @param config this is the config file read
 #' @title Structure a data product
-#' @description Structures data product and properly assigns class and attributes
+#' @description This function assembles the data product and properly assigns
+#' class and attributes. For examples, use `dpbuild::dpcode_add` to generate a dp_make.R file
+#' @param data_files_read object generated from `dpbuild::dpinput_read()`
+#' containing links to input data
+#' @param config data product config file from `dpbuild::dpconf_get`
 #' @param output a list of content to be structured under output
 #' @param metadata a list of content to be structured under metadata
 #' @return a list containing README, raw_input, input, and output

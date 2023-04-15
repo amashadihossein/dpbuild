@@ -197,10 +197,13 @@ make_names_codefriendly <- function(x, make_unique = T) {
 }
 
 
-#' @title Make dinput names simplified
-#' @description  This function tries to drop the full descriptive name of dpinput elements for code aesthetics
-#' @param x a character string of the form `{path}/{file_name.extension}/{sha1}` which will be converted to a character string of the form `{file_name}`
-#' @param make_unique if TRUE it ensures each element of a vector names end up being unique. If not it errors if not simplified names not unique.
+#' @title Make dpinput names simplified
+#' @description  This function tries to drop the full descriptive name of dpinput
+#' elements for code aesthetics
+#' @param x a character string of the form `{path}/{file_name.extension}/{sha1}`
+#' which will be converted to a character string of the form `{file_name}`
+#' @param make_unique if TRUE it ensures each element of a vector names end up
+#' being unique. If not it errors if not simplified names not unique.
 #' @return the code friendly converted character string
 #' @keywords internal
 dpinputnames_simplify <- function(x, make_unique = FALSE) {
@@ -226,13 +229,15 @@ dpinputnames_simplify <- function(x, make_unique = FALSE) {
 
 
 #' @title Clean input_map
-#' @description  This function drops unsynced or not-to-be-synced and pos
+#' @description  This function drops unsynced inputs from the input map
+#' and cleans names
 #' @param input_map synced mapped object as returned by `dpbuild::dpinput_map`
-#' @param remove_id a vector of input_data ids to remove. This is for convenient
+#' @param remove_id a vector of input_data ids to remove. This is for convenience
 #' as setting the input_manifest field `to_be_synced` to FALSE can achieve the
 #' same thing. The default value of `character(0)` limits removal to any row
 #' with `to_be_synced == FALSE`
-#' @param force_cleanname if TRUE it ensures each element of a vector names end up being unique. If not, it won't clean names unless clean is also unique
+#' @param force_cleanname T/F, if TRUE it ensures each input id name ends up
+#' being unique. If FALSE, it won't clean names unless names are already unique
 #' @return input_map pruned and with cleaner names
 #' @export
 inputmap_clean <- function(input_map, remove_id = character(0), force_cleanname = F) {
@@ -272,7 +277,7 @@ purge_local_cache <- function(path_cache = pins::board_cache_path()) {
 #' @title Gets cross OS File Name
 #' @description  It drops extension that can be OS-specific
 #' @param fl just the file name e.g. README.RMD
-#' @param pakcage package name e.g. dpbuild
+#' @param package package name e.g. dpbuild
 #' @keywords internal
 flname_xos_get <- function(fl, package = "dpbuild") {
   pkg_path <- system.file(package = package)

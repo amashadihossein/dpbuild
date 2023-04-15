@@ -1,10 +1,9 @@
-#' @title Get last dpinput
-#' @description Build the last dpinput from daap_inpt.yaml recorded
+#' @title Get input metadata from dpinput manifest
+#' @description Build the last dpinput from `.daap/daap_input.yaml`
 #' @param project_path current project path
 #' @return input_map0 a data.frame that maps the content of the already synced
-#' input content or NULL if no daap_input.yaml
+#' input content or NULL if no `.daap/daap_input.yaml`
 #' @keywords internal
-
 dpinput_map0 <- function(project_path = ".") {
   if (!fs::file_exists(glue::glue("{project_path}/.daap/daap_input.yaml"))) {
     return(NULL)
