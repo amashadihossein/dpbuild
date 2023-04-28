@@ -2,7 +2,7 @@
 % Please edit documentation in R/dpconf_get.R
 \name{dpconf_get}
 \alias{dpconf_get}
-\title{Get daap config}
+\title{Get data product config information}
 \usage{
 dpconf_get(project_path)
 }
@@ -13,11 +13,11 @@ dpconf_get(project_path)
 a list dpconf
 }
 \description{
-Reads in and returns daap config file hydrating any expression
-in the process.
+Reads in data product config file \code{.daap/daap_config.yaml}and
+returns config details
 }
 \details{
-This function reads in the yaml config as a list. in the process, it
-hydrate any expression for \code{board_params} and \code{creds}. Make sure, environment
+This function reads in the yaml config as a list. In the process, it
+hydrates any expression for \code{board_params} and \code{creds}. Make sure environment
 variables declared in dried functions are set prior to calling \code{dpconf_get}.
 }

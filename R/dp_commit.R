@@ -1,8 +1,11 @@
-#' @title Commit dp
-#' @description Runs a number of checks and returns a list of T/F per check
-#' @param project_path Path to the project folder
-#' @param commit_description commit description
-#' @return repo repo object post commit
+#' @title Commit data product
+#' @description Runs a number of checks and commits data product changes
+#' @param project_path Path to the project folder (default is working directory)
+#' @param commit_description Commit message
+#' @return repo object post commit
+#' @examples \dontrun{
+#' dp_commit(commit_description = "First dp commit")
+#' }
 #' @export
 dp_commit <- function(project_path = fs::path_wd(),
                       commit_description) {

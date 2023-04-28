@@ -7,13 +7,13 @@
 dp_write(data_object, project_path = ".")
 }
 \arguments{
-\item{data_object}{data_object}
+\item{data_object}{data_object generated from \code{dp_structure}}
 
-\item{project_path}{path to the project}
+\item{project_path}{path to the project (default is current directory)}
 }
 \value{
 TRUE
 }
 \description{
-This function writes the data product and logs it
+This function writes the data product and logs it in \code{.daap/daap_log.yaml}
 }

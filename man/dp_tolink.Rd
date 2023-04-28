@@ -12,7 +12,7 @@ dp_tolink(dp_name, dp_version)
 \item{dp_version}{version of the data product}
 }
 \description{
-Given the name and version of a data product, it returns a
+Given the name and version of a data product, this will return a
 custom function for retrieving that data product
 }
 \examples{

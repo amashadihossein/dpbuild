@@ -7,9 +7,10 @@
 dp_structure(data_files_read, config, output = list(), metadata = list())
 }
 \arguments{
-\item{data_files_read}{this is the output of read_data_files}
+\item{data_files_read}{object generated from \code{dpbuild::dpinput_read()}
+containing links to input data}
 
-\item{config}{this is the config file read}
+\item{config}{data product config file from \code{dpbuild::dpconf_get}}
 
 \item{output}{a list of content to be structured under output}
 
@@ -19,8 +20,6 @@ dp_structure(data_files_read, config, output = list(), metadata = list())
 a list containing README, raw_input, input, and output
 }
 \description{
-Structures data product and properly assigns class and attributes
-}
-\details{
-This function assembles data object
+This function assembles the data product and properly assigns
+class and attributes. For examples, use \code{dpbuild::dpcode_add} to generate a dp_make.R file
 }

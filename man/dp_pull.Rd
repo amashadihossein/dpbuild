@@ -7,7 +7,7 @@
 dp_pull(project_path = fs::path_wd())
 }
 \arguments{
-\item{project_path}{Path to the project folder, default "."}
+\item{project_path}{Path to the project folder (default is working directory)}
 }
 \value{
 TRUE

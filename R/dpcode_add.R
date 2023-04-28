@@ -1,7 +1,7 @@
 #' @title Adds script templates
 #' @description Adds dp_make.R and dp_journal.RMD to the dp project repo
-#' @param project_path Path to the Project
-#' @param use_targets Boolean When true, it uses targets instead of drake
+#' @param project_path Path to the project
+#' @param use_targets T/F when TRUE, uses targets instead of drake (recommended)
 #' @return repo
 #' @export
 dpcode_add <- function(project_path, use_targets = F) {

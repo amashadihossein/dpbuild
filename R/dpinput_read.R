@@ -1,6 +1,7 @@
 #' @title Read data product input manifest
-#' @description Reads yaml DaaP input manifest and returns a structured pinlink
-#' @param daap_input_yaml daap_input yaml file imported
+#' @description Reads yaml dpinput manifest and returns
+#' a structured pinlink
+#' @param daap_input_yaml daap_input yaml file imported (default "./.daap/daap_input.yaml")
 #' @param add_metadata T/F when TRUE dpinput format will include metadata
 #' @return daap_input as a structured list of anonymous functions each when
 #' called retrieves the specific data
@@ -38,7 +39,6 @@ dpinput_read <-
 #' @param synced_input_i a single pin synced data
 #' @return a function that receives config and returns the specific data
 #' @keywords internal
-
 make_pinlink <- function(synced_input_i) {
   if (!synced_input_i$metadata$synced) {
     return(NULL)

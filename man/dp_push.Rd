@@ -11,7 +11,7 @@ dp_push(
 )
 }
 \arguments{
-\item{project_path}{path to the dp_project}
+\item{project_path}{path to the dp_project (default is current directory)}
 
 \item{remote_alias}{use only to overwrite default alias, or if no default
 remote alias has been configured (e.g. legacy).}

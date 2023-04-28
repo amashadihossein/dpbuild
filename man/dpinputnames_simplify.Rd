@@ -2,19 +2,22 @@
 % Please edit documentation in R/utils.R
 \name{dpinputnames_simplify}
 \alias{dpinputnames_simplify}
-\title{Make dinput names simplified}
+\title{Make dpinput names simplified}
 \usage{
 dpinputnames_simplify(x, make_unique = FALSE)
 }
 \arguments{
-\item{x}{a character string of the form \code{{path}/{file_name.extension}/{sha1}} which will be converted to a character string of the form \code{{file_name}}}
+\item{x}{a character string of the form \code{{path}/{file_name.extension}/{sha1}}
+which will be converted to a character string of the form \code{{file_name}}}
 
-\item{make_unique}{if TRUE it ensures each element of a vector names end up being unique. If not it errors if not simplified names not unique.}
+\item{make_unique}{if TRUE it ensures each element of a vector names end up
+being unique. If not it errors if not simplified names not unique.}
 }
 \value{
 the code friendly converted character string
 }
 \description{
-This function tries to drop the full descriptive name of dpinput elements for code aesthetics
+This function tries to drop the full descriptive name of dpinput
+elements for code aesthetics
 }
 \keyword{internal}

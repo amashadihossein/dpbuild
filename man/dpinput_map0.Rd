@@ -2,7 +2,7 @@
 % Please edit documentation in R/dpinput_map0.R
 \name{dpinput_map0}
 \alias{dpinput_map0}
-\title{Get last dpinput}
+\title{Get input metadata from dpinput manifest}
 \usage{
 dpinput_map0(project_path = ".")
 }
@@ -11,9 +11,9 @@ dpinput_map0(project_path = ".")
 }
 \value{
 input_map0 a data.frame that maps the content of the already synced
-input content or NULL if no daap_input.yaml
+input content or NULL if no \code{.daap/daap_input.yaml}
 }
 \description{
-Build the last dpinput from daap_inpt.yaml recorded
+Build the last dpinput from \code{.daap/daap_input.yaml}
 }
 \keyword{internal}
