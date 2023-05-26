@@ -41,8 +41,8 @@ get_pin_version <- function(d, pin_name, pin_description) {
   pins::board_register_local(name = "daap_internal", version = T)
 
 
-  pins::pin_remove(name = pin_name, board = "daap_internal")
-  pins::pin(
+  pins::pin_delete(names = pin_name, board = "daap_internal")
+  pins::pin_write(
     x = d,
     name = pin_name,
     board = "daap_internal",
@@ -54,7 +54,7 @@ get_pin_version <- function(d, pin_name, pin_description) {
     board = "daap_internal",
     full = F
   ) %>% dplyr::pull(.data$version)
-  pins::pin_remove(name = pin_name, board = "daap_internal")
+  pins::pin_delete(names = pin_name, board = "daap_internal")
 
   return(pin_version)
 }
