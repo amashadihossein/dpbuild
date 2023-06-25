@@ -99,7 +99,7 @@ make_pinlink <- function(synced_input_i) {
     board_params$board_alias <- paste0(board_params$board_alias, "_dpinput")
     board_object <-  dpi::dp_connect(
       board_params = board_params, creds = creds,
-      board_subdir = file.path("dpinput")
+      board_subdir = file.path("dpinput/")
     )
 
     dpinput_i <- dpi::dp_get(
