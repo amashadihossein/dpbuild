@@ -86,6 +86,7 @@ dplognote_get <- function(data_object, project_path) {
     environment = F
   )
 
+  #TODO: This is pin_version for RDS. We may not need this step.
   read_daap_input <- yaml::read_yaml(file = "./.daap/daap_input.yaml")
   input_name <- names(data_object$input)[names(data_object$input) %in% names(read_daap_input)]
   pin_version <- read_daap_input[[input_name]]$pin_version
