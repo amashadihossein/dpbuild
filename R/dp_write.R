@@ -85,14 +85,19 @@ dplognote_get <- function(data_object, project_path) {
     x = make_sha1_compatible(data_object),
     environment = F
   )
-  pin_version <- get_pin_version(
-    d = data_object,
-    pin_name = attr(data_object, "dp_name"),
-    pin_description = attr(
-      data_object,
-      "branch_description"
-    )
-  )
+
+  read_daap_input <- yaml::read_yaml(file = "./.daap/daap_input.yaml")
+  input_name <- names(data_object$input)[names(data_object$input) %in% names(read_daap_input)]
+  pin_version <- read_daap_input[[input_name]]$pin_version
+
+  # pin_version <- get_pin_version(
+  #   d = data_object,
+  #   pin_name = attr(data_object, "dp_name"),
+  #   pin_description = attr(
+  #     data_object,
+  #     "branch_description"
+  #   )
+  # )
 
   log_note <- c(attrs,
     rds_file_sha1 = rds_file_sha1,
