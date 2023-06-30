@@ -85,11 +85,13 @@ dplognote_get <- function(data_object, project_path) {
     x = make_sha1_compatible(data_object),
     environment = F
   )
+  rds_file_xxhash64 <- digest::digest(object = dataobj_path, algo = "xxhash64", file = T)
+  rds_obj_xxhash64 <- digest::sha1(x = make_sha1_compatible(data_object), algo = "xxhash64", environment = F)
 
   #TODO: This is pin_version for RDS. We may not need this step.
-  read_daap_input <- yaml::read_yaml(file = "./.daap/daap_input.yaml")
-  input_name <- names(data_object$input)[names(data_object$input) %in% names(read_daap_input)]
-  pin_version <- read_daap_input[[input_name]]$pin_version
+  # read_daap_input <- yaml::read_yaml(file = "./.daap/daap_input.yaml")
+  # input_name <- names(data_object$input)[names(data_object$input) %in% names(read_daap_input)]
+  # pin_version <- read_daap_input[[input_name]]$pin_version
 
   # pin_version <- get_pin_version(
   #   d = data_object,
@@ -102,7 +104,9 @@ dplognote_get <- function(data_object, project_path) {
 
   log_note <- c(attrs,
     rds_file_sha1 = rds_file_sha1,
-    rds_obj_sha1 = rds_obj_sha1, pin_version = pin_version
+    rds_obj_sha1 = rds_obj_sha1, #pin_version = pin_version
+    rds_file_xxhash64 = rds_file_xxhash64,
+    rds_obj_xxhash64 = rds_obj_xxhash64
   )
   sha1_short <- substring(log_note$rds_file_sha1, first = 1, last = 7)
   log_label <- glue::glue("rds_log_{sha1_short}")
