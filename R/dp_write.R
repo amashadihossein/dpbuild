@@ -33,7 +33,7 @@ dp_write <- function(data_object, project_path = ".") {
     "{project_path}/",
     "output_files/RDS_format/data_object.RDS"
   )
-  saveRDS(object = data_object, file = dataobj_path)
+  saveRDS(object = data_object, file = dataobj_path, version = 2)
   data_object <- readRDS(file = dataobj_path)
 
   log_note <- dplognote_get(
