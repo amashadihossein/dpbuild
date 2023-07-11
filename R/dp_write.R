@@ -104,7 +104,7 @@ dplognote_get <- function(data_object, project_path) {
 
   log_note <- c(attrs,
     rds_file_sha1 = rds_file_sha1,
-    rds_obj_sha1 = rds_obj_sha1, #pin_version = pin_version
+    rds_obj_sha1 = rds_obj_sha1, pin_version = "test-hash-1234",
     rds_file_xxhash64 = rds_file_xxhash64,
     rds_obj_xxhash64 = rds_obj_xxhash64
   )
