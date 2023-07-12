@@ -93,18 +93,22 @@ dplognote_get <- function(data_object, project_path) {
   # input_name <- names(data_object$input)[names(data_object$input) %in% names(read_daap_input)]
   # pin_version <- read_daap_input[[input_name]]$pin_version
 
-  # pin_version <- get_pin_version(
-  #   d = data_object,
-  #   pin_name = attr(data_object, "dp_name"),
-  #   pin_description = attr(
-  #     data_object,
-  #     "branch_description"
-  #   )
-  # )
+  pin_version <- get_pin_version(
+    d = data_object,
+    pin_name = attr(data_object, "dp_name"),
+    pin_description = attr(
+      data_object,
+      "branch_description"
+    )
+  )
+
+  pin_version_split <- unlist(base::strsplit(x = z, split = "-"))
+  pin_hash <- pin_version_split[length(pin_version_split)]
 
   log_note <- c(attrs,
     rds_file_sha1 = rds_file_sha1,
-    rds_obj_sha1 = rds_obj_sha1, pin_version = "test-hash-1234",
+    rds_obj_sha1 = rds_obj_sha1,
+    pin_version = pin_hash,
     rds_file_xxhash64 = rds_file_xxhash64,
     rds_obj_xxhash64 = rds_obj_xxhash64
   )
