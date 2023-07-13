@@ -57,8 +57,7 @@ get_pin_version <- function(d, pin_name, pin_description) {
 
   pin_version <- pins::pin_versions(
     name = pin_name,
-    board = local_board_folder,
-    full = F
+    board = local_board_folder
   ) %>% dplyr::pull(.data$version)
   pins::pin_delete(names = pin_name, board = local_board_folder)
 
