@@ -38,7 +38,6 @@ get_pin_version <- function(d, pin_name, pin_description) {
   pin_name <- as.character(pin_name)
   pin_description <- as.character(pin_description)
 
-  # pins::board_register_local(name = "daap_internal", version = T)
   local_board_folder <- pins::board_folder(path = "daap_internal", versioned = T)
   # board_daap_internal <- pins::board_temp(versioned = T)
 
@@ -58,12 +57,11 @@ get_pin_version <- function(d, pin_name, pin_description) {
   pin_version <- pins::pin_versions(
     name = pin_name,
     board = local_board_folder
-  ) %>% dplyr::pull(.data$version)
+  ) %>% dplyr::pull(.data$hash)
   pins::pin_delete(names = pin_name, board = local_board_folder)
 
   return(pin_version)
 }
-
 
 
 #' @title Get Readme to be appended to the data object
@@ -81,9 +79,7 @@ readme_get <- function(d, general_note) {
 
   readme$exploratory <- paste("This contains the following:", paste(names(d$exploratory), collapse = ", "))
 
-
   readme$metadata <- paste("This contains the following:", paste(names(d$metadata), collapse = ", "))
-
 
   readme <- readme[c("general_note", setdiff(names(d), "README"))]
 
