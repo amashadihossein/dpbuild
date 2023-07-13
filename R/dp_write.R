@@ -93,7 +93,7 @@ dplognote_get <- function(data_object, project_path) {
   # input_name <- names(data_object$input)[names(data_object$input) %in% names(read_daap_input)]
   # pin_version <- read_daap_input[[input_name]]$pin_version
 
-  pin_version <- get_pin_version(
+  data_object_pin_version <- get_pin_version(
     d = data_object,
     pin_name = attr(data_object, "dp_name"),
     pin_description = attr(
@@ -102,7 +102,7 @@ dplognote_get <- function(data_object, project_path) {
     )
   )
 
-  pin_version_split <- unlist(base::strsplit(x = z, split = "-"))
+  pin_version_split <- unlist(base::strsplit(x = data_object_pin_version, split = "-"))
   pin_hash <- pin_version_split[length(pin_version_split)]
 
   log_note <- c(attrs,
