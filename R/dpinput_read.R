@@ -104,7 +104,7 @@ make_pinlink <- function(synced_input_i) {
       board_object = board_object, data_name = data_name,
       version = data_version
     )
-    dpinput_i <- cast_class(dpinput_i)
+    # dpinput_i <- cast_class(dpinput_i)
 
     return(dpinput_i)
   }
