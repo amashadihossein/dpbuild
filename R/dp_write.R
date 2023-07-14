@@ -80,6 +80,7 @@ dplognote_get <- function(data_object, project_path) {
     "output_files/RDS_format/data_object.RDS"
   )
   attrs <- purrr::list_modify(attributes(data_object), names = purrr::zap())
+  rds_file_sha1 <- digest::digest(object = dataobj_path, algo = "sha1", file = T)
 
   data_object_pin_version <- get_pin_version(
     d = data_object,
@@ -94,9 +95,11 @@ dplognote_get <- function(data_object, project_path) {
   # pin_hash <- pin_version_split[length(pin_version_split)]
 
   log_note <- c(attrs,
+    rds_file_sha1 = rds_file_sha1,
     pin_version = data_object_pin_version
   )
-  log_label <- glue::glue("rds_log_{data_object_pin_version}")
+  sha1_short <- substring(log_note$rds_file_sha1, first = 1, last = 7)
+  log_label <- glue::glue("rds_log_{sha1_short}")
   log_note <- list(log_note)
   names(log_note)[[1]] <- log_label
 
