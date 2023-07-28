@@ -35,6 +35,7 @@ dpname_make <- function(project_name, branch_name) {
 #' @importFrom dplyr .data
 #' @keywords internal
 get_pin_version <- function(d, pin_name, pin_description) {
+  withr::local_options(list(pins.quiet = TRUE))
   pin_name <- as.character(pin_name)
   pin_description <- as.character(pin_description)
 

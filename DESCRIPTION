@@ -32,7 +32,8 @@ Imports:
     pins (>= 1.2.0),
     cli,
     jsonlite,
-    rmarkdown
+    rmarkdown,
+    withr
 Remotes:
     amashadihossein/dpi
 BugReports: https://github.com/amashadihossein/dpbuild/issues
