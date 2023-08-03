@@ -2,10 +2,6 @@
 #' @export
 dpi::board_params_set_s3
 
-#' @importFrom dpi board_params_set_labkey
-#' @export
-dpi::board_params_set_labkey
-
 #' @importFrom dpi board_params_set_local
 #' @export
 dpi::board_params_set_local
@@ -13,10 +9,6 @@ dpi::board_params_set_local
 #' @importFrom dpi creds_set_aws
 #' @export
 dpi::creds_set_aws
-
-#' @importFrom dpi creds_set_labkey
-#' @export
-dpi::creds_set_labkey
 
 #' @title Initialize data product project
 #' @description Initializes a data product project and creates local data product
@@ -35,12 +27,12 @@ dpi::creds_set_labkey
 #' metadata to the data object
 #' @param board_params_set_dried Character representation of the function for
 #' setting board_params. Use `fn_dry()` in combination with
-#' `dpi::board_params_set_s3`, `dpi::board_params_set_labkey`, or
+#' `dpi::board_params_set_s3` or
 #' `dpi::board_params_set_local`. See example.
 #' @param creds_set_dried when using `local_board`, it is ignored and need not
 #' be specified. Otherwise,character representation of the function for setting
-#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or
-#' `dpi::creds_set_labkey`. *NOTE: never directly pass credentials in script!*
+#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws`.
+#' *NOTE: never directly pass credentials in script!*
 #'  *Use `Sys.getenv`*. See example
 #' @param github_repo_url the https url for the github repo
 #' @param git_ignore a character vector of the files and directories to be
@@ -50,15 +42,17 @@ dpi::creds_set_labkey
 #' @examples \dontrun{
 #' # Dry function call to setting board_params
 #' board_params_set_dried <-
-#'   fn_dry(dpi::board_params_set_labkey(
-#'     board_alias = "labkey",
-#'     url = "https:url_to_labkey/labkey",
-#'     folder = "project_folder/subfolder"
+#'   fn_dry(dpi::board_params_set_s3(
+#'     bucket_name = "bucket_name",
+#'     region = "us-east-1"
 #'   ))
 #'
 #' # Dry function call to setting credentials
 #' creds_set_dried <-
-#'   fn_dry(dpi::creds_set_labkey(api_key = Sys.getenv("LABKEY_API_KEY")))
+#'   fn_dry(dpi::creds_set_aws(
+#'     key = Sys.getenv("AWS_KEY"),
+#'     secret = Sys.getenv("AWS_SECRET")
+#'   ))
 #'
 #' # Initialize dp repo
 #' dp_repo <- dp_init(
@@ -229,10 +223,9 @@ dp_init <- function(project_path = fs::path_wd(),
 #' metadata to the data object
 #' @param board_params_set_dried Character representation of the function for
 #' setting board_params. Use `fn_dry()` in combination with
-#' `dpi::board_params_set_s3`, `dpi::board_params_set_labkey` or
-#' `dpi::board_params_set_local`.
+#' `dpi::board_params_set_s3` or `dpi::board_params_set_local`.
 #' @param creds_set_dried Character representation of the function for setting
-#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or `dpi::creds_set_labkey`.
+#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws`.
 #' @param ... any other metadata to be captured in the config file
 #' @return dpconf
 #' @keywords internal
@@ -334,11 +327,10 @@ fn_hydrate <- function(dried_fn) {
 #' data was processed. Example m3cut (as in month 3 data cut)
 #' @param board_params_set_dried Character representation of the function for
 #' setting board_params. Use `fn_dry()` in combination with
-#' `dpi::board_params_set_s3`, `dpi::board_params_set_labkey`,
+#' `dpi::board_params_set_s3`
 #' or `dpi::board_params_set_local`.
 #' @param creds_set_dried Character representation of the function for setting
-#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or
-#' `dpi::creds_set_labkey`.
+#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws`.
 #' @param github_repo_url the https url for the github repo
 #' @param git_ignore A character vector of the files and directories to be
 #' ignored by git.
@@ -438,11 +430,10 @@ dp_git_init <- function(project_path, project_name, branch_name,
 #' @param dp_title readme title
 #' @param board_params_set_dried Character representation of the function for
 #' setting board_params. Use `fn_dry()` in combination with
-#' `dpi::board_params_set_s3`, `dpi::board_params_set_labkey`, or
+#' `dpi::board_params_set_s3` or
 #' `dpi::board_params_set_local`.
 #' @param creds_set_dried Character representation of the function for setting
-#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or
-#' `dpi::creds_set_labkey`.
+#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws`.
 #' @param github_repo_url github repo url
 #' @keywords internal
 add_readme <- function(project_path, dp_title, github_repo_url,

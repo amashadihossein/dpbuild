@@ -21,12 +21,11 @@ add_readme(
 
 \item{board_params_set_dried}{Character representation of the function for
 setting board_params. Use \code{fn_dry()} in combination with
-\code{dpi::board_params_set_s3}, \code{dpi::board_params_set_labkey}, or
+\code{dpi::board_params_set_s3} or
 \code{dpi::board_params_set_local}.}
 
 \item{creds_set_dried}{Character representation of the function for setting
-creds. Use \code{fn_dry()} in combination with \code{dpi::creds_set_aws} or
-\code{dpi::creds_set_labkey}.}
+creds. Use \code{fn_dry()} in combination with \code{dpi::creds_set_aws}.}
 }
 \description{
 Add readme to the project

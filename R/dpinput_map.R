@@ -123,7 +123,6 @@ dir_process <- function(current_dir, junk_path = character(0)) {
 
   ls_tidy <- dir_ls_tidy(current_dir = current_dir)
 
-
   if ("file" %in% ls_tidy$content_type) {
     tmp <- ls_tidy %>%
       dplyr::filter(.data$content_type == "file") %>%

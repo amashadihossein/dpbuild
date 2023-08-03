@@ -1,6 +1,6 @@
 Package: dpbuild
 Title: A package to manage building of data products
-Version: 0.0.0.9106
+Version: 0.1.0
 Authors@R: 
     person(given = "Afshin",
            family = "Mashadi-Hossein",
@@ -29,12 +29,12 @@ Imports:
     yaml,
     gh,
     magrittr,
-    pins (== 0.4.5.9001),
+    pins (>= 1.2.0),
     cli,
     jsonlite,
-    rmarkdown
+    rmarkdown,
+    withr
 Remotes:
-    amashadihossein/pins,
     amashadihossein/dpi
 BugReports: https://github.com/amashadihossein/dpbuild/issues
 Suggests: 

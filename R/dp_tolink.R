@@ -57,9 +57,9 @@ dp_tolink <- function(dp_name, dp_version) {
       }
     }
 
-    dpi::dp_connect(board_params = board_params, creds = creds)
+    board_object <- dpi::dp_connect(board_params = board_params, creds = creds)
     dp <- dpi::dp_get(
-      board_params = board_params, data_name = dp_name,
+      board_params = board_params, board_object = board_object, data_name = dp_name,
       version = dp_version
     )
     return(dp)

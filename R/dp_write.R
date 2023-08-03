@@ -33,7 +33,7 @@ dp_write <- function(data_object, project_path = ".") {
     "{project_path}/",
     "output_files/RDS_format/data_object.RDS"
   )
-  saveRDS(object = data_object, file = dataobj_path)
+  saveRDS(object = data_object, file = dataobj_path, version = 2)
   data_object <- readRDS(file = dataobj_path)
 
   log_note <- dplognote_get(
@@ -81,11 +81,8 @@ dplognote_get <- function(data_object, project_path) {
   )
   attrs <- purrr::list_modify(attributes(data_object), names = purrr::zap())
   rds_file_sha1 <- digest::digest(object = dataobj_path, algo = "sha1", file = T)
-  rds_obj_sha1 <- digest::sha1(
-    x = make_sha1_compatible(data_object),
-    environment = F
-  )
-  pin_version <- get_pin_version(
+
+  data_object_pin_version <- get_pin_version(
     d = data_object,
     pin_name = attr(data_object, "dp_name"),
     pin_description = attr(
@@ -94,9 +91,12 @@ dplognote_get <- function(data_object, project_path) {
     )
   )
 
+  # pin_version_split <- unlist(base::strsplit(x = data_object_pin_version, split = "-"))
+  # pin_hash <- pin_version_split[length(pin_version_split)]
+
   log_note <- c(attrs,
     rds_file_sha1 = rds_file_sha1,
-    rds_obj_sha1 = rds_obj_sha1, pin_version = pin_version
+    pin_version = data_object_pin_version
   )
   sha1_short <- substring(log_note$rds_file_sha1, first = 1, last = 7)
   log_label <- glue::glue("rds_log_{sha1_short}")

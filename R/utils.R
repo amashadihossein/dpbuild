@@ -35,30 +35,34 @@ dpname_make <- function(project_name, branch_name) {
 #' @importFrom dplyr .data
 #' @keywords internal
 get_pin_version <- function(d, pin_name, pin_description) {
+  withr::local_options(list(pins.quiet = TRUE))
   pin_name <- as.character(pin_name)
   pin_description <- as.character(pin_description)
 
-  pins::board_register_local(name = "daap_internal", version = T)
+  # local_board_folder <- pins::board_folder(path = "daap_internal", versioned = T)
+  temp_board_folder <- pins::board_temp(versioned = T)
 
+  pin_name_exists <- pins::pin_exists(board = temp_board_folder, name = pin_name)
 
-  pins::pin_remove(name = pin_name, board = "daap_internal")
-  pins::pin(
+  if (pin_name_exists) {
+    pins::pin_delete(names = pin_name, board = temp_board_folder)
+  }
+
+  pins::pin_write(
     x = d,
     name = pin_name,
-    board = "daap_internal",
+    board = temp_board_folder,
     description = pin_description
   )
 
   pin_version <- pins::pin_versions(
     name = pin_name,
-    board = "daap_internal",
-    full = F
-  ) %>% dplyr::pull(.data$version)
-  pins::pin_remove(name = pin_name, board = "daap_internal")
+    board = temp_board_folder
+  ) %>% dplyr::pull(.data$hash)
+  pins::pin_delete(names = pin_name, board = temp_board_folder)
 
   return(pin_version)
 }
-
 
 
 #' @title Get Readme to be appended to the data object
@@ -76,9 +80,7 @@ readme_get <- function(d, general_note) {
 
   readme$exploratory <- paste("This contains the following:", paste(names(d$exploratory), collapse = ", "))
 
-
   readme$metadata <- paste("This contains the following:", paste(names(d$metadata), collapse = ", "))
-
 
   readme <- readme[c("general_note", setdiff(names(d), "README"))]
 
