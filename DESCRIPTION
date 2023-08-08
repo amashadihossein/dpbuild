@@ -35,7 +35,7 @@ Imports:
     rmarkdown,
     withr
 Remotes:
-    amashadihossein/dpi
+    amashadihossein/dpi@dev
 BugReports: https://github.com/amashadihossein/dpbuild/issues
 Suggests: 
     httr,
