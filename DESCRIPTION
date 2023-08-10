@@ -2,42 +2,38 @@ Package: dpbuild
 Title: A package to manage building of data products
 Version: 0.1.0
 Authors@R: 
-    person(given = "Afshin",
-           family = "Mashadi-Hossein",
-           role = c("aut", "cre"),
-           email = "amashadihossein@gmail.com",
+    person("Afshin", "Mashadi-Hossein", , "amashadihossein@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2337-2195"))
-Description: An R package intended to help set up and manage a data product project.
+Description: An R package intended to help set up and manage a data
+    product project.
 License: GPL-3
-Encoding: UTF-8
-LazyData: true
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+BugReports: https://github.com/amashadihossein/dpbuild/issues
 Imports: 
+    cli,
     digest,
-    dpi,
+    dpi (>= 0.1.0),
     dplyr,
-    tidyr,
     fs,
+    gh,
     git2r,
     glue,
+    jsonlite,
+    magrittr,
+    pins (>= 1.2.0),
     purrr,
     renv,
     rio,
     rlang,
-    tibble,
-    yaml,
-    gh,
-    magrittr,
-    pins (>= 1.2.0),
-    cli,
-    jsonlite,
     rmarkdown,
-    withr
-Remotes:
-    amashadihossein/dpi
-BugReports: https://github.com/amashadihossein/dpbuild/issues
+    tibble,
+    tidyr,
+    withr,
+    yaml
 Suggests: 
     httr,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
