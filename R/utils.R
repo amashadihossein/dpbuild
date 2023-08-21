@@ -288,3 +288,43 @@ flname_xos_get <- function(fl, package = "dpbuild") {
   flname <- basename(fl_path)
   return(flname)
 }
+
+#' @title Gets package versions
+#' @description  Gets package versions
+#' @param package_names A vector of package names for e.g. c("pins","dpbuild", "dpi", "dpdeploy")
+#' @keywords internal
+
+get_package_versions <- function(package_names){
+
+  pkg_versons <- list()
+
+  for (pkg_name in package_names) {
+    package_version <- utils::packageVersion(pkg_name)
+    pkg_versons[[pkg_name]] <- package_version
+  }
+
+  return(pkg_versons)
+}
+
+#' @title Gets package versions
+#' @description  Gets package versions
+#' @param project_path path to the dp_project (default is current directory)
+#' @param package_versions Package version object obtained from get_package_versions method
+#' @keywords internal
+
+update_package_versions_in_config_yaml <- function(
+    project_path = ".",
+  package_versions){
+
+  dpconf_updated <- dpbuild:::dpconf_read(project_path = project_path)
+
+  for (pv in 1:length(package_versions)) {
+    pkg_name <- names(package_versions[pv])
+    pkg_name_version <- paste0(names(package_versions[pv]), "_version")
+    pkg_ver <- as.character(package_versions[pv][[1]])
+    dpconf_updated[[pkg_name_version]] <- as.character(pkg_ver)
+  }
+
+  dpbuild:::dpconf_write(project_path = project_path, dpconf = dpconf_updated)
+  cli::cli_alert_success("Package versions have successully been updated in the config file.")
+}

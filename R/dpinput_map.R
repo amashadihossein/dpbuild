@@ -15,6 +15,26 @@ dpinput_map <- function(project_path) {
     )))
   }
 
+  read_conf_file <- dpbuild:::dpconf_get(project_path = project_path)
+
+  installed_pins_version <- get_package_versions(package_names = "pins")
+
+  pins_version_message <- glue::glue(
+   'This data product was built with a legacy version of pins. Please downgrade pins and all daapr packages using
+   remotes::install_github(repo = "amashadihossein/dpi@0.0.0.9008")
+   remotes::install_github(repo = "amashadihossein/dpbuild@0.0.0.9106")
+   remotes::install_github(repo = "amashadihossein/ddeploy@0.0.0.9016")
+   remotes::install_github(repo = "amashadihossein/daapr@0.0.0.9006")'
+  )
+
+  if (!"pins_version" %in% names(read_conf_file) & installed_pins_version$pins >  '1.2.0') {
+    stop(cli::cli_alert_danger(pins_version_message))
+  } else {
+    if (read_conf_file$pin_version < "1.2.0") {
+      stop(cli::cli_alert_danger(pins_version_message))
+    }
+  }
+
   if (length(fs::dir_ls(input_dir)) == 0) {
     message("input_files directory is empty. It is OK to have an empty input_files directory if there is no need to update input data.")
   }
