@@ -306,25 +306,38 @@ get_package_versions <- function(package_names){
   return(pkg_versons)
 }
 
-#' @title Gets package versions
-#' @description  Gets package versions
-#' @param project_path path to the dp_project (default is current directory)
-#' @param package_versions Package version object obtained from get_package_versions method
+#' @title Check pins package compatibility
+#' @description Check pins package compatibility
+#' @param pins_version A string pins version to check against the installed one
 #' @keywords internal
 
-update_package_versions_in_config_yaml <- function(
-    project_path = ".",
-  package_versions){
+check_pins_compatibility <- function(pins_version = '1.2.0'){
+  read_conf_file <- dpbuild:::dpconf_read(project_path = ".")
 
-  dpconf_updated <- dpbuild:::dpconf_read(project_path = project_path)
+  is_pins_version_key_in_config <- "pins_version" %in% names(read_conf_file)
+  is_pins_version_in_config_gt_1_2_0 <- read_conf_file$pins > pins_version
 
-  for (pv in 1:length(package_versions)) {
-    pkg_name <- names(package_versions[pv])
-    pkg_name_version <- paste0(names(package_versions[pv]), "_version")
-    pkg_ver <- as.character(package_versions[pv][[1]])
-    dpconf_updated[[pkg_name_version]] <- as.character(pkg_ver)
+  installed_pins_version <- get_package_versions(package_names = "pins")
+  is_pins_package_version_gt_1_2_0 <- installed_pins_version$pins > pins_version
+
+  pins_version_message <- glue::glue(
+    'This data product was built with a legacy version of pins.
+    Please downgrade pins and all daapr packages using
+    remotes::install_github(repo = "amashadihossein/dpi@0.0.0.9008")
+    remotes::install_github(repo = "amashadihossein/dpbuild@0.0.0.9106")
+    remotes::install_github(repo = "amashadihossein/ddeploy@0.0.0.9016")
+    remotes::install_github(repo = "amashadihossein/daapr@0.0.0.9006")
+    remotes::install_github(repo = "amashadihossein/pins")'
+  )
+
+  if (!all(is_pins_version_key_in_config,
+    is_pins_version_in_config_gt_1_2_0,
+    is_pins_package_version_gt_1_2_0)) {
+
+    stop(cli::cli_alert_danger(pins_version_message))
   }
-
-  dpbuild:::dpconf_write(project_path = project_path, dpconf = dpconf_updated)
-  cli::cli_alert_success("Package versions have successully been updated in the config file.")
 }
+
+
+
+
