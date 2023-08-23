@@ -13,6 +13,7 @@ dpconf_init(
   readme_general_note = character(0),
   board_params_set_dried,
   creds_set_dried,
+  pins_version,
   ...
 )
 }

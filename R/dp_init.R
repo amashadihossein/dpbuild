@@ -229,6 +229,7 @@ dp_init <- function(project_path = fs::path_wd(),
 #' `dpi::board_params_set_s3` or `dpi::board_params_set_local`.
 #' @param creds_set_dried Character representation of the function for setting
 #' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws`.
+#' @param pins_version pins version
 #' @param ... any other metadata to be captured in the config file
 #' @return dpconf
 #' @keywords internal
@@ -240,6 +241,7 @@ dpconf_init <- function(project_path,
                         readme_general_note = character(0),
                         board_params_set_dried,
                         creds_set_dried,
+                        pins_version,
                         ...) {
   if (!fs::dir_exists(path = glue::glue("{project_path}/.daap"))) {
     fs::dir_create(glue::glue("{project_path}/.daap"))
