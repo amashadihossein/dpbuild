@@ -257,7 +257,7 @@ dpconf_init <- function(project_path,
       readme_general_note = readme_general_note,
       board_params_set_dried = board_params_set_dried,
       creds_set_dried = creds_set_dried,
-      pins_version
+      pins_version = as.character(pins_version)
     ),
     list(...)
   )
