@@ -30,7 +30,7 @@ dpinput_map <- function(project_path) {
   if (!"pins_version" %in% names(read_conf_file) & installed_pins_version$pins >  '1.2.0') {
     stop(cli::cli_alert_danger(pins_version_message))
   } else {
-    if (read_conf_file$pin_version < "1.2.0") {
+    if (read_conf_file$pins_version < "1.2.0") {
       stop(cli::cli_alert_danger(pins_version_message))
     }
   }
