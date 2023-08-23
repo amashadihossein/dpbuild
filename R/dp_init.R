@@ -168,7 +168,7 @@ dp_init <- function(project_path = fs::path_wd(),
     fs::dir_create(glue::glue("{project_path}/output_files"))
   }
 
-  pins_version <- get_package_versions(package_names = "pins")
+  pins_version <- utils::packageVersion("pins")
 
   dpconf <- dpconf_init(
     project_path = project_path,
@@ -179,7 +179,7 @@ dp_init <- function(project_path = fs::path_wd(),
     readme_general_note = readme_general_note,
     board_params_set_dried = board_params_set_dried,
     creds_set_dried = creds_set_dried,
-    pins_version = pins_version$pins, ...
+    pins_version = pins_version, ...
   )
 
   if (!fs::dir_exists(fs::path_tidy(glue::glue("{project_path}/R")))) {
