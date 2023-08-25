@@ -315,19 +315,19 @@ check_pins_compatibility <- function(pins_version = '1.2.0'){
   read_conf_file <- dpbuild:::dpconf_read(project_path = ".")
 
   is_pins_version_key_in_config <- "pins_version" %in% names(read_conf_file)
-  is_pins_version_in_config_gt_1_2_0 <- read_conf_file$pins > pins_version
+  is_pins_version_in_config_gt_1_2_0 <- read_conf_file$pins >= pins_version
 
   installed_pins_version <- get_package_versions(package_names = "pins")
-  is_pins_package_version_gt_1_2_0 <- installed_pins_version$pins > pins_version
+  is_pins_package_version_gt_1_2_0 <- installed_pins_version$pins >= pins_version
 
   pins_version_message <- glue::glue(
     'This data product was built with a legacy version of pins.
     Please downgrade pins and all daapr packages using
+    remotes::install_github(repo = "amashadihossein/pins")
     remotes::install_github(repo = "amashadihossein/dpi@0.0.0.9008")
     remotes::install_github(repo = "amashadihossein/dpbuild@0.0.0.9106")
     remotes::install_github(repo = "amashadihossein/ddeploy@0.0.0.9016")
-    remotes::install_github(repo = "amashadihossein/daapr@0.0.0.9006")
-    remotes::install_github(repo = "amashadihossein/pins")'
+    remotes::install_github(repo = "amashadihossein/daapr@0.0.0.9006")'
   )
 
   if (!all(is_pins_version_key_in_config,
