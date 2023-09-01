@@ -289,36 +289,19 @@ flname_xos_get <- function(fl, package = "dpbuild") {
   return(flname)
 }
 
-#' @title Gets package versions
-#' @description  Gets package versions
-#' @param package_names A vector of package names for e.g. c("pins","dpbuild", "dpi", "dpdeploy")
-#' @keywords internal
-
-get_package_versions <- function(package_names){
-
-  pkg_versons <- list()
-
-  for (pkg_name in package_names) {
-    package_version <- utils::packageVersion(pkg_name)
-    pkg_versons[[pkg_name]] <- package_version
-  }
-
-  return(pkg_versons)
-}
 
 #' @title Check pins package compatibility
 #' @description Check pins package compatibility
 #' @param pins_version A string pins version to check against the installed one
 #' @keywords internal
-
 check_pins_compatibility <- function(pins_version = '1.2.0'){
   read_conf_file <- dpbuild:::dpconf_read(project_path = ".")
 
   is_pins_version_key_in_config <- "pins_version" %in% names(read_conf_file)
   is_pins_version_in_config_gt_1_2_0 <- read_conf_file$pins >= pins_version
 
-  installed_pins_version <- get_package_versions(package_names = "pins")
-  is_pins_package_version_gt_1_2_0 <- installed_pins_version$pins >= pins_version
+  installed_pins_version <- utils::packageVersion(pkg = "pins")
+  is_pins_package_version_gt_1_2_0 <- installed_pins_version >= pins_version
 
   pins_version_message <- glue::glue(
     'This data product was built with a legacy version of pins.
@@ -337,7 +320,4 @@ check_pins_compatibility <- function(pins_version = '1.2.0'){
     stop(cli::cli_alert_danger(pins_version_message))
   }
 }
-
-
-
 
