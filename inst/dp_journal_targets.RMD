@@ -150,7 +150,6 @@ Here I converted `dp_input` to its metadata representation
 
 ```{r dpinput_write}
 dpbuild::dpinput_write(project_path = ".", input_d = input_d)
-
 ```
 
 
@@ -163,7 +162,7 @@ dpbuild::dpinput_write(project_path = ".", input_d = input_d)
 Here, for this first build, no feature was added. It only contains the input.  
 
 ```{r dp_make}
-targets::tar_make(script = "./dp_make.R")
+source("./dp_make.R")
 ```
 
 ## Visualizing the build (optional)
