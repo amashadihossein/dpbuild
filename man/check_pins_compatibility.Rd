@@ -4,10 +4,10 @@
 \alias{check_pins_compatibility}
 \title{Check pins package compatibility}
 \usage{
-check_pins_compatibility(pins_version = "1.2.0")
+check_pins_compatibility()
 }
 \arguments{
-\item{pins_version}{A string pins version to check against the installed one}
+\item{is_legacy}{A boolean variable to indicate if the pins version is legacy one}
 }
 \description{
 Check pins package compatibility

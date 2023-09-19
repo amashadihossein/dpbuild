@@ -292,16 +292,15 @@ flname_xos_get <- function(fl, package = "dpbuild") {
 
 #' @title Check pins package compatibility
 #' @description Check pins package compatibility
-#' @param pins_version A string pins version to check against the installed one
+#' @param is_legacy A boolean variable to indicate if the pins version is legacy one
 #' @keywords internal
-check_pins_compatibility <- function(pins_version = '1.2.0'){
+check_pins_compatibility <- function(){
   read_conf_file <- dpbuild:::dpconf_read(project_path = ".")
 
-  is_pins_version_key_in_config <- "pins_version" %in% names(read_conf_file)
-  is_pins_version_in_config_gt_1_2_0 <- read_conf_file$pins >= pins_version
+  is_legacy_key_in_config <- "is_legacy" %in% names(read_conf_file)
+  is_legacy_pins_in_config <- as.logical(read_conf_file$is_legacy)
 
-  installed_pins_version <- utils::packageVersion(pkg = "pins")
-  is_pins_package_version_gt_1_2_0 <- installed_pins_version >= pins_version
+  is_installed_pins_version_legacy <- utils::packageVersion(pkg = "pins") >= '1.2.0'
 
   pins_version_message <- glue::glue(
     'This data product was built with a legacy version of pins.
@@ -313,9 +312,9 @@ check_pins_compatibility <- function(pins_version = '1.2.0'){
     remotes::install_github(repo = "amashadihossein/daapr@0.0.0.9006")'
   )
 
-  if (!all(is_pins_version_key_in_config,
-    is_pins_version_in_config_gt_1_2_0,
-    is_pins_package_version_gt_1_2_0)) {
+  if (!all(is_legacy_key_in_config,
+    is_legacy_pins_in_config,
+    is_installed_pins_version_legacy)) {
 
     stop(cli::cli_alert_danger(pins_version_message))
   }

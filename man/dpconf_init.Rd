@@ -13,7 +13,7 @@ dpconf_init(
   readme_general_note = character(0),
   board_params_set_dried,
   creds_set_dried,
-  pins_version,
+  is_legacy,
   ...
 )
 }
@@ -41,7 +41,7 @@ setting board_params. Use \code{fn_dry()} in combination with
 \item{creds_set_dried}{Character representation of the function for setting
 creds. Use \code{fn_dry()} in combination with \code{dpi::creds_set_aws}.}
 
-\item{pins_version}{pins version}
+\item{is_legacy}{if pins version is a legacy one (Boolean)}
 
 \item{...}{any other metadata to be captured in the config file}
 }

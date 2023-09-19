@@ -170,6 +170,8 @@ dp_init <- function(project_path = fs::path_wd(),
 
   pins_version <- utils::packageVersion("pins")
 
+  is_legacy <- pins_version >= '1.2.0'
+
   dpconf <- dpconf_init(
     project_path = project_path,
     project_name = project_name,
@@ -179,7 +181,7 @@ dp_init <- function(project_path = fs::path_wd(),
     readme_general_note = readme_general_note,
     board_params_set_dried = board_params_set_dried,
     creds_set_dried = creds_set_dried,
-    pins_version = pins_version, ...
+    is_legacy = is_legacy, ...
   )
 
   if (!fs::dir_exists(fs::path_tidy(glue::glue("{project_path}/R")))) {
@@ -229,7 +231,7 @@ dp_init <- function(project_path = fs::path_wd(),
 #' `dpi::board_params_set_s3` or `dpi::board_params_set_local`.
 #' @param creds_set_dried Character representation of the function for setting
 #' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws`.
-#' @param pins_version pins version
+#' @param is_legacy if pins version is a legacy one (Boolean)
 #' @param ... any other metadata to be captured in the config file
 #' @return dpconf
 #' @keywords internal
@@ -241,7 +243,7 @@ dpconf_init <- function(project_path,
                         readme_general_note = character(0),
                         board_params_set_dried,
                         creds_set_dried,
-                        pins_version,
+                        is_legacy,
                         ...) {
   if (!fs::dir_exists(path = glue::glue("{project_path}/.daap"))) {
     fs::dir_create(glue::glue("{project_path}/.daap"))
@@ -257,7 +259,7 @@ dpconf_init <- function(project_path,
       readme_general_note = readme_general_note,
       board_params_set_dried = board_params_set_dried,
       creds_set_dried = creds_set_dried,
-      pins_version = as.character(pins_version)
+      is_legacy = is_legacy
     ),
     list(...)
   )
