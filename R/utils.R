@@ -297,10 +297,13 @@ flname_xos_get <- function(fl, package = "dpbuild") {
 check_pins_compatibility <- function(){
   read_conf_file <- dpbuild:::dpconf_read(project_path = ".")
 
-  is_legacy_key_in_config <- "is_legacy" %in% names(read_conf_file)
-  is_legacy_pins_in_config <- as.logical(read_conf_file$is_legacy)
+  if ("is_legacy" %in% names(read_conf_file)) {
+    is_legacy_dp <- read_conf_file$is_legacy
+  } else {
+    is_legacy_dp <- T
+  }
 
-  is_installed_pins_version_legacy <- utils::packageVersion(pkg = "pins") >= '1.2.0'
+  is_installed_pins_version_legacy <- utils::packageVersion(pkg = "pins") < '1.2.0'
 
   pins_version_message <- glue::glue(
     'This data product was built with a legacy version of pins.
@@ -312,9 +315,7 @@ check_pins_compatibility <- function(){
     remotes::install_github(repo = "amashadihossein/daapr@0.0.0.9006")'
   )
 
-  if (!all(is_legacy_key_in_config,
-    is_legacy_pins_in_config,
-    is_installed_pins_version_legacy)) {
+  if (any(is_legacy_dp,is_installed_pins_version_legacy)) {
 
     stop(cli::cli_alert_danger(pins_version_message))
   }

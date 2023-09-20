@@ -170,7 +170,7 @@ dp_init <- function(project_path = fs::path_wd(),
 
   pins_version <- utils::packageVersion("pins")
 
-  is_legacy <- pins_version >= '1.2.0'
+  is_legacy <- pins_version < '1.2.0'
 
   dpconf <- dpconf_init(
     project_path = project_path,
