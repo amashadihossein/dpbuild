@@ -162,7 +162,7 @@ dpbuild::dpinput_write(project_path = ".", input_d = input_d)
 Here, for this first build, no feature was added. It only contains the input.  
 
 ```{r dp_make}
-source("./dp_make.R")
+targets::tar_make(script = "./dp_make.R")
 ```
 
 ## Visualizing the build (optional)
