@@ -28,6 +28,8 @@ conflict_prefer("mutate", "dplyr")
 conflict_prefer("arrange", "dplyr")
 
 list(
+
+  # Initial Set up
   tar_target(
     name = data_files_read,
     command =  dpbuild::dpinput_read(),
@@ -35,8 +37,9 @@ list(
   ),
 
   # Derive datatopic1
-  tar_target(derived_datatopic1, derive_datatopic1(data_files_read = data_files_read, config = config)),
+  # tar_target(derived_datatopic1, derive_datatopic1(data_files_read = data_files_read, config = config)),
 
+  # Structure data object
   tar_target(
     name = data_object,
     command =  dp_structure(data_files_read, config,
@@ -45,6 +48,7 @@ list(
       metadata = list())
   ),
 
+  # Structure output and add metadata
   tar_target(
     name = data_is_written,
     command = dpbuild::dp_write(data_object = data_object, project_path = ".")
