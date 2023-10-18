@@ -150,7 +150,6 @@ Here I converted `dp_input` to its metadata representation
 
 ```{r dpinput_write}
 dpbuild::dpinput_write(project_path = ".", input_d = input_d)
-
 ```
 
 

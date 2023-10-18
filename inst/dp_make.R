@@ -38,7 +38,7 @@ daap_plan <- drake_plan(
   # Derive datatopic1
   # datatopic1 = derive_datatopic1(clin = data_files_read, config = config),
 
-  # Structure data obj
+  # Structure data object
   data_object =
     dp_structure(data_files_read, config,
       output = list(),
@@ -48,13 +48,6 @@ daap_plan <- drake_plan(
   # Structure output and add metadata
   data_is_written =
     dpbuild::dp_write(data_object = data_object, project_path = ".")
-
-  # Run data test
-  #' TODO: data_is_written_out ensures .RDS can be hashed. We may only need to
-  #'       hash data_obj itself rather than readRDS
-  # data_is_tested =
-  #   unit_test_data(d = data_obj,
-  #                  data_is_written_out = data_is_written_and_committed)
 )
 
 make(daap_plan, lock_envir = FALSE)
