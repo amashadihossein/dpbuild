@@ -13,7 +13,13 @@
     <loc>https://amashadihossein.github.io/dpbuild/index.html</loc>
   </url>
   <url>
+    <loc>https://amashadihossein.github.io/dpbuild/news/index.html</loc>
+  </url>
+  <url>
     <loc>https://amashadihossein.github.io/dpbuild/reference/add_readme.html</loc>
+  </url>
+  <url>
+    <loc>https://amashadihossein.github.io/dpbuild/reference/check_pins_compatibility.html</loc>
   </url>
   <url>
     <loc>https://amashadihossein.github.io/dpbuild/reference/dirTree_build.html</loc>
