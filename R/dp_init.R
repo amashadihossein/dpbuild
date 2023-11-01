@@ -2,20 +2,20 @@
 #' @export
 dpi::board_params_set_s3
 
-#' @importFrom dpi board_params_set_labkey
+#' @importFrom dpi board_params_set_local
 #' @export
-dpi::board_params_set_labkey
+dpi::board_params_set_local
 
 #' @importFrom dpi creds_set_aws
 #' @export
 dpi::creds_set_aws
 
-#' @importFrom dpi creds_set_labkey
-#' @export
-dpi::creds_set_labkey
-
 #' @title Initialize data product project
-#' @description Initializes a data product project
+#' @description Initializes a data product project and creates local data product
+#' folder
+#' @details This function will create a local git-tracked data product repository,
+#' write the data product configuration details to `.daap/daap_config.yaml`,
+#' initialize renv for the project, and commit all changes.
 #' @param project_path path to the project folder. The folder name will be used
 #' as project name. If the path doesn't exist it will be created.
 #' @param project_description A high level description of the project. Example:
@@ -27,11 +27,12 @@ dpi::creds_set_labkey
 #' metadata to the data object
 #' @param board_params_set_dried Character representation of the function for
 #' setting board_params. Use `fn_dry()` in combination with
-#' `dpi::board_params_set_s3` or `dpi::board_params_set_labkey`. See example.
+#' `dpi::board_params_set_s3` or
+#' `dpi::board_params_set_local`. See example.
 #' @param creds_set_dried when using `local_board`, it is ignored and need not
 #' be specified. Otherwise,character representation of the function for setting
-#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or
-#' `dpi::creds_set_labkey`. *NOTE: never directly pass credentials in script!*
+#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws`.
+#' *NOTE: never directly pass credentials in script!*
 #'  *Use `Sys.getenv`*. See example
 #' @param github_repo_url the https url for the github repo
 #' @param git_ignore a character vector of the files and directories to be
@@ -41,15 +42,17 @@ dpi::creds_set_labkey
 #' @examples \dontrun{
 #' # Dry function call to setting board_params
 #' board_params_set_dried <-
-#'   fn_dry(dpi::board_params_set_labkey(
-#'     board_alias = "labkey",
-#'     url = "https:url_to_labkey/labkey",
-#'     folder = "project_folder/subfolder"
+#'   fn_dry(dpi::board_params_set_s3(
+#'     bucket_name = "bucket_name",
+#'     region = "us-east-1"
 #'   ))
 #'
 #' # Dry function call to setting credentials
 #' creds_set_dried <-
-#'   fn_dry(dpi::creds_set_labkey(api_key = Sys.getenv("LABKEY_API_KEY")))
+#'   fn_dry(dpi::creds_set_aws(
+#'     key = Sys.getenv("AWS_KEY"),
+#'     secret = Sys.getenv("AWS_SECRET")
+#'   ))
 #'
 #' # Initialize dp repo
 #' dp_repo <- dp_init(
@@ -57,7 +60,6 @@ dpi::creds_set_labkey
 #'   project_description = "Test data product",
 #'   branch_name = "us001",
 #'   branch_description = "User story 1",
-#'   commit_description = "First dp commit",
 #'   readme_general_note = "This data object is generated for testing purposes",
 #'   board_params_set_dried = board_params_set_dried,
 #'   creds_set_dried = creds_set_dried,
@@ -103,8 +105,8 @@ dp_init <- function(project_path = fs::path_wd(),
   } else {
     if (missing(creds_set_dried)) {
       stop(cli::format_error(glue::glue(
-        "board_params_set_dried which is ",
-        "expected for {board_type}"
+        "Missing creds_set_dried value, which is ",
+        "required for {board_type}"
       )))
     }
   }
@@ -118,7 +120,7 @@ dp_init <- function(project_path = fs::path_wd(),
   }
 
   creds_set_dried_parsed <- rlang::parse_expr(creds_set_dried)
-  if (!class(creds_set_dried_parsed) == "call" & board_type != "local_board") {
+  if (!inherits(creds_set_dried_parsed, "call") & board_type != "local_board") {
     stop(cli::format_error(glue::glue("Encountered error in creds_set_dried in
                                       dp_init. Make sure you are passing a
                                       callable expression to fn_dry")))
@@ -166,6 +168,10 @@ dp_init <- function(project_path = fs::path_wd(),
     fs::dir_create(glue::glue("{project_path}/output_files"))
   }
 
+  pins_version <- utils::packageVersion("pins")
+
+  is_legacy <- pins_version < '1.2.0'
+
   dpconf <- dpconf_init(
     project_path = project_path,
     project_name = project_name,
@@ -174,7 +180,8 @@ dp_init <- function(project_path = fs::path_wd(),
     branch_description = branch_description,
     readme_general_note = readme_general_note,
     board_params_set_dried = board_params_set_dried,
-    creds_set_dried = creds_set_dried, ...
+    creds_set_dried = creds_set_dried,
+    is_legacy = is_legacy, ...
   )
 
   if (!fs::dir_exists(fs::path_tidy(glue::glue("{project_path}/R")))) {
@@ -208,7 +215,7 @@ dp_init <- function(project_path = fs::path_wd(),
 
 
 #' @title Initialize daap configuration file
-#' @description Initializes daap configuration file
+#' @description Initializes daap configuration file `.daap/daap_config.yaml`
 #' @param project_path path to the project folder
 #' @param project_name the name of the project. This is typically the name of
 #' the folder where the project is set
@@ -220,16 +227,14 @@ dp_init <- function(project_path = fs::path_wd(),
 #' @param readme_general_note Optional general note which will be added as
 #' metadata to the data object
 #' @param board_params_set_dried Character representation of the function for
-#' setting board_params. Use `fn_dry()`
-#' in combination with `dpi::board_params_set_s3` or
-#' `dpi::board_params_set_labkey`. See example.
+#' setting board_params. Use `fn_dry()` in combination with
+#' `dpi::board_params_set_s3` or `dpi::board_params_set_local`.
 #' @param creds_set_dried Character representation of the function for setting
-#' creds. Use `fn_dry()` in combination with
-#' `dpi::creds_set_aws` or `dpi::creds_set_labkey`. See example
+#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws`.
+#' @param is_legacy if pins version is a legacy one (Boolean)
 #' @param ... any other metadata to be captured in the config file
 #' @return dpconf
 #' @keywords internal
-
 dpconf_init <- function(project_path,
                         project_name,
                         project_description = character(0),
@@ -238,6 +243,7 @@ dpconf_init <- function(project_path,
                         readme_general_note = character(0),
                         board_params_set_dried,
                         creds_set_dried,
+                        is_legacy,
                         ...) {
   if (!fs::dir_exists(path = glue::glue("{project_path}/.daap"))) {
     fs::dir_create(glue::glue("{project_path}/.daap"))
@@ -252,7 +258,8 @@ dpconf_init <- function(project_path,
       branch_description = branch_description,
       readme_general_note = readme_general_note,
       board_params_set_dried = board_params_set_dried,
-      creds_set_dried = creds_set_dried
+      creds_set_dried = creds_set_dried,
+      is_legacy = is_legacy
     ),
     list(...)
   )
@@ -314,7 +321,6 @@ fn_dry <- function(fn_called) {
 #' fn_hydrate(fn_dry(sum(log(1:10))))
 #' }
 #' @keywords internal
-
 fn_hydrate <- function(dried_fn) {
   return(eval(rlang::parse_expr(dried_fn)))
 }
@@ -329,10 +335,10 @@ fn_hydrate <- function(dried_fn) {
 #' data was processed. Example m3cut (as in month 3 data cut)
 #' @param board_params_set_dried Character representation of the function for
 #' setting board_params. Use `fn_dry()` in combination with
-#' `dpi::board_params_set_s3` or `dpi::board_params_set_labkey`. See example.
+#' `dpi::board_params_set_s3`
+#' or `dpi::board_params_set_local`.
 #' @param creds_set_dried Character representation of the function for setting
-#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or
-#' `dpi::creds_set_labkey`. See example
+#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws`.
 #' @param github_repo_url the https url for the github repo
 #' @param git_ignore A character vector of the files and directories to be
 #' ignored by git.
@@ -401,10 +407,17 @@ dp_git_init <- function(project_path, project_name, branch_name,
     commit_1 <- git2r::commit(repo, message = "project init")
 
     # Create a branch
-    branch_1 <- git2r::branch_create(commit_1, name = branch_name)
+    all_branch_names <- names(git2r::branches(repo = repo))
 
-    # change branch
-    git2r::checkout(object = repo, branch = branch_name)
+    if (!branch_name %in% all_branch_names) {
+      branch_1 <- git2r::branch_create(commit_1, name = branch_name)
+
+      # change branch
+      git2r::checkout(object = repo, branch = branch_name)
+    } else {
+      # change branch
+      git2r::checkout(object = repo, branch = branch_name)
+    }
 
     # dpconf$branch_name <- git2r::repository_head(repo = repo)$name
 
@@ -425,10 +438,10 @@ dp_git_init <- function(project_path, project_name, branch_name,
 #' @param dp_title readme title
 #' @param board_params_set_dried Character representation of the function for
 #' setting board_params. Use `fn_dry()` in combination with
-#' `dpi::board_params_set_s3` or `dpi::board_params_set_labkey`. See example.
+#' `dpi::board_params_set_s3` or
+#' `dpi::board_params_set_local`.
 #' @param creds_set_dried Character representation of the function for setting
-#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws` or
-#' `dpi::creds_set_labkey`. See example
+#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws`.
 #' @param github_repo_url github repo url
 #' @keywords internal
 add_readme <- function(project_path, dp_title, github_repo_url,

@@ -18,8 +18,6 @@
 #' 4- renv is to be restored: Ex. renv::restore()
 #'==============================================================================
 
-
-
 options(stringsAsFactors = F)
 R.utils::sourceDirectory("R", modifiedOnly = F)
 
@@ -29,23 +27,30 @@ conflict_prefer("filter", "dplyr")
 conflict_prefer("mutate", "dplyr")
 conflict_prefer("arrange", "dplyr")
 
-tarchetypes::tar_plan(
-  list(
-    tar_target(
-      name = data_files_read,
-      command =  dpbuild::dpinput_read(),
-      cue = tar_cue(mode = "thorough", command = TRUE, depend = TRUE)
-    ),
+list(
 
-    tar_target(
-      name = data_object,
-      command =  dp_structure(data_files_read, config, output = list(), 
-                              metadata = list())
-    ),
+  # Initial Set up
+  tar_target(
+    name = data_files_read,
+    command =  dpbuild::dpinput_read(),
+    cue = tar_cue(mode = "always", command = TRUE, depend = TRUE)
+  ),
 
-    tar_target(
-      name = data_is_written,
-      command = dpbuild::dp_write(data_object = data_object, project_path = ".")
-      )
-    )
+  # Derive datatopic1
+  # tar_target(derived_datatopic1, derive_datatopic1(data_files_read = data_files_read, config = config)),
+
+  # Structure data object
+  tar_target(
+    name = data_object,
+    command =  dp_structure(data_files_read, config,
+      output = list(derived_datatopic1 = derived_datatopic1
+      ),
+      metadata = list())
+  ),
+
+  # Structure output and add metadata
+  tar_target(
+    name = data_is_written,
+    command = dpbuild::dp_write(data_object = data_object, project_path = ".")
+  )
 )

@@ -1,6 +1,6 @@
 #' @title Pull data product from a remote repo
 #' @description This command pulls the data product from a remote repo
-#' @param project_path Path to the project folder, default "."
+#' @param project_path Path to the project folder (default is working directory)
 #' @return TRUE
 #' @examples  \dontrun{
 #' Sys.setenv("GITHUB_PAT" = keyring::key_get("GITHUB_PAT"))

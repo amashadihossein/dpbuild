@@ -2,18 +2,23 @@
 % Please edit documentation in R/dp_commit.R
 \name{dp_commit}
 \alias{dp_commit}
-\title{Commit dp}
+\title{Commit data product}
 \usage{
 dp_commit(project_path = fs::path_wd(), commit_description)
 }
 \arguments{
-\item{project_path}{Path to the project folder}
+\item{project_path}{Path to the project folder (default is working directory)}
 
-\item{commit_description}{commit description}
+\item{commit_description}{Commit message}
 }
 \value{
-repo repo object post commit
+repo object post commit
 }
 \description{
-Runs a number of checks and returns a list of T/F per check
+Runs a number of checks and commits data product changes
+}
+\examples{
+\dontrun{
+dp_commit(commit_description = "First dp commit")
+}
 }

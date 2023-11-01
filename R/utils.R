@@ -35,30 +35,34 @@ dpname_make <- function(project_name, branch_name) {
 #' @importFrom dplyr .data
 #' @keywords internal
 get_pin_version <- function(d, pin_name, pin_description) {
+  withr::local_options(list(pins.quiet = TRUE))
   pin_name <- as.character(pin_name)
   pin_description <- as.character(pin_description)
 
-  pins::board_register_local(name = "daap_internal", version = T)
+  # local_board_folder <- pins::board_folder(path = "daap_internal", versioned = T)
+  temp_board_folder <- pins::board_temp(versioned = T)
 
+  pin_name_exists <- pins::pin_exists(board = temp_board_folder, name = pin_name)
 
-  pins::pin_remove(name = pin_name, board = "daap_internal")
-  pins::pin(
+  if (pin_name_exists) {
+    pins::pin_delete(names = pin_name, board = temp_board_folder)
+  }
+
+  pins::pin_write(
     x = d,
     name = pin_name,
-    board = "daap_internal",
+    board = temp_board_folder,
     description = pin_description
   )
 
   pin_version <- pins::pin_versions(
     name = pin_name,
-    board = "daap_internal",
-    full = F
-  ) %>% dplyr::pull(.data$version)
-  pins::pin_remove(name = pin_name, board = "daap_internal")
+    board = temp_board_folder
+  ) %>% dplyr::pull(.data$hash)
+  pins::pin_delete(names = pin_name, board = temp_board_folder)
 
   return(pin_version)
 }
-
 
 
 #' @title Get Readme to be appended to the data object
@@ -76,9 +80,7 @@ readme_get <- function(d, general_note) {
 
   readme$exploratory <- paste("This contains the following:", paste(names(d$exploratory), collapse = ", "))
 
-
   readme$metadata <- paste("This contains the following:", paste(names(d$metadata), collapse = ", "))
-
 
   readme <- readme[c("general_note", setdiff(names(d), "README"))]
 
@@ -197,10 +199,13 @@ make_names_codefriendly <- function(x, make_unique = T) {
 }
 
 
-#' @title Make dinput names simplified
-#' @description  This function tries to drop the full descriptive name of dpinput elements for code aesthetics
-#' @param x a character string of the form `{path}/{file_name.extension}/{sha1}` which will be converted to a character string of the form `{file_name}`
-#' @param make_unique if TRUE it ensures each element of a vector names end up being unique. If not it errors if not simplified names not unique.
+#' @title Make dpinput names simplified
+#' @description  This function tries to drop the full descriptive name of dpinput
+#' elements for code aesthetics
+#' @param x a character string of the form `{path}/{file_name.extension}/{sha1}`
+#' which will be converted to a character string of the form `{file_name}`
+#' @param make_unique if TRUE it ensures each element of a vector names end up
+#' being unique. If not it errors if not simplified names not unique.
 #' @return the code friendly converted character string
 #' @keywords internal
 dpinputnames_simplify <- function(x, make_unique = FALSE) {
@@ -226,13 +231,15 @@ dpinputnames_simplify <- function(x, make_unique = FALSE) {
 
 
 #' @title Clean input_map
-#' @description  This function drops unsynced or not-to-be-synced and pos
+#' @description  This function drops unsynced inputs from the input map
+#' and cleans names
 #' @param input_map synced mapped object as returned by `dpbuild::dpinput_map`
-#' @param remove_id a vector of input_data ids to remove. This is for convenient
+#' @param remove_id a vector of input_data ids to remove. This is for convenience
 #' as setting the input_manifest field `to_be_synced` to FALSE can achieve the
 #' same thing. The default value of `character(0)` limits removal to any row
 #' with `to_be_synced == FALSE`
-#' @param force_cleanname if TRUE it ensures each element of a vector names end up being unique. If not, it won't clean names unless clean is also unique
+#' @param force_cleanname T/F, if TRUE it ensures each input id name ends up
+#' being unique. If FALSE, it won't clean names unless names are already unique
 #' @return input_map pruned and with cleaner names
 #' @export
 inputmap_clean <- function(input_map, remove_id = character(0), force_cleanname = F) {
@@ -242,7 +249,7 @@ inputmap_clean <- function(input_map, remove_id = character(0), force_cleanname 
   input_map$input_manifest <- input_map$input_manifest %>% dplyr::filter(.data$to_be_synced)
   input_map$input_obj <- input_map$input_obj[input_map$input_manifest$id]
 
-  if (class(try(dpinputnames_simplify(input_map$input_manifest$id))) != "try-error" | force_cleanname) {
+  if (!inherits(try(dpinputnames_simplify(input_map$input_manifest$id)), "try-error") | force_cleanname) {
     input_map$input_manifest <- input_map$input_manifest %>%
       dplyr::mutate(id = dpinputnames_simplify(.data$id, make_unique = force_cleanname))
 
@@ -272,7 +279,7 @@ purge_local_cache <- function(path_cache = pins::board_cache_path()) {
 #' @title Gets cross OS File Name
 #' @description  It drops extension that can be OS-specific
 #' @param fl just the file name e.g. README.RMD
-#' @param pakcage package name e.g. dpbuild
+#' @param package package name e.g. dpbuild
 #' @keywords internal
 flname_xos_get <- function(fl, package = "dpbuild") {
   pkg_path <- system.file(package = package)
@@ -281,3 +288,36 @@ flname_xos_get <- function(fl, package = "dpbuild") {
   flname <- basename(fl_path)
   return(flname)
 }
+
+
+#' @title Check pins package compatibility
+#' @description Check pins package compatibility
+#' @param is_legacy A boolean variable to indicate if the pins version is legacy one
+#' @keywords internal
+check_pins_compatibility <- function(){
+  read_conf_file <- dpbuild:::dpconf_read(project_path = ".")
+
+  if ("is_legacy" %in% names(read_conf_file)) {
+    is_legacy_dp <- read_conf_file$is_legacy
+  } else {
+    is_legacy_dp <- T
+  }
+
+  is_installed_pins_version_legacy <- utils::packageVersion(pkg = "pins") < '1.2.0'
+
+  pins_version_message <- glue::glue(
+    'This data product was built with a legacy version of pins.
+    Please downgrade pins and all daapr packages using
+    remotes::install_github(repo = "amashadihossein/pins")
+    remotes::install_github(repo = "amashadihossein/dpi@0.0.0.9008")
+    remotes::install_github(repo = "amashadihossein/dpbuild@0.0.0.9106")
+    remotes::install_github(repo = "amashadihossein/ddeploy@0.0.0.9016")
+    remotes::install_github(repo = "amashadihossein/daapr@0.0.0.9006")'
+  )
+
+  if (any(is_legacy_dp,is_installed_pins_version_legacy)) {
+
+    stop(cli::cli_alert_danger(pins_version_message))
+  }
+}
+

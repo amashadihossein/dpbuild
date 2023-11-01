@@ -1,5 +1,5 @@
 #' @title Modify data product configuration
-#' @description Manages all mocification to data product project configuration
+#' @description Manages all modification to data product project configuration
 #' subsequent to the initialization via `dp_init`.
 #' @param project_path path to the project folder. The folder name will be used
 #' as project name. If the path doesn't exist it will be created.
@@ -11,20 +11,18 @@
 #' @param readme_general_note Optional general note which will be added as
 #' metadata to the data object
 #' @param board_params_set_dried Character representation of the function for
-#' setting board_params. Use `fn_dry()`
-#' in combination with `dpi::board_params_set_s3` or
-#' `dpi::board_params_set_labkey`. See example.
+#' setting board_params. Use `fn_dry()` in combination with
+#' `dpi::board_params_set_s3` or
+#' `dpi::board_params_set_local`.
 #' @param creds_set_dried Character representation of the function for setting
 #' creds. Use `fn_dry()` in combination with
-#' `dpi::creds_set_aws` or `dpi::creds_set_labkey`. See example
+#' `dpi::creds_set_aws`.
 #' @param commit_description A character string that describes what was updated.
 #' @param git_ignore a character vector of the files and directories to be added
 #'  to existing list ignored by git.
 #' @param ... any other metadata to be captured in the config file
 #' @return project path
 #' @export
-
-
 dpconf_update <- function(project_path = fs::path_wd(),
                           project_description = character(0),
                           branch_name = character(0),

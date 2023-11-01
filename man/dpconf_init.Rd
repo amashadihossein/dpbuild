@@ -13,6 +13,7 @@ dpconf_init(
   readme_general_note = character(0),
   board_params_set_dried,
   creds_set_dried,
+  is_legacy,
   ...
 )
 }
@@ -34,13 +35,13 @@ data was processed. Example m3cut (as in month 3 data cut)}
 metadata to the data object}
 
 \item{board_params_set_dried}{Character representation of the function for
-setting board_params. Use \code{fn_dry()}
-in combination with \code{dpi::board_params_set_s3} or
-\code{dpi::board_params_set_labkey}. See example.}
+setting board_params. Use \code{fn_dry()} in combination with
+\code{dpi::board_params_set_s3} or \code{dpi::board_params_set_local}.}
 
 \item{creds_set_dried}{Character representation of the function for setting
-creds. Use \code{fn_dry()} in combination with
-\code{dpi::creds_set_aws} or \code{dpi::creds_set_labkey}. See example}
+creds. Use \code{fn_dry()} in combination with \code{dpi::creds_set_aws}.}
+
+\item{is_legacy}{if pins version is a legacy one (Boolean)}
 
 \item{...}{any other metadata to be captured in the config file}
 }
@@ -48,6 +49,6 @@ creds. Use \code{fn_dry()} in combination with
 dpconf
 }
 \description{
-Initializes daap configuration file
+Initializes daap configuration file \code{.daap/daap_config.yaml}
 }
 \keyword{internal}

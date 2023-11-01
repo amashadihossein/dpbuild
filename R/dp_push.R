@@ -1,6 +1,6 @@
 #' @title Push data product to remote repo
 #' @description This command pushes the data product to the remote
-#' @param project_path path to the dp_project
+#' @param project_path path to the dp_project (default is current directory)
 #' @param remote_alias use only to overwrite default alias, or if no default
 #' remote alias has been configured (e.g. legacy).
 #' @param remote_url use only to overwrite default URL, or if no default remote

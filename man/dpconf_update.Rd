@@ -33,13 +33,13 @@ data was processed. Example m3cut (as in month 3 data cut)}
 metadata to the data object}
 
 \item{board_params_set_dried}{Character representation of the function for
-setting board_params. Use \code{fn_dry()}
-in combination with \code{dpi::board_params_set_s3} or
-\code{dpi::board_params_set_labkey}. See example.}
+setting board_params. Use \code{fn_dry()} in combination with
+\code{dpi::board_params_set_s3} or
+\code{dpi::board_params_set_local}.}
 
 \item{creds_set_dried}{Character representation of the function for setting
 creds. Use \code{fn_dry()} in combination with
-\code{dpi::creds_set_aws} or \code{dpi::creds_set_labkey}. See example}
+\code{dpi::creds_set_aws}.}
 
 \item{commit_description}{A character string that describes what was updated.}
 
@@ -52,6 +52,6 @@ to existing list ignored by git.}
 project path
 }
 \description{
-Manages all mocification to data product project configuration
+Manages all modification to data product project configuration
 subsequent to the initialization via \code{dp_init}.
 }

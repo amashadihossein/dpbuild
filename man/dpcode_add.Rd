@@ -7,9 +7,9 @@
 dpcode_add(project_path, use_targets = F)
 }
 \arguments{
-\item{project_path}{Path to the Project}
+\item{project_path}{Path to the project}
 
-\item{use_targets}{Boolean When true, it uses targets instead of drake}
+\item{use_targets}{T/F when TRUE, uses targets instead of drake (recommended)}
 }
 \value{
 repo

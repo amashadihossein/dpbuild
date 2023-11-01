@@ -2,15 +2,15 @@
 % Please edit documentation in R/dpinput_write.R
 \name{dpinput_write}
 \alias{dpinput_write}
-\title{write data product input manifest}
+\title{Write data product input manifest}
 \usage{
 dpinput_write(project_path, input_d, verbose = F)
 }
 \arguments{
 \item{project_path}{Project path}
 
-\item{input_d}{a list with synced_input elements structured as desired within
-a list}
+\item{input_d}{a list generated from \code{dpinput_sync} with synced_input elements
+structured as desired}
 
 \item{verbose}{T/F}
 }
@@ -18,5 +18,5 @@ a list}
 TRUE
 }
 \description{
-Converts structured input into a yaml manifest
+Converts structured input into a yaml manifest and writes to \code{.daap/daap_input.yaml}
 }

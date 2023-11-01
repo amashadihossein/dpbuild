@@ -1,6 +1,7 @@
 #' @title Read data product input manifest
-#' @description Reads yaml DaaP input manifest and returns a structured pinlink
-#' @param daap_input_yaml daap_input yaml file imported
+#' @description Reads yaml dpinput manifest and returns
+#' a structured pinlink
+#' @param daap_input_yaml daap_input yaml file imported (default "./.daap/daap_input.yaml")
 #' @param add_metadata T/F when TRUE dpinput format will include metadata
 #' @return daap_input as a structured list of anonymous functions each when
 #' called retrieves the specific data
@@ -38,7 +39,6 @@ dpinput_read <-
 #' @param synced_input_i a single pin synced data
 #' @return a function that receives config and returns the specific data
 #' @keywords internal
-
 make_pinlink <- function(synced_input_i) {
   if (!synced_input_i$metadata$synced) {
     return(NULL)
@@ -95,18 +95,16 @@ make_pinlink <- function(synced_input_i) {
       )))
     }
 
-
-    board_params$board_alias <- paste0(board_params$board_alias, "_dpinput")
-    dpi::dp_connect(
+    board_object <-  dpi::dp_connect(
       board_params = board_params, creds = creds,
-      board_subdir = "dpinput"
+      board_subdir = file.path("dpinput/")
     )
 
     dpinput_i <- dpi::dp_get(
-      board_params = board_params, data_name = data_name,
+      board_object = board_object, data_name = data_name,
       version = data_version
     )
-    dpinput_i <- cast_class(dpinput_i)
+    # dpinput_i <- cast_class(dpinput_i)
 
     return(dpinput_i)
   }

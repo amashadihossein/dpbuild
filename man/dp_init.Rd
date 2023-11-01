@@ -36,12 +36,13 @@ metadata to the data object}
 
 \item{board_params_set_dried}{Character representation of the function for
 setting board_params. Use \code{fn_dry()} in combination with
-\code{dpi::board_params_set_s3} or \code{dpi::board_params_set_labkey}. See example.}
+\code{dpi::board_params_set_s3} or
+\code{dpi::board_params_set_local}. See example.}
 
 \item{creds_set_dried}{when using \code{local_board}, it is ignored and need not
 be specified. Otherwise,character representation of the function for setting
-creds. Use \code{fn_dry()} in combination with \code{dpi::creds_set_aws} or
-\code{dpi::creds_set_labkey}. \emph{NOTE: never directly pass credentials in script!}
+creds. Use \code{fn_dry()} in combination with \code{dpi::creds_set_aws}.
+\emph{NOTE: never directly pass credentials in script!}
 \emph{Use \code{Sys.getenv}}. See example}
 
 \item{github_repo_url}{the https url for the github repo}
@@ -55,21 +56,29 @@ ignored by git.}
 project path
 }
 \description{
-Initializes a data product project
+Initializes a data product project and creates local data product
+folder
+}
+\details{
+This function will create a local git-tracked data product repository,
+write the data product configuration details to \code{.daap/daap_config.yaml},
+initialize renv for the project, and commit all changes.
 }
 \examples{
 \dontrun{
 # Dry function call to setting board_params
 board_params_set_dried <-
-  fn_dry(dpi::board_params_set_labkey(
-    board_alias = "labkey",
-    url = "https:url_to_labkey/labkey",
-    folder = "project_folder/subfolder"
+  fn_dry(dpi::board_params_set_s3(
+    bucket_name = "bucket_name",
+    region = "us-east-1"
   ))
 
 # Dry function call to setting credentials
 creds_set_dried <-
-  fn_dry(dpi::creds_set_labkey(api_key = Sys.getenv("LABKEY_API_KEY")))
+  fn_dry(dpi::creds_set_aws(
+    key = Sys.getenv("AWS_KEY"),
+    secret = Sys.getenv("AWS_SECRET")
+  ))
 
 # Initialize dp repo
 dp_repo <- dp_init(
@@ -77,7 +86,6 @@ dp_repo <- dp_init(
   project_description = "Test data product",
   branch_name = "us001",
   branch_description = "User story 1",
-  commit_description = "First dp commit",
   readme_general_note = "This data object is generated for testing purposes",
   board_params_set_dried = board_params_set_dried,
   creds_set_dried = creds_set_dried,
