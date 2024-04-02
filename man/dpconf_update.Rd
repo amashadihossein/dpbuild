@@ -34,12 +34,10 @@ metadata to the data object}
 
 \item{board_params_set_dried}{Character representation of the function for
 setting board_params. Use \code{fn_dry()} in combination with
-\code{dpi::board_params_set_s3} or
-\code{dpi::board_params_set_local}.}
+\code{board_params_set_s3()}, \code{board_params_set_labkey()}, or \code{board_params_set_local()}.}
 
 \item{creds_set_dried}{Character representation of the function for setting
-creds. Use \code{fn_dry()} in combination with
-\code{dpi::creds_set_aws}.}
+creds. Use \code{fn_dry()} in combination with \code{creds_set_aws} or \code{creds_set_labkey()}.}
 
 \item{commit_description}{A character string that describes what was updated.}
 

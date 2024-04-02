@@ -12,11 +12,9 @@
 #' metadata to the data object
 #' @param board_params_set_dried Character representation of the function for
 #' setting board_params. Use `fn_dry()` in combination with
-#' `dpi::board_params_set_s3` or
-#' `dpi::board_params_set_local`.
+#' `board_params_set_s3()`, `board_params_set_labkey()`, or `board_params_set_local()`.
 #' @param creds_set_dried Character representation of the function for setting
-#' creds. Use `fn_dry()` in combination with
-#' `dpi::creds_set_aws`.
+#' creds. Use `fn_dry()` in combination with `creds_set_aws` or `creds_set_labkey()`.
 #' @param commit_description A character string that describes what was updated.
 #' @param git_ignore a character vector of the files and directories to be added
 #'  to existing list ignored by git.
