@@ -1,3 +1,7 @@
+# dpbuild 0.2.0
+
+* Added back support for LabKey boards. `pinsLabkey` is now required to work with LabKey boards
+
 # dpbuild 0.1.0
 
 ## Breaking changes
