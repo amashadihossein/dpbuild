@@ -76,11 +76,14 @@ dp_init <- function(project_path = fs::path_wd(),
                     creds_set_dried,
                     github_repo_url,
                     git_ignore = c(
-                      ".drake/", "_targets/", "input_files/",
-                      "output_files/", ".Rprofile", ".Renviron",
-                      ".Rhistory", ".Rproj.user", ".Rproj.user/",
-                      ".DS_Store", "*.csv", "*.tsv", "*.rds",
-                      "*.txt", "*.parquet", "*.sas7bdat"
+                      ".drake/", "_targets/", "*_files/", 
+                      ".Rprofile", ".Renviron", ".Rhistory",
+                      ".Rapp.history", ".Rproj.user", ".Rproj.user/",
+                      ".DS_Store", "*.csv", "*.tsv",
+                      "*.rds", "*.txt", "*.parquet",
+                      "*.sas7bdat", ".RData", ".RDataTmp",
+                      "*.html", "*.png", "*.pdf",
+                      ".vscode/", "rsconnect/", "*_cache/"
                     ),
                     ...) {
   commit_description <- "dp init"
