@@ -1,6 +1,7 @@
 # dpbuild 0.2.0
 
-* Added back support for LabKey boards. `pinsLabkey` is now required to work with LabKey boards
+* Added back support for LabKey boards (#86). `pinsLabkey` is now required to work with LabKey boards
+* Update default gitignore used in `dp_init()` to include .RData as well as other common files (#84).
 
 # dpbuild 0.1.0
 
