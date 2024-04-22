@@ -2,6 +2,10 @@
 #' @export
 dpi::board_params_set_s3
 
+#' @importFrom dpi board_params_set_labkey
+#' @export
+dpi::board_params_set_labkey
+
 #' @importFrom dpi board_params_set_local
 #' @export
 dpi::board_params_set_local
@@ -9,6 +13,10 @@ dpi::board_params_set_local
 #' @importFrom dpi creds_set_aws
 #' @export
 dpi::creds_set_aws
+
+#' @importFrom dpi creds_set_labkey
+#' @export
+dpi::creds_set_labkey
 
 #' @title Initialize data product project
 #' @description Initializes a data product project and creates local data product
@@ -27,13 +35,12 @@ dpi::creds_set_aws
 #' metadata to the data object
 #' @param board_params_set_dried Character representation of the function for
 #' setting board_params. Use `fn_dry()` in combination with
-#' `dpi::board_params_set_s3` or
-#' `dpi::board_params_set_local`. See example.
+#' `board_params_set_s3()`, `board_params_set_labkey()`, or `board_params_set_local()`.
 #' @param creds_set_dried when using `local_board`, it is ignored and need not
 #' be specified. Otherwise,character representation of the function for setting
-#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws`.
+#' creds. Use `fn_dry()` in combination with `creds_set_aws` or `creds_set_labkey`.
 #' *NOTE: never directly pass credentials in script!*
-#'  *Use `Sys.getenv`*. See example
+#'  *Use `Sys.getenv()`*. See example
 #' @param github_repo_url the https url for the github repo
 #' @param git_ignore a character vector of the files and directories to be
 #' ignored by git.
@@ -76,11 +83,14 @@ dp_init <- function(project_path = fs::path_wd(),
                     creds_set_dried,
                     github_repo_url,
                     git_ignore = c(
-                      ".drake/", "_targets/", "input_files/",
-                      "output_files/", ".Rprofile", ".Renviron",
-                      ".Rhistory", ".Rproj.user", ".Rproj.user/",
-                      ".DS_Store", "*.csv", "*.tsv", "*.rds",
-                      "*.txt", "*.parquet", "*.sas7bdat"
+                      ".drake/", "_targets/", "*_files/", 
+                      ".Rprofile", ".Renviron", ".Rhistory",
+                      ".Rapp.history", ".Rproj.user", ".Rproj.user/",
+                      ".DS_Store", "*.csv", "*.tsv",
+                      "*.rds", "*.txt", "*.parquet",
+                      "*.sas7bdat", ".RData", ".RDataTmp",
+                      "*.html", "*.png", "*.pdf",
+                      ".vscode/", "rsconnect/", "*_cache/"
                     ),
                     ...) {
   commit_description <- "dp init"
@@ -228,9 +238,9 @@ dp_init <- function(project_path = fs::path_wd(),
 #' metadata to the data object
 #' @param board_params_set_dried Character representation of the function for
 #' setting board_params. Use `fn_dry()` in combination with
-#' `dpi::board_params_set_s3` or `dpi::board_params_set_local`.
+#' `board_params_set_s3()`, `board_params_set_labkey()`, or `board_params_set_local()`.
 #' @param creds_set_dried Character representation of the function for setting
-#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws`.
+#' creds. Use `fn_dry()` in combination with `creds_set_aws()` or `creds_set_labkey()`.
 #' @param is_legacy if pins version is a legacy one (Boolean)
 #' @param ... any other metadata to be captured in the config file
 #' @return dpconf
@@ -335,10 +345,9 @@ fn_hydrate <- function(dried_fn) {
 #' data was processed. Example m3cut (as in month 3 data cut)
 #' @param board_params_set_dried Character representation of the function for
 #' setting board_params. Use `fn_dry()` in combination with
-#' `dpi::board_params_set_s3`
-#' or `dpi::board_params_set_local`.
+#' `board_params_set_s3()`, `board_params_set_labkey()`, or `board_params_set_local()`.
 #' @param creds_set_dried Character representation of the function for setting
-#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws`.
+#' creds. Use `fn_dry()` in combination with `creds_set_aws()` or `creds_set_labkey()`.
 #' @param github_repo_url the https url for the github repo
 #' @param git_ignore A character vector of the files and directories to be
 #' ignored by git.
@@ -438,10 +447,9 @@ dp_git_init <- function(project_path, project_name, branch_name,
 #' @param dp_title readme title
 #' @param board_params_set_dried Character representation of the function for
 #' setting board_params. Use `fn_dry()` in combination with
-#' `dpi::board_params_set_s3` or
-#' `dpi::board_params_set_local`.
+#' `board_params_set_s3()`, `board_params_set_labkey()`, or `board_params_set_local()`.
 #' @param creds_set_dried Character representation of the function for setting
-#' creds. Use `fn_dry()` in combination with `dpi::creds_set_aws`.
+#' creds. Use `fn_dry()` in combination with `creds_set_aws()` or `creds_set_labkey()`.
 #' @param github_repo_url github repo url
 #' @keywords internal
 add_readme <- function(project_path, dp_title, github_repo_url,

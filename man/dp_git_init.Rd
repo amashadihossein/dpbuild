@@ -27,11 +27,10 @@ data was processed. Example m3cut (as in month 3 data cut)}
 
 \item{board_params_set_dried}{Character representation of the function for
 setting board_params. Use \code{fn_dry()} in combination with
-\code{dpi::board_params_set_s3}
-or \code{dpi::board_params_set_local}.}
+\code{board_params_set_s3()}, \code{board_params_set_labkey()}, or \code{board_params_set_local()}.}
 
 \item{creds_set_dried}{Character representation of the function for setting
-creds. Use \code{fn_dry()} in combination with \code{dpi::creds_set_aws}.}
+creds. Use \code{fn_dry()} in combination with \code{creds_set_aws()} or \code{creds_set_labkey()}.}
 
 \item{git_ignore}{A character vector of the files and directories to be
 ignored by git.}

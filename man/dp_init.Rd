@@ -13,9 +13,10 @@ dp_init(
   board_params_set_dried,
   creds_set_dried,
   github_repo_url,
-  git_ignore = c(".drake/", "_targets/", "input_files/", "output_files/", ".Rprofile",
-    ".Renviron", ".Rhistory", ".Rproj.user", ".Rproj.user/", ".DS_Store", "*.csv",
-    "*.tsv", "*.rds", "*.txt", "*.parquet", "*.sas7bdat"),
+  git_ignore = c(".drake/", "_targets/", "*_files/", ".Rprofile", ".Renviron",
+    ".Rhistory", ".Rapp.history", ".Rproj.user", ".Rproj.user/", ".DS_Store", "*.csv",
+    "*.tsv", "*.rds", "*.txt", "*.parquet", "*.sas7bdat", ".RData", ".RDataTmp",
+    "*.html", "*.png", "*.pdf", ".vscode/", "rsconnect/", "*_cache/"),
   ...
 )
 }
@@ -36,14 +37,13 @@ metadata to the data object}
 
 \item{board_params_set_dried}{Character representation of the function for
 setting board_params. Use \code{fn_dry()} in combination with
-\code{dpi::board_params_set_s3} or
-\code{dpi::board_params_set_local}. See example.}
+\code{board_params_set_s3()}, \code{board_params_set_labkey()}, or \code{board_params_set_local()}.}
 
 \item{creds_set_dried}{when using \code{local_board}, it is ignored and need not
 be specified. Otherwise,character representation of the function for setting
-creds. Use \code{fn_dry()} in combination with \code{dpi::creds_set_aws}.
+creds. Use \code{fn_dry()} in combination with \code{creds_set_aws} or \code{creds_set_labkey}.
 \emph{NOTE: never directly pass credentials in script!}
-\emph{Use \code{Sys.getenv}}. See example}
+\emph{Use \code{Sys.getenv()}}. See example}
 
 \item{github_repo_url}{the https url for the github repo}
 

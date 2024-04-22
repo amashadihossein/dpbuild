@@ -309,10 +309,10 @@ check_pins_compatibility <- function(){
     'This data product was built with a legacy version of pins.
     Please downgrade pins and all daapr packages using
     remotes::install_github(repo = "amashadihossein/pins")
-    remotes::install_github(repo = "amashadihossein/dpi@0.0.0.9008")
-    remotes::install_github(repo = "amashadihossein/dpbuild@0.0.0.9106")
-    remotes::install_github(repo = "amashadihossein/ddeploy@0.0.0.9016")
-    remotes::install_github(repo = "amashadihossein/daapr@0.0.0.9006")'
+    remotes::install_github(repo = "amashadihossein/dpi@v0.0.0.9008")
+    remotes::install_github(repo = "amashadihossein/dpbuild@v0.0.0.9106")
+    remotes::install_github(repo = "amashadihossein/dpdeploy@v0.0.0.9016")
+    remotes::install_github(repo = "amashadihossein/daapr@v0.0.0.9006")'
   )
 
   if (any(is_legacy_dp,is_installed_pins_version_legacy)) {
