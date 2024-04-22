@@ -2,7 +2,10 @@ Package: dpbuild
 Title: A package to manage building of data products
 Version: 0.2.0
 Authors@R: 
-    person("Afshin", "Mashadi-Hossein", , "amashadihossein@gmail.com", role = c("aut", "cre"),
+    person(given = "Afshin",
+           family = "Mashadi-Hossein",
+           role = c("aut", "cre"),
+           email = "amashadihossein@gmail.com",
            comment = c(ORCID = "0000-0002-2337-2195"))
 Description: An R package intended to help set up and manage a data
     product project.
@@ -11,7 +14,7 @@ BugReports: https://github.com/amashadihossein/dpbuild/issues
 Imports: 
     cli,
     digest,
-    dpi (>= 0.1.0),
+    dpi (>= 0.2.0),
     dplyr,
     fs,
     gh,
