@@ -7,7 +7,7 @@
 fn_hydrate(dried_fn)
 }
 \arguments{
-\item{fn_called}{a function called}
+\item{dried_fn}{a function called}
 }
 \value{
 value of the called function given its textual representation
