@@ -6,9 +6,6 @@
 \usage{
 check_pins_compatibility()
 }
-\arguments{
-\item{is_legacy}{A boolean variable to indicate if the pins version is legacy one}
-}
 \description{
 Check pins package compatibility
 }
