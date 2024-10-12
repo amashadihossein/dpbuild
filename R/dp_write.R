@@ -56,7 +56,7 @@ dp_write <- function(data_object, type = 'rds', project_path = ".") {
 }
 
 save_object <- function(data_object, project_path, type = "rds"){
-  type <- arg_match0(type, setdiff(object_types, "file"))
+  type <- rlang::arg_match0(type, setdiff(object_types, "file"))
 
 switch(type,
     rds = write_rds(data_object, project_path),
@@ -88,10 +88,10 @@ write_rds <- function(data_object, project_path) {
 
 object_types <- c("rds", "qs")
 
-check_dir <- function(path){
-  if (!dir.exists(paths = path)) {
+check_dir <- function(filepath){
+  if (!dir.exists(paths = dirname(filepath))) {
     dir.create(
-      path = path,
+      path = dirname(filepath),
       recursive = T
     )
   }
