@@ -66,7 +66,7 @@ switch(type,
 }
 
 write_qs <- function(data_object, project_path) {
-  check_installed("qs")
+  rlang::check_installed("qs")
   dataobj_path <- glue::glue(
     "{project_path}/",
     "output_files/qs_format/data_object.qs"
