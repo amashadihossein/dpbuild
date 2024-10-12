@@ -59,8 +59,8 @@ save_object <- function(data_object, project_path, type = "rds"){
   type <- arg_match0(type, setdiff(object_types, "file"))
 
 switch(type,
-    rds = write_rds(x, project_path),
-    qs = write_qs(x, project_path)
+    rds = write_rds(data_object, project_path),
+    qs = write_qs(data_object, project_path)
   )
 
 }
