@@ -5,7 +5,7 @@
 #' @param type File type used to save the data product, default RDS
 #' @return TRUE
 #' @export
-dp_write <- function(data_object, project_path = ".") {
+dp_write <- function(data_object, type = 'rds', project_path = ".") {
   if (!is_valid_dp_repository(path = project_path)) {
     stop(glue::glue(
       "Not a dp repsitory. ",
