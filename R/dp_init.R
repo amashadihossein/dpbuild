@@ -83,7 +83,7 @@ dp_init <- function(project_path = fs::path_wd(),
                     creds_set_dried,
                     github_repo_url,
                     git_ignore = c(
-                      ".drake/", "_targets/", "*_files/", 
+                      ".drake/", "_targets/", "*_files/",
                       ".Rprofile", ".Renviron", ".Rhistory",
                       ".Rapp.history", ".Rproj.user", ".Rproj.user/",
                       ".DS_Store", "*.csv", "*.tsv",
@@ -325,7 +325,7 @@ fn_dry <- function(fn_called) {
 #' @title Hydrate a dried called function
 #' @description execute and returns the value of function call given its textual
 #'  (dried) representation
-#' @param fn_called a function called
+#' @param dried_fn a function called
 #' @return value of the called function given its textual representation
 #' @examples \dontrun{
 #' fn_hydrate(fn_dry(sum(log(1:10))))

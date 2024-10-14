@@ -1,3 +1,7 @@
+# dpbuild 0.2.1
+
+* Make targets default when using `dpcode_add()` as drake is superseded (#90)
+
 # dpbuild 0.2.0
 
 * Added back support for LabKey boards (#86). `pinsLabkey` is now required to work with LabKey boards
