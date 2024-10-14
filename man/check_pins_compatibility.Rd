@@ -4,7 +4,10 @@
 \alias{check_pins_compatibility}
 \title{Check pins package compatibility}
 \usage{
-check_pins_compatibility()
+check_pins_compatibility(project_path = ".")
+}
+\arguments{
+\item{project_path}{path to project folder}
 }
 \description{
 Check pins package compatibility

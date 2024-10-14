@@ -7,9 +7,9 @@
 #' @param project_path path to project folder
 #' @return a list dpconf
 #' @export
-dpconf_get <- function(project_path) {
+dpconf_get <- function(project_path = ".") {
 
-  check_pins_compatibility()
+  check_pins_compatibility(project_path = project_path)
 
   dpconf <- dpconf_read(project_path = project_path)
 
@@ -28,7 +28,6 @@ dpconf_get <- function(project_path) {
 
   class(dpconf) <- c(dpconf$board_params$board_type, class(dpconf))
 
-  # TODO validate dpconf
   dpconf_validate(dpconf = dpconf, project_path = project_path)
 
   return(dpconf)
