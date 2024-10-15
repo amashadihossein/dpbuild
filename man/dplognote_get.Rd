@@ -4,12 +4,12 @@
 \alias{dplognote_get}
 \title{Get log note from data object}
 \usage{
-dplognote_get(data_object, project_path)
+dplognote_get(data_object, dataobj_path)
 }
 \arguments{
 \item{data_object}{data_object}
 
-\item{project_path}{path to the project}
+\item{dataobj_path}{path to the data object}
 }
 \value{
 log_note
