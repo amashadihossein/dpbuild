@@ -33,7 +33,9 @@ Imports:
     withr,
     yaml
 Suggests: 
+    arrow,
     httr,
+    nanoparquet,
     qs,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

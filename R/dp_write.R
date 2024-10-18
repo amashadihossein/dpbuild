@@ -60,7 +60,9 @@ save_object <- function(data_object, project_path, type = "rds"){
 
 switch(type,
     rds = write_rds(data_object, project_path),
-    qs = write_qs(data_object, project_path)
+    qs = write_qs(data_object, project_path), 
+    arrow = write_arrow(data_object, project_path),
+    parquet = write_parquet(data_object, project_path)
   )
 
 }
@@ -86,7 +88,29 @@ write_rds <- function(data_object, project_path) {
   return(dataobj_path)
 }
 
-object_types <- c("rds", "qs")
+write_arrow <- function(data_object, project_path) {
+  rlang::check_installed("arrow")
+  dataobj_path <- glue::glue(
+    "{project_path}/",
+    "output_files/arrow_format/data_object.arrow"
+  )
+  check_dir(dataobj_path)
+  arrow::write_feather(data_object, dataobj_path)
+  return(dataobj_path)
+}
+
+write_parquet <- function(data_object, project_path) {
+  rlang::check_installed("nanoparquet")
+  dataobj_path <- glue::glue(
+    "{project_path}/",
+    "output_files/parquet_format/data_object.parquet"
+  )
+  check_dir(dataobj_path)
+  arrow::write_parquet(data_object, dataobj_path)
+  return(dataobj_path)
+}
+
+object_types <- c("rds", "qs","arrow","parquet","file")
 
 check_dir <- function(filepath){
   if (!dir.exists(paths = dirname(filepath))) {

@@ -60,7 +60,9 @@ get_data_object_path <- function(project_path) {
   # Define possible formats and their paths
   possible_formats <- list(
     RDS = fs::path_tidy(glue::glue("{project_path}/output_files/RDS_format/data_object.RDS")),
-    QS = fs::path_tidy(glue::glue("{project_path}/output_files/qs_format/data_object.qs"))
+    QS = fs::path_tidy(glue::glue("{project_path}/output_files/qs_format/data_object.qs")), 
+    ARROW = fs::path_tidy(glue::glue("{project_path}/output_files/arrow_format/data_object.arrow")),
+    PARQUET = fs::path_tidy(glue::glue("{project_path}/output_files/parquet_format/data_object.parquet"))
   )
   
   # Iterate through the list and check if the file exists
