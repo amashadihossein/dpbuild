@@ -292,9 +292,10 @@ flname_xos_get <- function(fl, package = "dpbuild") {
 
 #' @title Check pins package compatibility
 #' @description Check pins package compatibility
+#' @param project_path path to project folder
 #' @keywords internal
-check_pins_compatibility <- function(){
-  read_conf_file <- dpconf_read(project_path = ".")
+check_pins_compatibility <- function(project_path = "."){
+  read_conf_file <- dpconf_read(project_path = project_path)
 
   if ("is_legacy" %in% names(read_conf_file)) {
     is_legacy_dp <- read_conf_file$is_legacy
