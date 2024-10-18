@@ -33,7 +33,7 @@ library(daapr)
 **Goal:** Ensure, we are in a properly set up `daap` project
 
 ```{r check_dp_init, results= TRUE }
-dpbuild:::is_valid_dp_repository(path = ".")
+dpbuild::is_valid_dp_repository(path = ".")
 ```
 
 ## Remote data platform credentials

@@ -4,10 +4,10 @@
 \alias{check_pins_compatibility}
 \title{Check pins package compatibility}
 \usage{
-check_pins_compatibility()
+check_pins_compatibility(project_path = ".")
 }
 \arguments{
-\item{is_legacy}{A boolean variable to indicate if the pins version is legacy one}
+\item{project_path}{path to project folder}
 }
 \description{
 Check pins package compatibility

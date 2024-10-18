@@ -40,10 +40,10 @@ params$board_params_set %>% knitr::kable(.)
 
 ### STEP 3: Build
 
-This by convention involves sourcing the main script `dp_make.R`
+This by convention involves running the main script `dp_make.R`
 
 ```{r build, eval=FALSE}
-source("./dp_make.R")
+targets::tar_make(script = "./dp_make.R")
 ```
 
 
