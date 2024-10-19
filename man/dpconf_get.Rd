@@ -4,7 +4,7 @@
 \alias{dpconf_get}
 \title{Get data product config information}
 \usage{
-dpconf_get(project_path)
+dpconf_get(project_path = ".")
 }
 \arguments{
 \item{project_path}{path to project folder}
