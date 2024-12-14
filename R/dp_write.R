@@ -26,7 +26,8 @@ dp_write <- function(data_object, type = 'rds', project_path = ".") {
 
   log_note <- dplognote_get(
     data_object = data_object,
-    dataobj_path = dataobj_path
+    dataobj_path = dataobj_path, 
+    type = type
   )
   log_label <- names(log_note)[[1]]
 
@@ -55,6 +56,8 @@ dp_write <- function(data_object, type = 'rds', project_path = ".") {
   return(TRUE)
 }
 
+#' @keywords internal
+#' @noRd 
 save_object <- function(data_object, project_path, type = "rds"){
   type <- rlang::arg_match0(type, setdiff(object_types, "file"))
 
@@ -65,6 +68,10 @@ switch(type,
 
 }
 
+#' @title Write qs object
+#' @description Write qs object to `output_files/qs_format/` directory, 
+#' will create the directory if it does not exist
+#' @noRd 
 write_qs <- function(data_object, project_path) {
   rlang::check_installed("qs")
   dataobj_path <- glue::glue(
@@ -76,6 +83,10 @@ write_qs <- function(data_object, project_path) {
   return(dataobj_path)
 }
 
+#' @title Write rds object
+#' @description Write rds object to `output_files/RDS_format/` directory, 
+#' will create the directory if it does not exist
+#' @noRd  
 write_rds <- function(data_object, project_path) {
   dataobj_path <- glue::glue(
     "{project_path}/",
@@ -88,6 +99,9 @@ write_rds <- function(data_object, project_path) {
 
 object_types <- c("rds", "qs")
 
+#' @title Check directory
+#' @description Checks if directory exists and will create one if it does not exist
+#' @noRd  
 check_dir <- function(filepath){
   if (!dir.exists(paths = dirname(filepath))) {
     dir.create(
@@ -102,15 +116,17 @@ check_dir <- function(filepath){
 #' @description This builds log note
 #' @param data_object data_object
 #' @param dataobj_path path to the data object
+#' @param type File type used to save the data product, default RDS
 #' @return log_note
 #' @keywords internal
-dplognote_get <- function(data_object, dataobj_path) {
+dplognote_get <- function(data_object, dataobj_path, type = 'rds') {
   
   attrs <- purrr::list_modify(attributes(data_object), names = purrr::zap())
   rds_file_sha1 <- digest::digest(object = dataobj_path, algo = "sha1", file = T)
 
   data_object_pin_version <- get_pin_version(
     d = data_object,
+    type = type,
     pin_name = attr(data_object, "dp_name"),
     pin_description = attr(
       data_object,
