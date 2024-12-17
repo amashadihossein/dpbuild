@@ -59,7 +59,7 @@ dp_write <- function(data_object, type = 'rds', project_path = ".") {
 #' @keywords internal
 #' @noRd 
 save_object <- function(data_object, project_path, type = "rds"){
-  type <- rlang::arg_match0(type, setdiff(object_types, "file"))
+  type <- rlang::arg_match0(type, object_types)
 
 switch(type,
     rds = write_rds(data_object, project_path),
