@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# dpbuild <img src="man/figures/logo.png" align="right" height="139"/>
+# dpbuild <a href="https://amashadihossein.github.io/dpbuild/"><img src="man/figures/logo.png" align="right" height="139" alt="dpbuild website" /></a>
 
 <!-- badges: start -->
 
