@@ -24,6 +24,7 @@ test_that("properly creates data object paths", {
     expect_equal(
                 save_object(data_object, path, type = 'rds'), 
                 file.path(path, "output_files/RDS_format/data_object.RDS"))
+    unlink(file.path(path, "output_files/RDS_format/"), recursive = TRUE)
     expect_equal(
                 save_object(data_object, path, type = 'qs'), 
                 file.path(path, "output_files/qs_format/data_object.qs"))
