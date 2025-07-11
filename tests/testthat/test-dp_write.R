@@ -45,7 +45,7 @@ test_that("properly errors when different format directory exists", {
   # Now try to save as qs format, which should error
   expect_error(
     save_object(data_object, path, type = 'qs'),
-    "Directory for RDS format already exists while trying to save as qs. This may lead to confusion."
+    "Directory for RDS format already exists while trying to save as qs. Please try again with the existing daap format."
   )
   
   # Clean up and test the reverse case
@@ -54,6 +54,6 @@ test_that("properly errors when different format directory exists", {
   
   expect_error(
     save_object(data_object, path, type = 'rds'),
-    "Directory for qs format already exists while trying to save as RDS. This may lead to confusion."
+    "Directory for qs format already exists while trying to save as RDS. Please try again with the existing daap format."
   )
 })
