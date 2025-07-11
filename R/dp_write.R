@@ -85,7 +85,7 @@ save_object <- function(data_object, project_path, type = "rds"){
         
         stop(glue::glue(
           "Directory for {display_type} format already exists while trying to save as {current_display_type}. ",
-          "This may lead to confusion."
+          "Please try again with the existing daap format"
         ))
       }
     }
