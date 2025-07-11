@@ -12,13 +12,13 @@ test_that("properly checks data object class", {
     local_mocked_bindings(is_valid_dp_repository = function(path) TRUE )
     expect_snapshot(error = TRUE, {
     data_object = list()
-    path <- withr::local_tempfile()
+    path <- withr::local_tempdir()
     dp_write(data_object, project_path = path)
   })
 })
 
 test_that("properly creates data object paths", {
-    path = withr::local_tempfile()
+    path = withr::local_tempdir()
     data_object = structure(list(), class = "dp")
     local_mocked_bindings(is_valid_dp_repository = function(path) TRUE)
     expect_equal(
@@ -33,7 +33,7 @@ test_that("properly creates data object paths", {
 
 test_that("properly errors when different format directory exists", {
   # Set up temporary project path
-  path <- withr::local_tempfile()
+  path <- withr::local_tempdir()
   data_object <- structure(list(), class = "dp")
   
   # Mock validation function
