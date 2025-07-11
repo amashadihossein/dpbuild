@@ -33,7 +33,7 @@ test_that("properly creates data object paths", {
 
 test_that("properly errors when different format directory exists", {
   # Set up temporary project path
-  path <- withr::local_tempfile()
+  path <- withr::local_tempdir()
   data_object <- structure(list(), class = "dp")
   
   # Mock validation function
