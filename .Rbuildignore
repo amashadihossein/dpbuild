@@ -1,3 +1,5 @@
+^renv$
+^renv\.lock$
 ^dpbuild\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
