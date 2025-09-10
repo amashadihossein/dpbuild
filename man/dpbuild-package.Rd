@@ -6,6 +6,8 @@
 \alias{dpbuild-package}
 \title{dpbuild: A package to manage building of data products}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 An R package intended to help set up and manage a data product project.
 }
 \seealso{

@@ -1,3 +1,7 @@
+# dpbuild 0.3.0
+
+* Enable saving data objects in qs format via the "type" param in `dp_write()`
+
 # dpbuild 0.2.1
 
 * Make targets default when using `dpcode_add()` as drake is superseded (#90)
