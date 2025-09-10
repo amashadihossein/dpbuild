@@ -61,6 +61,36 @@ dp_write <- function(data_object, type = 'rds', project_path = ".") {
 save_object <- function(data_object, project_path, type = "rds"){
   type <- rlang::arg_match0(type, object_types)
 
+# Check if directories for other types exist
+  # Create a mapping of type names to their directory format names
+  format_dirs <- list(
+    "rds" = "RDS_format",
+    "qs" = "qs_format"
+    # Add new formats here in the future
+  )
+  
+  # Get current type's directory format
+  current_format_dir <- format_dirs[[type]]
+  
+  # Check all other types
+  for (other_type in object_types) {
+    if (other_type != type) {
+      other_format_dir <- format_dirs[[other_type]]
+      other_dir_path <- glue::glue("{project_path}/output_files/{other_format_dir}")
+      
+      if (dir.exists(other_dir_path)) {
+        # Display format for error message (preserve case as in directory name)
+        display_type <- if (other_type == "rds") "RDS" else other_type
+        current_display_type <- if (type == "rds") "RDS" else type
+        
+        stop(glue::glue(
+          "Directory for {display_type} format already exists while trying to save as {current_display_type}. ",
+          "Please try again with the existing daap format."
+        ))
+      }
+    }
+  }
+
 switch(type,
     rds = write_rds(data_object, project_path),
     qs = write_qs(data_object, project_path)

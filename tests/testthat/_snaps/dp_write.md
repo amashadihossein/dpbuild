@@ -12,7 +12,7 @@
 
     Code
       data_object = list()
-      path <- withr::local_tempfile()
+      path <- withr::local_tempdir()
       dp_write(data_object, project_path = path)
     Condition
       Error in `dp_write()`:
