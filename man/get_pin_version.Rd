@@ -4,7 +4,7 @@
 \alias{get_pin_version}
 \title{Get Pins Version Pre Deploy}
 \usage{
-get_pin_version(d, pin_name, pin_description)
+get_pin_version(d, pin_name, pin_description, type = "rds")
 }
 \arguments{
 \item{d}{data object}
@@ -12,6 +12,8 @@ get_pin_version(d, pin_name, pin_description)
 \item{pin_name}{what the pin will be named. For data products, it is encoded in dp_param}
 
 \item{pin_description}{what the pin description will be. For data products, it is encoded in dp_params}
+
+\item{type}{File type used to save the data product, default RDS}
 }
 \value{
 a character version

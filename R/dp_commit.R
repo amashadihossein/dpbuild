@@ -15,7 +15,7 @@ dp_commit <- function(project_path = fs::path_wd(),
 
   project_path <- fs::path_tidy(project_path)
   log_path <- fs::path_tidy(glue::glue("{project_path}/.daap/daap_log.yaml"))
-  RDS_path <- fs::path_tidy(glue::glue("{project_path}/output_files/RDS_format/data_object.RDS"))
+  object_path <- get_data_object_path(project_path)
 
   if (!fs::dir_exists(project_path)) {
     stop("project_path does not exist")
@@ -30,12 +30,9 @@ dp_commit <- function(project_path = fs::path_wd(),
     stop("daap_log.yaml was not found. First, complete dp_write")
   }
   log_history <- yaml::read_yaml(file = log_path)
-
-
-  if (!file.exists(RDS_path)) {
-    stop("data_object.RDS was not found. First, complete dp_write")
-  }
-  rds_file_sha1 <- digest::digest(object = RDS_path, algo = "sha1", file = T)
+  
+  # keeping the references to rds for backword compatibility
+  rds_file_sha1 <- digest::digest(object = object_path, algo = "sha1", file = T)
 
 
   log_history$HEAD <- as.character(glue::glue("rds_log_{substring(rds_file_sha1, first = 1, last = 7)}"))
@@ -57,4 +54,23 @@ dp_commit <- function(project_path = fs::path_wd(),
   }
 
   return(repo)
+}
+
+get_data_object_path <- function(project_path) {
+  # Define possible formats and their paths
+  possible_formats <- list(
+    RDS = fs::path_tidy(glue::glue("{project_path}/output_files/RDS_format/data_object.RDS")),
+    QS = fs::path_tidy(glue::glue("{project_path}/output_files/qs_format/data_object.qs"))
+  )
+  
+  # Iterate through the list and check if the file exists
+  for (format in names(possible_formats)) {
+    path <- possible_formats[[format]]
+    if (file.exists(path)) {
+      return(path)
+    }
+  }
+  
+  # If no file is found, raise an error
+  stop("No data_object file found in any of the expected formats.")
 }

@@ -4,10 +4,12 @@
 \alias{dp_write}
 \title{Write data product}
 \usage{
-dp_write(data_object, project_path = ".")
+dp_write(data_object, type = "rds", project_path = ".")
 }
 \arguments{
 \item{data_object}{data_object generated from \code{dp_structure}}
+
+\item{type}{File type used to save the data product, default RDS}
 
 \item{project_path}{path to the project (default is current directory)}
 }
