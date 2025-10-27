@@ -323,3 +323,13 @@ check_pins_compatibility <- function(project_path = "."){
   }
 }
 
+#' @title Read data output object
+#' @description read the output data object, for now only rds and qs are supported
+#' @noRd
+object_read <- function(project_path, type) {
+  type <- rlang::arg_match0(type, c("rds", "qs"))
+  switch(type,
+    rds = readRDS(file = glue::glue("{project_path}/output_files/RDS_format/data_object.RDS")),
+    qs = read_qs(project_path)
+  )
+}
