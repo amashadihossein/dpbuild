@@ -333,3 +333,15 @@ object_read <- function(project_path, type) {
     qs = read_qs(project_path)
   )
 }
+
+#' @title Reas qs object
+#' @description Read in qs object
+#' @noRd
+read_qs <- function(path) {
+  rlang::check_installed("qs")
+  dataobj_path <- glue::glue(
+    "{path}/",
+    "output_files/qs_format/data_object.qs"
+  )
+  qs::qread(dataobj_path)
+}
