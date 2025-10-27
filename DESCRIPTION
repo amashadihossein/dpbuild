@@ -1,6 +1,6 @@
 Package: dpbuild
 Title: A package to manage building of data products
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: 
     person(given = "Afshin",
            family = "Mashadi-Hossein",
@@ -24,6 +24,7 @@ Imports:
     magrittr,
     pins (>= 1.2.0),
     purrr,
+    qs,
     renv,
     rio,
     rlang,
@@ -34,10 +35,9 @@ Imports:
     yaml
 Suggests: 
     httr,
-    qs,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
