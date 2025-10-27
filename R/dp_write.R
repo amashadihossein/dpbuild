@@ -21,8 +21,10 @@ dp_write <- function(data_object, type = 'rds', project_path = ".") {
       "a properly formatted dp"
     )))
   }
-
+  
   dataobj_path <- save_object(data_object, project_path = project_path, type = type)
+
+  data_object <- object_read( project_path = project_path, type = type)
 
   log_note <- dplognote_get(
     data_object = data_object,
