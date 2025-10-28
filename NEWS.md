@@ -1,3 +1,7 @@
+# dpbuild 0.3.1
+
+* Fixed the bug related to the daap pin version not being captured properly in the log file
+
 # dpbuild 0.3.0
 
 * Enable saving data objects in qs format via the "type" param in `dp_write()`
