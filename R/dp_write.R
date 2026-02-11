@@ -66,8 +66,8 @@ save_object <- function(data_object, project_path, type = "rds"){
 # Check if directories for other types exist
   # Create a mapping of type names to their directory format names
   format_dirs <- list(
-    "rds" = "RDS_format",
-    "qs" = "qs_format"
+    "rds" = "RDS_format" #,
+    # "qs" = "qs_format"
     # Add new formats here in the future
   )
   
@@ -94,26 +94,26 @@ save_object <- function(data_object, project_path, type = "rds"){
   }
 
 switch(type,
-    rds = write_rds(data_object, project_path),
-    qs = write_qs(data_object, project_path)
+    rds = write_rds(data_object, project_path) # ,
+#     qs = write_qs(data_object, project_path)
   )
 
 }
 
-#' @title Write qs object
-#' @description Write qs object to `output_files/qs_format/` directory, 
-#' will create the directory if it does not exist
-#' @noRd 
-write_qs <- function(data_object, project_path) {
-  rlang::check_installed("qs")
-  dataobj_path <- glue::glue(
-    "{project_path}/",
-    "output_files/qs_format/data_object.qs"
-  )
-  check_dir(dataobj_path)
-  qs::qsave(data_object, dataobj_path)
-  return(dataobj_path)
-}
+# #' @title Write qs object
+# #' @description Write qs object to `output_files/qs_format/` directory, 
+# #' will create the directory if it does not exist
+# #' @noRd 
+# write_qs <- function(data_object, project_path) {
+#   rlang::check_installed("qs")
+#   dataobj_path <- glue::glue(
+#     "{project_path}/",
+#     "output_files/qs_format/data_object.qs"
+#   )
+#   check_dir(dataobj_path)
+#   qs::qsave(data_object, dataobj_path)
+#   return(dataobj_path)
+# }
 
 #' @title Write rds object
 #' @description Write rds object to `output_files/RDS_format/` directory, 
@@ -129,7 +129,7 @@ write_rds <- function(data_object, project_path) {
   return(dataobj_path)
 }
 
-object_types <- c("rds", "qs")
+object_types <- c("rds") #, "qs")
 
 #' @title Check directory
 #' @description Checks if directory exists and will create one if it does not exist
