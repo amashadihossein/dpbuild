@@ -1,3 +1,7 @@
+# dpbuild 0.4.0
+
+* Remove qs dependency and tooling
+
 # dpbuild 0.3.1
 
 * Fixed the bug related to the daap pin version not being captured properly in the log file
