@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/amashadihossein/dpbuild/blob/dev/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/amashadihossein/dpbuild/blob/main/DESCRIPTION)
 
 Mashadi-Hossein A (2026). *dpbuild: A package to manage building of data
 products*. R package version 0.4.0.
